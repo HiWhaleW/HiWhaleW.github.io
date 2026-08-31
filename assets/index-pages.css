@@ -15,7 +15,8 @@
 .work-card-copy>p{margin-top:16px;color:var(--muted);font-size:12px;line-height:1.68}
 .work-card-copy>a{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;margin-top:auto;color:var(--blue);font-size:12px;font-weight:650;text-decoration:none}
 .work-card-copy>a:hover{text-decoration:underline;text-underline-offset:4px}
-.work-product-card>img{display:block;width:100%;height:44%;padding:14px 16px 0;object-fit:contain;object-position:center;background:#f4f5f2}
+.work-product-card>img,.work-product-card>.work-product-cover-link{display:block;width:100%;height:44%;padding:14px 16px 0;background:#f4f5f2}
+.work-product-card>.work-product-cover-link>img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 .work-product-card .work-card-copy{padding:19px 25px 21px}
 .work-product-card .work-card-copy h2{margin-top:8px;font-size:clamp(24px,2.2vw,30px)}
 .work-product-card .work-card-copy>p{margin-top:9px;font-size:11px;line-height:1.55}

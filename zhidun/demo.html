@@ -531,8 +531,9 @@ a.inline:hover { color: var(--brand); border-bottom-color: var(--brand); }
   .pc-item input { margin-top: 3px; }
   .pc-item.done { opacity: 0.55; }
   .pc-item.done .pc-t { text-decoration: line-through; }
-  .stat-tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 18px; }
+  .stat-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
   @media (max-width: 1000px) { .stat-tiles { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .stat-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .tile { border: 1px solid var(--hairline); border-radius: 10px; padding: 12px 14px; background: var(--surface-1); }
   .tile .tv { font-size: 22px; font-weight: 800; color: var(--brand-deep); font-variant-numeric: tabular-nums; }
   .tile .tl { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
@@ -758,7 +759,7 @@ RENDER.svcs = function () {
   var maxV = Math.max.apply(null, SVCS.map(function (s) { return s.v; }));
   var html =
     (isPano ? '<div class="flex between wrap mb16"><a class="btn ghost" href="#/login" style="font-size:13px;padding:6px 16px">← 返回统一身份认证</a><span class="small muted">免登录全景 · 选择身份请返回认证页</span></div>' : "") +
-    '<div class="mod-head">🛡 服务目录 · 调用与复用<span class="sub">4 类授权消费方 × 6 项稳定上线服务</span><span class="tipmark" data-tiptitle="平台视角（中台）" data-tip="平台层:14 项数据资产 + 6 项稳定上线服务|前台:业务工作台消费服务（问答 / 预检）|后台:运营控制台治理资产（目录 / 审核 / 评测 / 检索）|关键:前后台操作同一份资产、同一组服务">ⓘ 说明</span></div>' +
+    '<div class="mod-head">🛡 服务目录 · 调用与复用<span class="sub">按授权角色复用 · 6 项核心服务全部上线</span><span class="tipmark" data-tiptitle="平台视角（中台）" data-tip="平台层:统一知识资产 + 6 项核心服务全部上线|前台:业务工作台消费服务（问答 / 预检）|后台:运营控制台治理资产（目录 / 审核 / 评测 / 检索）|关键:前后台操作同一份资产、同一组服务">ⓘ 说明</span></div>' +
     '<div class="svc-flow">' +
       '<div class="svc-lane">' +
         '<span class="svc-chip">🛠 外场支持 · IM 问询</span>' +
@@ -771,7 +772,7 @@ RENDER.svcs = function () {
       '<div class="svc-arrow">▼ 按需调用（全部跑在 Agent Harness 运行时上）</div>' +
       '<div class="svc-lane"><span class="svc-chip" style="border-color:var(--brand);color:var(--brand-deep)">六项核心服务 × 复用矩阵见下表</span></div>' +
     '</div>' +
-    '<div class="tablewrap"><table class="tbl"><tr><th>服务</th><th>职责（输入 → 输出）</th><th>KPI</th><th>消费方（复用矩阵）</th><th style="width:130px">周调用量（示意）</th></tr>';
+    '<div class="tablewrap"><table class="tbl"><tr><th>服务</th><th>职责（输入 → 输出）</th><th>KPI</th><th>消费方（复用矩阵）</th><th style="width:130px">周调用量（Mock）</th></tr>';
   SVCS.forEach(function (s) {
     var chips = CONS.map(function (c, i) {
       return '<span class="svc-con' + (s.cons[i] ? ' hit' : '') + '">' + c + '</span>';
@@ -973,11 +974,11 @@ var ASSETS = [
 ];
 RENDER.assets = function () {
   var main = document.getElementById("demo-main");
-  main.innerHTML = '<div class="mod-head">📚 数据资产目录<span class="sub">14 项纳管资产 · 统一治理</span><span class="tipmark" data-tiptitle="资产治理" data-tip="主表:KnowledgeItem 是稳定业务事实|派生:chunk 与索引可随时重建|版本:知识 · chunk · Embedding · 索引 · 检索策略五级血缘|门槛:approved + 质量分 ≥60 才进候选池">ⓘ 说明</span></div><div class="dm-toolbar" id="as-filter"></div><div id="as-body"></div>';
+  main.innerHTML = '<div class="mod-head">📚 数据资产目录<span class="sub">资产目录示例 · Mock</span><span class="tipmark" data-tiptitle="资产治理" data-tip="主表:KnowledgeItem 是稳定业务事实|派生:chunk 与索引可随时重建|版本:知识 · chunk · Embedding · 索引 · 检索策略五级血缘|门槛:approved + 质量分 ≥60 才进候选池">ⓘ 说明</span></div><div class="dm-toolbar" id="as-filter"></div><div id="as-body"></div>';
   var tb = document.getElementById("as-filter");
   ["全部"].concat(DOMAINS).forEach(function (d, i) {
     var b = document.createElement("button");
-    b.textContent = d + (i > 0 ? "域" : " · 14 项资产 / 4 域");
+    b.textContent = d + (i > 0 ? "域" : " · 示例目录");
     if (i === 0) b.classList.add("on");
     b.addEventListener("click", function () {
       tb.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
@@ -988,7 +989,7 @@ RENDER.assets = function () {
   function draw(dom) {
     var rows = ASSETS.filter(function (a) { return dom < 0 || a.d === dom; });
     document.getElementById("as-body").innerHTML =
-      '<div class="tablewrap"><table class="tbl"><tr><th>数据资产</th><th>所属域</th><th class="num">条目</th><th>质量分</th><th>状态</th><th>责任角色</th></tr>' +
+      '<div class="tablewrap"><table class="tbl"><tr><th>数据资产</th><th>所属域</th><th class="num">条目（Mock）</th><th>质量分（Mock）</th><th>状态</th><th>责任角色</th></tr>' +
       rows.map(function (a) {
         var qColor = a.q >= 80 ? "var(--good)" : a.q >= 60 ? "var(--brand)" : "#eb6834";
         return "<tr><td><strong>" + a.n + "</strong></td><td>" + DOMAINS[a.d] + '</td><td class="num">' + a.cnt + '</td><td><div class="flex"><div class="qbar"><i style="width:' + a.q + "%;background:" + qColor + '"></i></div><span class="small muted">' + a.q + "</span></div></td><td>" +
@@ -1043,25 +1044,24 @@ RENDER.precheck = function () {
 RENDER.evaldash = function () {
   var main = document.getElementById("demo-main");
   main.innerHTML =
-    '<div class="mod-head">📊 评测看板<span class="sub">200 条固定评测集 · 六维度</span><span class="tipmark" data-tiptitle="评测闭环" data-tip="评测集:200 条固定 · 防止指标漂移|闭环:有用 / 无用反馈与 bad case 持续入集|锚点:图中实心点为实测，空心点为示意|硬约束:来源引用率 100% · 待审核拦截 100%">ⓘ 说明</span></div>' +
+    '<div class="mod-head">📊 评测看板<span class="sub">固定 200 条历史问题集 · 简历数据口径</span><span class="tipmark" data-tiptitle="评测闭环" data-tip="评测集:200 条固定 · 防止指标漂移|闭环:有用 / 无用反馈与 bad case 持续入集|结果:Hit@3 约45%→95%|反馈:有明确反馈的有效查询中有用率80%|验收:缺参追问、无据拒答、高风险转人工">ⓘ 说明</span></div>' +
     '<div class="stat-tiles">' +
-    '<div class="tile"><div class="tv">95%</div><div class="tl">Top3 命中率（固定 200 条评测集）</div></div>' +
-    '<div class="tile"><div class="tv">0.87</div><div class="tl">MRR（示意）</div></div>' +
-    '<div class="tile"><div class="tv">92%</div><div class="tl">无答案正确拒答率（示意）</div></div>' +
-    '<div class="tile"><div class="tv">100%</div><div class="tl">来源引用率 · 上线硬约束</div></div>' +
-    '<div class="tile"><div class="tv">100%</div><div class="tl">待审核 / 低质量拦截（硬约束用例）</div></div>' +
-    '<div class="tile"><div class="tv">100%</div><div class="tl">高风险人工确认提示覆盖（示意）</div></div>' +
-    "</div>" +
-    '<div class="card"><h4 class="mt0">Top3 命中率趋势（评测集 v5 · 200 条固定）</h4><div id="ed-chart"></div></div>' +
-    '<div class="tablewrap mt16"><table class="tbl"><tr><th>版本</th><th>变更内容</th><th class="num">Top3</th><th class="num">MRR</th><th class="num">硬约束</th><th>结论</th></tr>' +
-    '<tr><td class="mono">检索策略 v2.2</td><td>反馈特征接入 Rerank（轻权重）</td><td class="num">88.0%</td><td class="num">0.85</td><td class="num">全过</td><td><span class="badge b-green dot g">放量</span></td></tr>' +
-    '<tr><td class="mono">检索策略 v2.3</td><td>别名归一修复 + 评测集补 12 条跨型号用例</td><td class="num">95%</td><td class="num">0.87</td><td class="num">全过</td><td><span class="badge b-green dot g">放量 · 当前版本</span></td></tr>' +
-    '<tr><td class="mono">试验：纯语义权重 ↑</td><td>alpha 语义 0.8（试验分支）</td><td class="num">86.5%</td><td class="num">0.83</td><td class="num">拦截用例 ×1 失败</td><td><span class="badge b-orange">回滚</span> 单项否决</td></tr>' +
-    '</table></div><p class="small muted mt8 mb0">第三行演示回归纪律的价值：整体分仍高于旧版本，但硬约束用例失败 → 单项否决回滚。<strong>不以整体分交换安全边界</strong>。</p>';
+    '<div class="tile"><div class="tv">95%</div><div class="tl">检索 Hit@3（固定 200 条历史问题集）</div></div>' +
+    '<div class="tile"><div class="tv">80%</div><div class="tl">用户有用率（有明确反馈的有效查询）</div></div>' +
+    '<div class="tile"><div class="tv">约 −30%</div><div class="tl">已知问题口径下交付退回率</div></div>' +
+    '<div class="tile"><div class="tv">约 70 万/年</div><div class="tl">预期年化节省</div></div>' +
+    '<div class="tile"><div class="tv">约 85% → 约 95%</div><div class="tl">抽样字段正确率</div></div>' +
+    '<div class="tile"><div class="tv">6 项</div><div class="tl">核心服务全部上线</div></div>' +
+    '</div>' +
+    '<div class="card"><h4 class="mt0">检索 Hit@3（固定 200 条历史问题集）</h4><div id="ed-chart"></div></div>' +
+    '<div class="tablewrap mt16"><table class="tbl"><tr><th>阶段</th><th>评测内容</th><th class="num">Hit@3</th><th>样本</th><th>验收要求</th><th>结果</th></tr>' +
+    '<tr><td>基线</td><td>历史问题集上的检索基线</td><td class="num">约 45%</td><td>固定 200 条历史问题</td><td>识别跨型号误召回和证据缺失</td><td>建立基线</td></tr>' +
+    '<tr><td>检索优化后</td><td>型号版本过滤、混合召回、重排与父级证据补齐</td><td class="num">95%</td><td>同一固定 200 条历史问题集</td><td>版本回归与增量 Bad Case</td><td>形成持续迭代机制</td></tr>' +
+    '<tr><td>异常分支（Mock）</td><td>演示无据作答或高风险越权</td><td class="num">—</td><td>演示用例</td><td>缺参追问、无据拒答、高风险转人工</td><td>停止发布并修复</td></tr>' +
+    '</table></div><p class="small muted mt8 mb0">Hit@3 衡量正确且适用的知识是否进入前三条检索结果；用户有用率另按有明确反馈的有效查询统计。年化节省为预期收益。</p>';
   // 趋势小图
   var stages = [
-    { l: "25-07 基线", v: 45, real: 1 }, { l: "25-12 建模", v: 62 }, { l: "26-01 分块", v: 74 },
-    { l: "26-01 混合召回", v: 83 }, { l: "26-02 Rerank", v: 88 }, { l: "26-05 至今", v: 95, real: 1 }
+    { l: "基线约 45%", v: 45, real: 1 }, { l: "优化后 95%", v: 95, real: 1 }
   ];
   var W = 720, H = 190, x0 = 46, x1 = 700, y0 = 24, y1 = 148;
   var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, width: "100%" });
@@ -1079,7 +1079,7 @@ RENDER.evaldash = function () {
     var hit = svgEl("circle", { cx: X(i), cy: Y(s.v), r: 14, fill: "transparent" });
     svg.appendChild(hit);
     hit.addEventListener("pointermove", function (e) {
-      zdTip.show(e.clientX, e.clientY, s.l, [{ name: "Top3 命中率", color: "#2a78d6", value: s.v + "%" + (s.real ? "（实测锚点）" : "（示意）") }]);
+      zdTip.show(e.clientX, e.clientY, s.l, [{ name: "Top3 命中率", color: "#2a78d6", value: (s.v === 45 ? "约 " : "") + s.v + "%" + (s.real ? "（简历口径）" : "（示意）") }]);
     });
     hit.addEventListener("pointerleave", zdTip.hide);
   });
@@ -1475,11 +1475,11 @@ RENDER = window.RENDER || {};
 RENDER.stream = function () {
   var main = document.getElementById("demo-main");
   main.innerHTML =
-    '<div class="mod-head">📡 实时事件流<span class="sub">服务层埋点 · QueryLog 与闸口日志</span><span class="tipmark" data-tiptitle="埋点口径" data-tip="来源:服务层埋点（工具注册表 QueryLog 写回 + 评测钩子），非前端埋点|事件:查询 · 拦截 · 拒答 · 反馈 · 高风险转人工 · 审核入库 · 降级 · 自动化执行|用途:运营监控 + bad case 回流 + 调用量统计|口径:事件内容为 Mock，Top3 95% / 有用率 80%+ 为实测">ⓘ 说明</span></div>' +
+    '<div class="mod-head">📡 实时事件流<span class="sub">服务层埋点 · QueryLog 与闸口日志</span><span class="tipmark" data-tiptitle="埋点口径" data-tip="来源:服务层埋点（工具注册表 QueryLog 写回 + 评测钩子），非前端埋点|事件:查询 · 拦截 · 拒答 · 反馈 · 高风险转人工 · 审核入库 · 降级 · 自动化执行|用途:运营监控 + bad case 回流 + 调用量统计|口径:事件与调用量为 Mock；固定200条历史问题Hit@3为95%，有明确反馈的有效查询中有用率80%">ⓘ 说明</span></div>' +
     '<div class="strip">' +
       '<div class="tile"><div class="tv">328</div><div class="tl">今日查询（示意）</div></div>' +
-      '<div class="tile"><div class="tv">95%</div><div class="tl">Top3 命中（固定 200 条评测集）</div></div>' +
-      '<div class="tile"><div class="tv">83%</div><div class="tl">有用率（示意 · 实测 80%+）</div></div>' +
+      '<div class="tile"><div class="tv">95%</div><div class="tl">检索 Hit@3（固定 200 条历史问题集）</div></div>' +
+      '<div class="tile"><div class="tv">80%</div><div class="tl">有用率（有明确反馈的有效查询）</div></div>' +
       '<div class="tile"><div class="tv">12</div><div class="tl">型号拦截（示意）</div></div>' +
       '<div class="tile"><div class="tv">3</div><div class="tl">高风险转人工（示意）</div></div>' +
     '</div>' +

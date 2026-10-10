@@ -1017,7 +1017,7 @@ var PC = [
 RENDER.precheck = function () {
   var main = document.getElementById("demo-main");
   main.innerHTML =
-    '<div class="mod-head">📋 预检候选生成<span class="sub">交付质检场景 · 服务已稳定上线</span><span class="tipmark" data-tiptitle="预检规则" data-tip="正式服务:预检候选生成|生成:precheck_chunk 检索 · 只引用 approved 模板|高风险:必须质检负责人人工确认，AI 不替代放行判断|来源:每条预检项附 KI-ID，可回溯模板">ⓘ 说明</span></div>' +
+    '<div class="mod-head">📋 预检候选生成<span class="sub">交付质检场景 · 服务已上线</span><span class="tipmark" data-tiptitle="预检规则" data-tip="正式服务:预检候选生成|生成:precheck_chunk 检索 · 只引用 approved 模板|高风险:必须质检负责人人工确认，AI 不替代放行判断|来源:每条预检项附 KI-ID，可回溯模板">ⓘ 说明</span></div>' +
     '<div class="flex wrap mb16"><select id="pc-model" class="chat-inputrow" style="border:1px solid var(--hairline);border-radius:9px;padding:8px 12px;font-family:inherit"><option>EX4500-G（边缘控制器）</option><option>TL-220A（采集终端）</option><option>SR300（工业网关）</option></select>' +
     '<select style="border:1px solid var(--hairline);border-radius:9px;padding:8px 12px;font-family:inherit"><option>场景：出厂交付预检</option><option>场景：返修复检</option></select>' +
     '<button class="btn primary" id="pc-gen">生成预检清单</button></div><div id="pc-body"><p class="small muted">预检项由 precheck_chunk（200–400 字）检索生成，且<strong>只引用 approved 模板</strong>——点击生成。</p></div>';

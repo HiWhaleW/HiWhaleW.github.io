@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>在线 Demo（Mock）· 智盾</title>
+<style>
+/* ==== 站点公共样式（原 assets/style.css，已内联以保证单文件可用） ==== */
+/* ============================================================
+   智盾 · 产品讲解站 — 设计系统（浅色模式）
+   调色板基于 dataviz 参考色板（已通过 CVD/对比度校验，按序使用）
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* 表面与页面 */
+  --surface-1: #fcfcfb;      /* 卡片面 */
+  --page: #f9f9f7;           /* 页面底 */
+  --surface-2: #f3f2ef;      /* 次级面（代码块、表格头） */
+
+  /* 文字 */
+  --ink-1: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #898781;          /* 弱化（轴/辅助） */
+  --hairline: #e1e0d9;       /* 发丝网格线 */
+  --baseline: #c3c2b7;       /* 基线 */
+  --ring: rgba(11, 11, 11, 0.10);
+
+  /* 分类色（图表按序取用，勿循环、勿跳序） */
+  --c1: #2a78d6;  /* 蓝 */
+  --c2: #eb6834;  /* 橙 */
+  --c3: #1baf7a;  /* 青 */
+  --c4: #eda100;  /* 黄 */
+  --c5: #e87ba4;  /* 品红 */
+  --c6: #008300;  /* 绿 */
+  --c7: #4a3aa7;  /* 紫 */
+  --c8: #e34948;  /* 红 */
+
+  /* 顺序色阶（蓝，浅→深） */
+  --s100: #cde2fb; --s150: #b7d3f6; --s200: #9ec5f4; --s250: #86b6ef;
+  --s300: #6da7ec; --s350: #5598e7; --s400: #3987e5; --s450: #2a78d6;
+  --s500: #256abf; --s550: #1c5cab; --s600: #184f95; --s650: #104281; --s700: #0d366b;
+
+  /* 状态色（仅作状态，不作系列色） */
+  --good: #0ca30c;
+  --good-text: #006300;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+
+  /* 品牌主色 = 分类蓝 */
+  --brand: #2a78d6;
+  --brand-deep: #1c5cab;
+  --brand-ink: #104281;
+  --brand-wash: #eaf2fc;
+
+  /* 字体 */
+  --sans: system-ui, -apple-system, "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* 尺寸 */
+  --radius: 10px;
+  --radius-s: 6px;
+  --shadow: 0 1px 2px rgba(11, 11, 11, 0.05), 0 4px 16px rgba(11, 11, 11, 0.05);
+  --shadow-lift: 0 2px 4px rgba(11, 11, 11, 0.06), 0 10px 28px rgba(11, 11, 11, 0.09);
+  --nav-h: 60px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: var(--page);
+  color: var(--ink-1);
+  font-size: 15.5px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 顶部导航 ============ */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(252, 252, 251, 0.92);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--hairline);
+}
+.nav-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+  height: var(--nav-h);
+  display: flex; align-items: center; gap: 20px;
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink-1); margin-right: 6px; }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+  color: #fff; display: grid; place-items: center;
+  font-size: 15px; font-weight: 700; letter-spacing: -0.5px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22);
+}
+.brand-name { font-size: 17px; font-weight: 700; letter-spacing: 0.5px; }
+.brand-sub { font-size: 11px; color: var(--ink-3); display: block; margin-top: -3px; letter-spacing: 0.5px; }
+
+.nav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
+.nav-links > a, .nav-links > .nav-drop > summary {
+  padding: 7px 12px; border-radius: 8px;
+  font-size: 13.5px; font-weight: 500; color: var(--ink-2);
+  text-decoration: none; cursor: pointer; list-style: none;
+  white-space: nowrap; transition: background 0.15s, color 0.15s;
+}
+.nav-links > a:hover, .nav-links > .nav-drop > summary:hover { background: var(--surface-2); color: var(--ink-1); }
+.nav-links > a.active { color: var(--brand-deep); font-weight: 600; background: var(--brand-wash); }
+
+.nav-drop { position: relative; }
+.nav-drop > summary::-webkit-details-marker { display: none; }
+.nav-drop > summary::after { content: "▾"; font-size: 10px; margin-left: 4px; color: var(--ink-3); }
+.nav-drop[open] > summary { background: var(--surface-2); color: var(--ink-1); }
+.nav-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; min-width: 230px;
+  background: var(--surface-1); border: 1px solid var(--hairline);
+  border-radius: var(--radius); box-shadow: var(--shadow-lift);
+  padding: 6px; z-index: 110;
+}
+.nav-menu a {
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 8px 12px; border-radius: 8px; text-decoration: none;
+}
+.nav-menu a:hover { background: var(--brand-wash); }
+.nav-menu .m-title { font-size: 13.5px; font-weight: 600; color: var(--ink-1); }
+.nav-menu .m-desc { font-size: 12px; color: var(--ink-3); }
+
+.nav-cta {
+  padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  background: var(--brand); color: #fff !important; text-decoration: none;
+  box-shadow: 0 1px 3px rgba(42, 120, 214, 0.35);
+  transition: background 0.15s;
+}
+.nav-cta:hover { background: var(--brand-deep); }
+
+/* ============ 页面骨架 ============ */
+.page { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+.page.narrow { max-width: 880px; }
+
+.page-head { margin-bottom: 32px; }
+.crumbs { font-size: 12.5px; color: var(--ink-3); margin-bottom: 10px; }
+.crumbs a { color: var(--ink-3); text-decoration: none; }
+.crumbs a:hover { color: var(--brand); }
+.crumbs .sep { margin: 0 6px; color: var(--baseline); }
+
+h1.title { font-size: 34px; line-height: 1.3; font-weight: 700; letter-spacing: -0.3px; margin: 0 0 8px; }
+.subtitle { font-size: 16.5px; color: var(--ink-2); max-width: 860px; margin: 0; }
+
+h2 { font-size: 23px; font-weight: 700; letter-spacing: -0.2px; margin: 52px 0 8px; }
+h2:first-of-type { margin-top: 36px; }
+h3 { font-size: 17.5px; font-weight: 650; margin: 30px 0 6px; }
+h4 { font-size: 15px; font-weight: 650; margin: 20px 0 4px; color: var(--ink-1); }
+
+.section-lede { color: var(--ink-2); margin: 0 0 20px; max-width: 860px; }
+
+/* ============ 卡片 ============ */
+.card {
+  background: var(--surface-1); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: 22px 24px;
+}
+.card.lift { box-shadow: var(--shadow); }
+.card.hover { transition: box-shadow 0.18s, transform 0.18s, border-color 0.18s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+.card.hover:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); border-color: #cfddf2; }
+
+.grid { display: grid; gap: 16px; }
+.grid.g2 { grid-template-columns: repeat(2, 1fr); }
+.grid.g3 { grid-template-columns: repeat(3, 1fr); }
+.grid.g4 { grid-template-columns: repeat(4, 1fr); }
+.grid.g23 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 960px) {
+  .grid.g3, .grid.g4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .grid.g2, .grid.g3, .grid.g4 { grid-template-columns: 1fr; }
+}
+
+.card h3, .card h4 { margin-top: 0; }
+.card .kicker {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--brand); margin-bottom: 6px;
+}
+.card p { margin: 0 0 10px; color: var(--ink-2); }
+.card p:last-child { margin-bottom: 0; }
+.card ul, .card ol { margin: 0; padding-left: 20px; color: var(--ink-2); }
+.card li { margin: 4px 0; }
+
+/* ============ 徽章 / 标签 ============ */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.3px;
+  padding: 2.5px 9px; border-radius: 999px;
+  background: var(--surface-2); color: var(--ink-2);
+  border: 1px solid var(--hairline);
+  vertical-align: 2px; white-space: nowrap;
+}
+.badge.b-blue   { background: var(--brand-wash); color: var(--brand-ink); border-color: #cfe0f6; }
+.badge.b-green  { background: #e8f6e8; color: #005200; border-color: #cdeacd; }
+.badge.b-orange { background: #fdeee6; color: #8a3512; border-color: #f6d8c8; }
+.badge.b-violet { background: #eeecf8; color: #38327f; border-color: #dcD8f0; }
+.badge.b-gray   { background: var(--surface-2); color: var(--ink-2); }
+.badge.dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge.dot.g::before { background: var(--good); }
+.badge.dot.w::before { background: var(--warning); }
+.badge.dot.s::before { background: var(--serious); }
+.badge.dot.c::before { background: var(--critical); }
+
+/* ============ 统计块（KPI 行） ============ */
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 860px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+.stat {
+  background: var(--surface-1); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: 16px 20px;
+}
+.stat .s-label { font-size: 12.5px; color: var(--ink-3); font-weight: 500; }
+.stat .s-value { font-size: 30px; font-weight: 650; letter-spacing: -0.5px; line-height: 1.25; margin: 2px 0 0; }
+.stat .s-delta { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+.stat .s-delta .up { color: var(--good-text); font-weight: 600; }
+.stat .s-delta .down { color: var(--critical); font-weight: 600; }
+
+/* ============ 表格 ============ */
+.tablewrap { overflow-x: auto; border: 1px solid var(--hairline); border-radius: var(--radius); background: var(--surface-1); }
+table.tbl { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.tbl th {
+  text-align: left; font-weight: 650; color: var(--ink-2);
+  background: var(--surface-2); padding: 9px 14px;
+  border-bottom: 1px solid var(--hairline); white-space: nowrap;
+  font-size: 12.5px; letter-spacing: 0.3px;
+}
+.tbl td { padding: 9px 14px; border-bottom: 1px solid var(--hairline); color: var(--ink-2); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td:first-child { color: var(--ink-1); font-weight: 550; }
+.tbl tr:hover td { background: #f7f9fc; }
+.tbl .num { font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ============ 代码 / 提示块 ============ */
+.codeblock {
+  background: var(--surface-2); border: 1px solid var(--hairline);
+  border-radius: var(--radius-s); padding: 14px 16px;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.7;
+  overflow-x: auto; color: var(--ink-1); white-space: pre;
+}
+.callout {
+  border-left: 3px solid var(--brand);
+  background: var(--brand-wash);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  padding: 12px 18px; margin: 16px 0; font-size: 14px; color: var(--ink-2);
+}
+.callout strong { color: var(--ink-1); }
+.callout.warn { border-left-color: var(--warning); background: #fdf6e5; }
+.callout.good { border-left-color: var(--good); background: #eff8ef; }
+
+/* ============ 页签 Tabs ============ */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--hairline); margin: 22px 0 20px; flex-wrap: wrap; }
+.tab {
+  padding: 8px 16px; font-size: 13.5px; font-weight: 550; color: var(--ink-3);
+  border: none; background: none; cursor: pointer; border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: inherit;
+}
+.tab:hover { color: var(--ink-1); background: var(--surface-2); }
+.tab.on { color: var(--brand-deep); border-bottom-color: var(--brand); }
+.tabpanel { display: none; }
+.tabpanel.on { display: block; animation: fadein 0.25s ease; }
+@keyframes fadein { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+/* ============ 手风琴 ============ */
+details.acc {
+  background: var(--surface-1); border: 1px solid var(--hairline);
+  border-radius: var(--radius-s); margin: 10px 0; overflow: hidden;
+}
+details.acc summary {
+  cursor: pointer; padding: 13px 18px; font-weight: 600; font-size: 14.5px;
+  display: flex; align-items: center; gap: 10px; list-style: none;
+}
+details.acc summary::-webkit-details-marker { display: none; }
+details.acc summary::before {
+  content: "+"; width: 20px; height: 20px; border-radius: 6px;
+  background: var(--surface-2); color: var(--ink-2);
+  display: inline-grid; place-items: center; font-size: 14px; font-weight: 700;
+  flex-shrink: 0; transition: transform 0.18s;
+}
+details.acc[open] summary::before { content: "−"; background: var(--brand-wash); color: var(--brand-deep); }
+details.acc[open] summary { background: #f8fafd; border-bottom: 1px solid var(--hairline); }
+details.acc .acc-body { padding: 14px 18px 16px 48px; color: var(--ink-2); font-size: 14px; }
+details.acc .acc-body ul, details.acc .acc-body ol { padding-left: 20px; }
+details.acc .acc-body li { margin: 5px 0; }
+
+/* ============ 步骤条 / 流程 ============ */
+.flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 20px 0; }
+.flow-step {
+  flex: 1; min-width: 150px; position: relative;
+  background: var(--surface-1); border: 1px solid var(--hairline);
+  padding: 14px 16px 14px 20px; margin-right: 26px; margin-bottom: 12px;
+  border-radius: var(--radius-s);
+}
+.flow-step::after {
+  content: "→"; position: absolute; right: -21px; top: 50%; transform: translateY(-50%);
+  color: var(--baseline); font-size: 15px; font-weight: 700;
+}
+.flow-step:last-child { margin-right: 0; }
+.flow-step:last-child::after { content: none; }
+.flow-step .f-num {
+  position: absolute; left: -10px; top: 12px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--brand); color: #fff; font-size: 12px; font-weight: 700;
+  display: grid; place-items: center; box-shadow: 0 0 0 3px var(--page);
+}
+.flow-step .f-title { font-weight: 650; font-size: 14px; margin-bottom: 3px; }
+.flow-step .f-desc { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+
+/* ============ 时间线（路线图） ============ */
+.timeline { position: relative; margin: 30px 0; }
+.timeline::before {
+  content: ""; position: absolute; left: 15px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--hairline);
+}
+.t-item { position: relative; padding: 0 0 26px 52px; }
+.t-item:last-child { padding-bottom: 0; }
+.t-dot {
+  position: absolute; left: 4px; top: 4px; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--surface-1);
+  border: 2px solid var(--brand); display: grid; place-items: center;
+  box-shadow: 0 0 0 4px var(--page); z-index: 1;
+}
+.t-dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+.t-item.t-done .t-dot { border-color: var(--good); }
+.t-item.t-done .t-dot::after { background: var(--good); }
+.t-item.t-now .t-dot { border-color: var(--warning); box-shadow: 0 0 0 4px var(--page), 0 0 0 7px rgba(250,178,25,0.28); }
+.t-item.t-now .t-dot::after { background: var(--warning); }
+.t-item.t-plan .t-dot { border-color: var(--baseline); }
+.t-item.t-plan .t-dot::after { background: var(--baseline); }
+.t-time { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; color: var(--brand-deep); text-transform: uppercase; }
+.t-title { font-size: 16.5px; font-weight: 650; margin: 2px 0 6px; }
+.t-body { color: var(--ink-2); font-size: 14px; }
+
+/* ============ 架构图（SVG 容器） ============ */
+.diagram { background: var(--surface-1); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 20px; overflow-x: auto; }
+.diagram svg { display: block; margin: 0 auto; }
+.diagram .d-cap { text-align: center; font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+
+/* 图内通用样式 */
+.dg-box { fill: var(--surface-1); stroke: var(--hairline); rx: 8; }
+.dg-box-blue { fill: var(--brand-wash); stroke: #cfe0f6; }
+.dg-label { font-family: var(--sans); fill: var(--ink-1); font-size: 13px; font-weight: 600; }
+.dg-sub { font-family: var(--sans); fill: var(--ink-3); font-size: 11px; }
+.dg-arrow { stroke: var(--baseline); stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+.dg-dash { stroke-dasharray: 5 4; }
+
+/* ============ 页脚 ============ */
+.footer {
+  border-top: 1px solid var(--hairline); background: var(--surface-1);
+  padding: 34px 24px 44px; margin-top: 40px;
+}
+.footer-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.footer .f-title { font-size: 13px; font-weight: 700; color: var(--ink-1); margin-bottom: 10px; }
+.footer a { display: block; font-size: 12.5px; color: var(--ink-3); text-decoration: none; padding: 2.5px 0; }
+.footer a:hover { color: var(--brand); }
+.footer .f-note { font-size: 12px; color: var(--ink-3); max-width: 380px; }
+
+/* ============ Hero ============ */
+.hero {
+  background:
+    radial-gradient(1000px 420px at 78% -10%, rgba(42,120,214,0.10), transparent 62%),
+    radial-gradient(700px 380px at 8% 108%, rgba(27,175,122,0.07), transparent 60%);
+  border-bottom: 1px solid var(--hairline);
+}
+.hero-inner { max-width: 1180px; margin: 0 auto; padding: 64px 24px 56px; }
+.hero h1 { font-size: 42px; line-height: 1.25; letter-spacing: -0.5px; margin: 14px 0 14px; font-weight: 750; max-width: 800px; }
+.hero p.lead { font-size: 17px; color: var(--ink-2); max-width: 720px; margin: 0 0 26px; }
+.hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+
+/* ============ 按钮组 ============ */
+.btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px; font-size: 14px; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: 1px solid transparent; font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn.primary { background: var(--brand); color: #fff; box-shadow: 0 1px 3px rgba(42,120,214,0.35); }
+.btn.primary:hover { background: var(--brand-deep); }
+.btn.ghost { background: var(--surface-1); color: var(--ink-1); border-color: var(--hairline); }
+.btn.ghost:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+/* ============ 上下页导航 ============ */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 56px; }
+@media (max-width: 640px) { .pager { grid-template-columns: 1fr; } }
+.pager a {
+  display: block; background: var(--surface-1); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: 16px 20px; text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.pager a:hover { border-color: var(--brand); box-shadow: var(--shadow); }
+.pager .p-dir { font-size: 11.5px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.6px; }
+.pager .p-title { font-size: 15.5px; font-weight: 650; color: var(--ink-1); margin-top: 3px; }
+.pager a.next { text-align: right; }
+
+/* ============ 图表通用（SVG 图） ============ */
+.chart { font-family: var(--sans); }
+.chart .axis-line { stroke: var(--baseline); stroke-width: 1; }
+.chart .gridline { stroke: var(--hairline); stroke-width: 1; }
+.chart .tick { fill: var(--ink-3); font-size: 11px; }
+.chart .bar { rx: 3px; }
+.chart-tooltip {
+  position: fixed; pointer-events: none; z-index: 200;
+  background: var(--ink-1); color: #fff; border-radius: 8px;
+  padding: 8px 12px; font-size: 12.5px; line-height: 1.55;
+  box-shadow: var(--shadow-lift); max-width: 340px;
+  opacity: 0; transform: translate(-50%, calc(-100% - 10px)); transition: opacity 0.12s;
+}
+.chart-tooltip.show { opacity: 1; }
+.chart-tooltip .tt-title { font-weight: 700; margin-bottom: 2px; }
+.chart-tooltip .tt-row { display: flex; align-items: flex-start; gap: 7px; white-space: normal; }
+.chart-tooltip .tt-key { width: 12px; height: 3px; border-radius: 2px; flex-shrink: 0; margin-top: 7px; }
+.chart-tooltip .tt-val { font-weight: 650; margin-left: auto; padding-left: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ============ Demo 专用 ============ */
+.demo-shell { display: flex; flex-direction: column; height: 100vh; background: var(--page); overflow: hidden; }
+.app-head {
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+  background: var(--surface-1); border-bottom: 1px solid var(--hairline);
+  padding: 0 18px; height: 52px;
+}
+.ah-left { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.ah-logo { font-size: 17px; }
+.ah-brand { font-size: 15.5px; font-weight: 800; letter-spacing: .5px; }
+.ah-sys { font-size: 13px; font-weight: 600; color: var(--ink-2); padding-left: 10px; border-left: 1px solid var(--hairline); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ah-dom { font-size: 11.5px; color: var(--ink-3); font-family: var(--mono); white-space: nowrap; }
+.demo-body { display: grid; grid-template-columns: 208px 1fr; flex: 1; min-height: 0; }
+@media (max-width: 860px) { .demo-body { grid-template-columns: 1fr; } .demo-side { display: none; } }
+.demo-side { border-right: 1px solid var(--hairline); padding: 14px 10px; background: #fafaf8; overflow-y: auto; }
+.demo-side .ds-group { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--ink-3); padding: 12px 10px 5px; text-transform: uppercase; }
+.demo-side button {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 8px 10px; border: none; background: none; border-radius: 7px;
+  font-size: 13.5px; color: var(--ink-2); cursor: pointer; font-family: inherit; font-weight: 500;
+  text-align: left;
+}
+.demo-side button:hover { background: var(--surface-2); color: var(--ink-1); }
+.demo-side button.on { background: var(--brand-wash); color: var(--brand-ink); font-weight: 650; }
+.demo-main { padding: 22px 26px; overflow-x: auto; overflow-y: auto; }
+
+.chatbox { display: flex; flex-direction: column; gap: 14px; }
+.chat-msg { display: flex; gap: 10px; }
+.chat-msg .avatar {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff;
+}
+.chat-msg.user .avatar { background: var(--ink-3); }
+.chat-msg.bot .avatar { background: var(--brand); }
+.chat-bubble {
+  border: 1px solid var(--hairline); border-radius: 12px; padding: 11px 15px;
+  font-size: 14px; background: var(--surface-1); max-width: 84%; line-height: 1.7;
+}
+.chat-msg.user .chat-bubble { background: var(--surface-2); }
+.chat-cite { border-top: 1px dashed var(--hairline); margin-top: 10px; padding-top: 9px; }
+.chat-cite .cc-title { font-size: 11.5px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.6px; margin-bottom: 6px; }
+.cite-chip {
+  display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px;
+  padding: 6px 10px; border: 1px solid var(--hairline); border-radius: 7px;
+  margin-bottom: 6px; background: #fbfbfa; color: var(--ink-2);
+}
+.cite-chip .cc-src { color: var(--brand-deep); font-weight: 650; white-space: nowrap; }
+.cite-chip .cc-score { margin-left: auto; color: var(--ink-3); font-size: 11.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chat-inputrow { display: flex; gap: 10px; margin-top: 6px; }
+.chat-inputrow input {
+  flex: 1; border: 1px solid var(--hairline); border-radius: 9px;
+  padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--surface-1); outline: none;
+}
+.chat-inputrow input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(42,120,214,0.14); }
+.chip-suggest { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 10px; }
+.chip-suggest button {
+  border: 1px solid var(--hairline); background: var(--surface-1); color: var(--ink-2);
+  border-radius: 999px; padding: 5px 13px; font-size: 12.5px; cursor: pointer; font-family: inherit;
+}
+.chip-suggest button:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+/* pipeline 动画节点 */
+.pl-node { transition: all 0.25s; }
+.pl-node.active rect { stroke: var(--brand); stroke-width: 2; filter: drop-shadow(0 2px 6px rgba(42,120,214,0.28)); }
+.pl-node.done rect { stroke: var(--good); }
+
+/* 甘特图 */
+.gantt-legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 14px 0 6px; }
+.gantt-legend .gl-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); }
+.gantt-legend .gl-swatch { width: 14px; height: 14px; border-radius: 4px; }
+
+/* ============ 小工具 ============ */
+.muted { color: var(--ink-3); }
+.small { font-size: 13px; }
+.mono { font-family: var(--mono); font-size: 0.92em; }
+.center { text-align: center; }
+.flex { display: flex; align-items: center; gap: 10px; }
+.flex.between { justify-content: space-between; }
+.wrap { flex-wrap: wrap; }
+.mt0 { margin-top: 0; } .mb0 { margin-bottom: 0; }
+.mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; } .mt24 { margin-top: 24px; } .mt32 { margin-top: 32px; }
+.mb16 { margin-bottom: 16px; } .mb24 { margin-bottom: 24px; }
+.grow { flex: 1; }
+
+/* 锚点偏移（sticky nav） */
+[id] { scroll-margin-top: calc(var(--nav-h) + 16px); }
+
+/* 链接 */
+a.inline { color: var(--brand-deep); text-decoration: none; border-bottom: 1px solid #cfe0f6; }
+a.inline:hover { color: var(--brand); border-bottom-color: var(--brand); }
+
+::selection { background: rgba(42,120,214,0.18); }
+
+</style>
+<style>
+  .dm-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .dm-toolbar button { border: 1px solid var(--hairline); background: var(--surface-1); border-radius: 999px; padding: 5px 14px; font-size: 12.5px; cursor: pointer; font-family: inherit; color: var(--ink-2); }
+  .dm-toolbar button.on { background: var(--brand-wash); border-color: var(--brand); color: var(--brand-deep); font-weight: 650; }
+  .dm-thinking { display: flex; gap: 8px; align-items: center; color: var(--ink-3); font-size: 13px; }
+  .dm-thinking .spin { width: 14px; height: 14px; border: 2px solid var(--brand-wash); border-top-color: var(--brand); border-radius: 50%; animation: dm-rot 0.8s linear infinite; }
+  @keyframes dm-rot { to { transform: rotate(360deg); } }
+  .risk-note { display: flex; gap: 8px; align-items: flex-start; background: #fdf3ee; border: 1px solid #f0c9b5; border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: #8a3b12; margin-top: 10px; }
+  .fb-row { display: flex; gap: 8px; margin-top: 10px; }
+  .fb-row button { border: 1px solid var(--hairline); background: var(--surface-1); border-radius: 7px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--ink-3); }
+  .fb-row button:hover { border-color: var(--brand); color: var(--brand-deep); }
+  .qbar { height: 7px; background: var(--surface-2); border-radius: 4px; overflow: hidden; min-width: 60px; }
+  .qbar i { display: block; height: 100%; background: var(--brand); border-radius: 4px; }
+  .pc-item { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--hairline); border-radius: 9px; padding: 11px 14px; margin-bottom: 8px; background: var(--surface-1); }
+  .pc-item input { margin-top: 3px; }
+  .pc-item.done { opacity: 0.55; }
+  .pc-item.done .pc-t { text-decoration: line-through; }
+  .stat-tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 18px; }
+  @media (max-width: 1000px) { .stat-tiles { grid-template-columns: repeat(3, 1fr); } }
+  .tile { border: 1px solid var(--hairline); border-radius: 10px; padding: 12px 14px; background: var(--surface-1); }
+  .tile .tv { font-size: 22px; font-weight: 800; color: var(--brand-deep); font-variant-numeric: tabular-nums; }
+  .tile .tl { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+  .funnel-row { display: grid; grid-template-columns: 190px 90px 1fr; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--hairline); }
+  .funnel-bar { height: 20px; border-radius: 4px; background: var(--brand); opacity: 0.88; min-width: 4px; }
+  .cand { display: grid; grid-template-columns: 52px 1fr 120px; gap: 10px; align-items: center; border: 1px solid var(--hairline); border-radius: 9px; padding: 9px 12px; margin-bottom: 7px; background: var(--surface-1); cursor: default; }
+  .cand:hover { border-color: var(--brand); }
+  .cand.top3 { border-color: var(--brand); background: var(--brand-wash); }
+  .cand.blocked { opacity: 0.6; border-style: dashed; }
+  .switchrow { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-2); margin: 10px 0; }
+  .switch { position: relative; width: 40px; height: 22px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--hairline); cursor: pointer; transition: background .15s; flex-shrink: 0; }
+  .switch::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: left .15s; }
+  .switch.on { background: var(--brand); border-color: var(--brand); }
+  .switch.on::after { left: 20px; }
+  .backrow { text-align: center; margin-top: 56px; }
+  .backrow .btn { display: inline-block; padding: 12px 36px; font-size: 15px; border-radius: 10px; text-decoration: none; }
+  /* ---- 服务目录（平台视角） ---- */
+  .plat-note { display: flex; gap: 8px; align-items: flex-start; background: var(--brand-wash); border: 1px solid var(--brand); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; color: var(--brand-deep); margin-bottom: 12px; line-height: 1.6; }
+  .svc-intro { font-size: 13.5px; color: var(--ink-2); margin-bottom: 16px; line-height: 1.75; }
+  .svc-flow { border: 1px solid var(--hairline); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; background: var(--surface-1); text-align: center; }
+  .svc-lane { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .svc-chip { border: 1px solid var(--hairline); border-radius: 999px; padding: 5px 14px; font-size: 12.5px; background: var(--surface-1); }
+  .svc-arrow { color: var(--ink-3); font-size: 11.5px; margin: 6px 0; letter-spacing: 1px; }
+  .svc-hub { border: 1px solid var(--brand); background: var(--brand-wash); color: var(--brand-deep); border-radius: 9px; padding: 8px 16px; font-size: 13px; font-weight: 600; display: inline-block; }
+  .svc-con { display: inline-block; border: 1px solid var(--hairline); border-radius: 5px; padding: 1px 7px; font-size: 11px; color: var(--ink-3); margin: 1px 2px; background: var(--surface-1); }
+  .svc-con.hit { border-color: var(--brand); color: var(--brand-deep); background: var(--brand-wash); font-weight: 600; }
+  .svc-note { margin-top: 14px; }
+  /* ---- 模块头与 hover 说明 ---- */
+  .mod-head { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 700; color: var(--ink-1); margin-bottom: 12px; }
+  .mod-head .sub { font-weight: 500; font-size: 12px; color: var(--ink-3); margin-left: 6px; }
+  .tipmark { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; color: var(--ink-3); border: 1px dashed var(--hairline); border-radius: 999px; padding: 2px 10px; cursor: help; margin-left: auto; background: var(--surface-1); flex-shrink: 0; }
+  .tipmark:hover { color: var(--brand-deep); border-color: var(--brand); }
+  [data-tip] { cursor: help; }
+  /* ---- 审核工作台 ---- */
+  .rv-item { border: 1px solid var(--hairline); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; background: var(--surface-1); }
+  .rv-item.approved { border-color: #9ccf9c; }
+  .rv-item.settled { opacity: 0.62; }
+  .rv-acts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .rv-acts button { border: 1px solid var(--hairline); background: var(--surface-1); border-radius: 7px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--ink-2); }
+  .rv-acts button:hover { border-color: var(--brand); color: var(--brand-deep); }
+  .rv-acts button.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .rv-result { font-size: 12px; margin-top: 8px; font-weight: 600; color: var(--ink-2); }
+  .gap-row { display: grid; grid-template-columns: 1fr 170px 130px 50px; gap: 10px; align-items: center; padding: 9px 12px; border: 1px dashed var(--hairline); border-radius: 9px; margin-bottom: 7px; background: var(--surface-1); }
+  /* ---- 登录页 ---- */
+  .login-wrap { max-width: 880px; margin: 26px auto 0; text-align: center; }
+  .lg-logo { font-size: 24px; font-weight: 800; color: var(--ink-1); }
+  .lg-sub { color: var(--ink-3); font-size: 13px; margin: 8px 0 24px; }
+  .lg-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; text-align: left; }
+  @media (max-width: 900px) { .lg-cards { grid-template-columns: 1fr; } }
+  .lg-card { border: 1px solid var(--hairline); border-radius: 12px; padding: 18px; background: var(--surface-1); cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+  .lg-card:hover { border-color: var(--brand); box-shadow: var(--shadow-lift); }
+  .lg-card .who { font-weight: 700; font-size: 15px; }
+  .lg-card .role { font-size: 12px; color: var(--ink-3); margin: 3px 0 10px; }
+  .lg-card .sys { font-size: 12.5px; color: var(--brand-deep); font-weight: 650; }
+  .lg-card .dom { font-size: 11px; color: var(--ink-3); font-family: ui-monospace, SFMono-Regular, monospace; margin-top: 2px; }
+  .lg-links { margin-top: 24px; font-size: 13px; display: flex; gap: 20px; justify-content: center; }
+  .lg-links a { color: var(--brand-deep); text-decoration: none; font-weight: 600; }
+  /* ---- 顶栏右侧 ---- */
+  .chrome-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-3); }
+  .chrome-right button { border: 1px solid var(--hairline); background: var(--surface-1); border-radius: 99px; padding: 3px 12px; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--ink-2); }
+  .chrome-right button:hover { border-color: var(--brand); color: var(--brand-deep); }
+  .ah-index { color: var(--ink-3); text-decoration: none; font-size: 12px; }
+  .ah-index:hover { color: var(--brand-deep); }
+  .demo-shell.logged-out .demo-side { display: none; }
+  .demo-shell.logged-out .demo-body { grid-template-columns: 1fr; }
+  .demo-shell.logged-out .demo-main > :not(.login-wrap) { max-width: 1160px; margin-left: auto; margin-right: auto; }
+  .demo-shell.logged-out .login-wrap { margin-top: 10vh; }
+  /* ---- 实时事件流 ---- */
+  .strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 1000px) { .strip { grid-template-columns: repeat(2, 1fr); } }
+  .feed-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-weight: 650; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #e0452c; animation: pulse 1.4s infinite; flex-shrink: 0; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(224,69,44,.5); } 70% { box-shadow: 0 0 0 7px rgba(224,69,44,0); } 100% { box-shadow: 0 0 0 0 rgba(224,69,44,0); } }
+  .feed-head button { margin-left: auto; border: 1px solid var(--hairline); background: var(--surface-1); border-radius: 99px; padding: 3px 12px; font-size: 12px; cursor: pointer; font-family: inherit; color: var(--ink-2); font-weight: 500; }
+  .feed-box { border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface-1); max-height: 460px; overflow-y: auto; }
+  .feed-row { display: grid; grid-template-columns: 66px 58px 1fr; gap: 10px; align-items: baseline; padding: 8px 12px; border-bottom: 1px dashed var(--hairline); font-size: 12.5px; animation: fadein .4s; }
+  .feed-row:last-child { border-bottom: none; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .feed-row .tm { color: var(--ink-3); font-variant-numeric: tabular-nums; font-size: 11.5px; }
+  .feed-row .badge { font-size: 11px; padding: 1px 8px; }
+  /* ---- Agent 运行轨迹 ---- */
+  .trace-note { display: flex; gap: 9px; align-items: flex-start; border: 1px solid #bfd7f4; background: var(--brand-wash); color: var(--brand-ink); border-radius: 9px; padding: 9px 12px; margin-bottom: 12px; font-size: 12.5px; line-height: 1.6; }
+  .trace-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .trace-controls button { border: 1px solid var(--hairline); background: var(--surface-1); color: var(--ink-2); border-radius: 999px; padding: 5px 13px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  .trace-controls button.on { border-color: var(--brand); background: var(--brand-wash); color: var(--brand-deep); font-weight: 650; }
+  .trace-controls .trace-replay { margin-left: auto; border-radius: 7px; }
+  .trace-query { border: 1px solid var(--hairline); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; background: var(--surface-1); font-size: 13px; }
+  .trace-query span { display: block; color: var(--ink-3); font-size: 10.5px; font-weight: 700; letter-spacing: .8px; margin-bottom: 2px; }
+  .trace-layout { display: grid; grid-template-columns: minmax(560px,1fr) 265px; gap: 12px; align-items: start; }
+  .trace-list { border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface-1); max-height: 510px; overflow-y: auto; }
+  .trace-event { display: grid; grid-template-columns: 46px 82px minmax(0,1fr); gap: 10px; padding: 9px 12px; border-bottom: 1px dashed var(--hairline); opacity: .2; transition: opacity .2s, background .2s, box-shadow .2s; }
+  .trace-event:last-child { border-bottom: none; }
+  .trace-event.active { opacity: 1; background: var(--brand-wash); box-shadow: inset 3px 0 0 var(--brand); }
+  .trace-event.done { opacity: 1; }
+  .trace-event .tr-round { color: var(--ink-3); font: 10.5px/1.6 var(--mono); padding-top: 2px; }
+  .trace-event .tr-kind { align-self: start; justify-self: start; border-radius: 5px; padding: 1px 7px; font: 700 9.5px/1.6 var(--mono); background: var(--surface-2); color: var(--ink-2); }
+  .trace-event.call .tr-kind { background: #eee9fb; color: #6041a7; }
+  .trace-event.result .tr-kind { background: #e6f4ee; color: #08734f; }
+  .trace-event.decision .tr-kind { background: #e9f2fc; color: var(--brand-deep); }
+  .trace-event.ask .tr-kind,.trace-event.handoff .tr-kind { background: #fdf0e9; color: #a44719; }
+  .trace-event.finish .tr-kind { background: #e6f4ee; color: #08734f; }
+  .trace-event b { display: block; font-size: 12.5px; color: var(--ink-1); line-height: 1.45; }
+  .trace-event p { margin: 2px 0 0; font-size: 11.5px; color: var(--ink-2); line-height: 1.5; word-break: break-word; }
+  .trace-event code { font-family: var(--mono); font-size: 10.8px; color: var(--ink-2); }
+  .trace-state { border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface-1); padding: 13px 14px; position: sticky; top: 0; }
+  .trace-state h4 { margin: 0 0 10px; font-size: 12.5px; }
+  .trace-state-row { border-top: 1px dashed var(--hairline); padding: 7px 0; }
+  .trace-state-row:first-of-type { border-top: none; padding-top: 0; }
+  .trace-state-row span { display: block; font-size: 10px; color: var(--ink-3); letter-spacing: .5px; }
+  .trace-state-row b { display: block; margin-top: 1px; font-size: 11.5px; color: var(--ink-1); word-break: break-word; }
+  .trace-outcome { margin-top: 10px; border-radius: 8px; padding: 8px 10px; background: #eaf6ef; color: #08734f; font-size: 11.5px; font-weight: 650; display: none; }
+  .trace-outcome.show { display: block; }
+  @media (max-width: 980px) { .trace-layout { grid-template-columns: 1fr; } .trace-state { position: static; } }
+  @media (max-width: 640px) { .trace-event { grid-template-columns: 40px 1fr; } .trace-event .tr-body { grid-column: 1 / -1; } .trace-controls .trace-replay { margin-left: 0; } }
+  /* ---- 质检任务 ---- */
+  .task-row { display: grid; grid-template-columns: 110px 1fr 140px 100px 80px; gap: 10px; align-items: center; border: 1px solid var(--hairline); border-radius: 10px; padding: 12px 14px; margin-bottom: 9px; background: var(--surface-1); cursor: pointer; transition: border-color .15s; }
+  .task-row:hover { border-color: var(--brand); }
+  .task-row.done { opacity: .55; cursor: default; }
+  .src-chip { display: inline-block; border: 1px solid var(--hairline); border-radius: 6px; padding: 2px 8px; font-size: 11.5px; color: var(--ink-2); margin: 2px 3px 2px 0; background: var(--surface-1); }
+</style>
+</head>
+<body data-page="demo.html">
+<div class="demo-shell">
+  <header class="app-head">
+    <div class="ah-left">
+      <span class="ah-logo">🛡</span><span class="ah-brand">智盾</span>
+      <span class="ah-sys" id="ah-sys">智盾统一身份认证</span>
+      <span class="ah-dom" id="ah-dom">sso.zhidun.internal</span>
+    </div>
+    <div class="chrome-right"><a class="ah-index" href="index.html">产品总览 ↗</a><span id="chrome-user"></span><button id="chrome-logout" style="display:none">退出登录</button></div>
+  </header>
+  <div class="demo-body">
+    <div class="demo-side" id="demo-side"></div>
+    <div class="demo-main" id="demo-main"></div>
+  </div>
+</div>
+<script>
+/* ==== 自 assets/app.js 内联：本页仅用到 svgEl 与 zdTip 两个工具 ==== */
+(function () {
+  "use strict";
+
+  /* 图表 tooltip（共享单例） */
+  var tipEl = null;
+  function tip() {
+    if (!tipEl) {
+      tipEl = document.createElement("div");
+      tipEl.className = "chart-tooltip";
+      document.body.appendChild(tipEl);
+    }
+    return tipEl;
+  }
+  window.zdTip = {
+    show: function (x, y, title, rows) {
+      var t = tip();
+      var html = title ? '<div class="tt-title"></div>' : "";
+      html += rows.map(function () { return '<div class="tt-row"></div>'; }).join("");
+      t.innerHTML = html;
+      var nodes = t.querySelectorAll(".tt-row");
+      rows.forEach(function (r, i) {
+        if (title && i === 0 && t.querySelector(".tt-title")) t.querySelector(".tt-title").textContent = title;
+        var row = nodes[i];
+        var key = document.createElement("span"); key.className = "tt-key";
+        key.style.background = r.color || "#fff";
+        var name = document.createElement("span"); name.textContent = r.name || "";
+        var val = document.createElement("span"); val.className = "tt-val"; val.textContent = r.value != null ? r.value : "";
+        row.appendChild(key); row.appendChild(name); row.appendChild(val);
+      });
+      if (title) {
+        var tEl = t.querySelector(".tt-title");
+        if (tEl && rows.length && nodes[0]) nodes[0].insertBefore(tEl, nodes[0].firstChild);
+      }
+      t.classList.add("show");
+      t.style.left = x + "px";
+      t.style.top = y + "px";
+      // 边界保护：左右上下都不许溢出视口
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var r = t.getBoundingClientRect();
+      if (r.left < 8) t.style.left = (8 + r.width / 2) + "px";
+      if (r.right > vw - 8) t.style.left = (vw - 8 - r.width / 2) + "px";
+      r = t.getBoundingClientRect();
+      if (r.top < 8) t.style.top = (18 + r.height + 10) + "px";
+      if (r.bottom > vh - 8) t.style.top = (vh - 2) + "px";
+    },
+    hide: function () { if (tipEl) tipEl.classList.remove("show"); }
+  };
+
+  /* SVG helper（简写创建） */
+  window.svgEl = function (tag, attrs, text) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    if (text != null) el.textContent = text;
+    return el;
+  };
+})();
+</script>
+<script>
+/* ================= 侧栏 ================= */
+/* ================= 三系统定义（单文件 · 前后台永不同屏） ================= */
+var SYSTEMS = {
+  portal: { domain: "portal.zhidun.internal", name: "工程师知识门户", user: "👷 张工 · 外场支持",
+    nav: [ { id: "chat", t: "知识问答" }, { id: "history", t: "我的历史" } ] },
+  qc: { domain: "qc.zhidun.internal", name: "交付质检工作台", user: "✅ 李质检 · 交付质检",
+    nav: [ { id: "qctasks", t: "预检任务" } ] },
+  admin: { domain: "admin.zhidun.internal", name: "平台管理控制台", user: "🗂 王运营 · 数据运营",
+    nav: [ { id: "stream", t: "实时事件流" }, { id: "agenttrace", t: "Agent 运行轨迹" }, { id: "assets", t: "数据资产目录" }, { id: "audit", t: "审核工作台" }, { id: "evaldash", t: "评测看板" }, { id: "search", t: "检索分析" }, { id: "svcs", t: "服务目录" } ] },
+  pano: { domain: "zhidun.internal", name: "平台全景 · 服务目录" }
+};
+
+/* ================= 0. 服务目录（平台视角） ================= */
+RENDER = window.RENDER || {};
+var CONS = ["外场", "研发", "质检", "管理"]; // 四类授权消费方
+var SVCS = [
+  { em: "💡", n: "知识检索", p: "已上线", duty: "问题 + 可选型号/版本 → approved 候选、来源与适用范围", kpi: "Top3 95%", cons: [1, 1, 1, 0], v: 1860 },
+  { em: "📋", n: "预检候选生成", p: "已上线", duty: "标准型号 + 固件版本 + 交付场景 → 检查候选、来源、风险与执行角色", kpi: "高风险项转人工", cons: [0, 0, 1, 0], v: 85 },
+  { em: "📊", n: "运营指标查询", p: "已上线", duty: "指标 ID + 周期 → 指标值、分子分母、来源与质量警告", kpi: "口径可追溯", cons: [0, 0, 0, 1], v: 330 },
+  { em: "🔎", n: "产品型号查询", p: "已上线", duty: "编码 / 名称 / 别名 → 标准型号、硬件版本与当前固件", kpi: "不存在则明确失败", cons: [1, 1, 1, 0], v: 2105 },
+  { em: "📝", n: "知识反馈提交", p: "已上线", duty: "Query ID + KnowledgeItem ID + 反馈 → 可追溯反馈记录", kpi: "不直接改写知识", cons: [1, 1, 1, 0], v: 920 },
+  { em: "🗂", n: "数据资产目录查询", p: "已上线", duty: "数据域 + 资产类型 + 搜索词 → 资产元数据、质量状态与服务入口", kpi: "按权限过滤", cons: [1, 1, 1, 1], v: 640 }
+];
+RENDER.svcs = function () {
+  var main = document.getElementById("demo-main");
+  var isPano = location.hash.indexOf("#/pano") === 0;
+  var maxV = Math.max.apply(null, SVCS.map(function (s) { return s.v; }));
+  var html =
+    (isPano ? '<div class="flex between wrap mb16"><a class="btn ghost" href="#/login" style="font-size:13px;padding:6px 16px">← 返回统一身份认证</a><span class="small muted">免登录全景 · 选择身份请返回认证页</span></div>' : "") +
+    '<div class="mod-head">🛡 服务目录 · 调用与复用<span class="sub">4 类授权消费方 × 6 项稳定上线服务</span><span class="tipmark" data-tiptitle="平台视角（中台）" data-tip="平台层:14 项数据资产 + 6 项稳定上线服务|前台:业务工作台消费服务（问答 / 预检）|后台:运营控制台治理资产（目录 / 审核 / 评测 / 检索）|关键:前后台操作同一份资产、同一组服务">ⓘ 说明</span></div>' +
+    '<div class="svc-flow">' +
+      '<div class="svc-lane">' +
+        '<span class="svc-chip">🛠 外场支持 · IM 问询</span>' +
+        '<span class="svc-chip">🔬 产品研发 · 门户查询</span>' +
+        '<span class="svc-chip">✅ 交付质检 · 预检候选</span>' +
+        '<span class="svc-chip">📊 管理运营 · 指标与资产</span>' +
+      '</div>' +
+      '<div class="svc-arrow">▼ 统一经过</div>' +
+      '<div class="svc-hub">🛡 智盾编排服务 ｜ 意图路由 · 型号校验 · 权限前置 · 异常降级 · 反馈回写</div>' +
+      '<div class="svc-arrow">▼ 按需调用（全部跑在 Agent Harness 运行时上）</div>' +
+      '<div class="svc-lane"><span class="svc-chip" style="border-color:var(--brand);color:var(--brand-deep)">六项核心服务 × 复用矩阵见下表</span></div>' +
+    '</div>' +
+    '<div class="tablewrap"><table class="tbl"><tr><th>服务</th><th>职责（输入 → 输出）</th><th>KPI</th><th>消费方（复用矩阵）</th><th style="width:130px">周调用量（示意）</th></tr>';
+  SVCS.forEach(function (s) {
+    var chips = CONS.map(function (c, i) {
+      return '<span class="svc-con' + (s.cons[i] ? ' hit' : '') + '">' + c + '</span>';
+    }).join("");
+    var pb = { "已上线": "b-green" }[s.p] || "b-blue";
+    html += '<tr><td><b>' + s.em + ' ' + s.n + '</b> <span class="badge ' + pb + '" style="margin-left:4px">' + s.p + '</span></td>' +
+      '<td style="font-size:12.5px">' + s.duty + '</td>' +
+      '<td style="font-size:12.5px"><b style="color:var(--brand-deep)">' + s.kpi + '</b></td>' +
+      '<td>' + chips + '</td>' +
+      '<td><div style="font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:3px">' + s.v.toLocaleString() + '</div><div class="qbar"><i style="width:' + Math.round(s.v / maxV * 100) + '%"></i></div></td></tr>';
+  });
+  html += '</table></div>';
+  main.innerHTML = html;
+};
+
+/* ================= 0.5 审核工作台（后台） ================= */
+var AUDITS = [
+  { id: "KI-3410", t: "EX4500-G 低温黑屏现场速报", src: "外场工程师提交 · 服务单 #2026-0912", q: 45, sim: "KI-2831 · 相似 0.62 · 建议关联", merge: true,
+    detail: "来源可信:70|完整性:30|时效分:35|综合质量分:45（< 60 不达标）|风险:待审核材料从不进候选池——本条演示先审核后入库" },
+  { id: "KI-3411", t: "TL-220A 批次噪声投诉汇总（11 月）", src: "客服周报批量导入", q: 58, sim: "无相似（< 0.40）", merge: false,
+    detail: "来源可信:65|完整性:50|时效分:60|综合质量分:58（< 60 不达标）|提示:需专家补充受影响批次号与复现条件" },
+  { id: "KI-3412", t: "SR300 v3.0 引导分区变更公告（厂商官方）", src: "厂商文档抓取 · 自动去重命中", q: 82, sim: "KI-2688 · 相似 0.57 · 建议合并", merge: true,
+    detail: "来源可信:90|完整性:80|时效分:76|综合质量分:82（≥ 60 达标）|血缘:合并后保留双方版本，可回溯" }
+];
+var GAPS = [
+  { t: "SR300 · 湿热 · 通信丢包", from: "问答拒答自动入列", state: "已派专家", d: 3,
+    tip: "触发:问答演示③（无答案拒答）|闭环:专家产出 solution_chunk → 审核 → 推送给提问者" },
+  { t: "XT5000 型号未收录（E-021）", from: "型号校验拦截自动入列", state: "待数据运营补录", d: 1,
+    tip: "触发:问答演示②（型号校验失败）|闭环:补录型号标准表后同名查询即可命中" },
+  { t: "CV-800 低温背光门限 · 根因确认", from: "疑似根因待现场确认（KI-2831）", state: "等待现场数据", d: 6,
+    tip: "触发:问答演示①（正常命中 · 疑似根因）|闭环:现场电压 / 温度回填 → 根因状态 suspected → confirmed" }
+];
+RENDER.audit = function () {
+  var main = document.getElementById("demo-main");
+  var html =
+    '<div class="mod-head">🗂 审核工作台<span class="sub">双人确认 · 待审核材料从不进入候选池</span><span class="tipmark" data-tiptitle="治理规则" data-tip="审核门槛:approved + 质量分 ≥60|流程:提交 / 导入 → 相似检测 → 专家审核 → 建库流水线|血缘:知识 · chunk · Embedding · 索引 · 检索策略五级版本|知识缺口:拒答与拦截自动入列，专家补齐后推送提问者">ⓘ 说明</span></div>' +
+    '<div class="flex between wrap mb16"><span class="badge b-orange">待审核队列 · 3 条</span><span class="small muted">点击操作按钮查看状态流转（Mock）</span></div>';
+  AUDITS.forEach(function (a, i) {
+    html += '<div class="rv-item" id="rv-' + i + '">' +
+      '<div style="font-weight:650">' + a.id + ' · ' + a.t +
+      ' <span class="tipmark" style="margin-left:6px" data-tiptitle="质量分构成与相似检测" data-tip="' + a.detail + '">ⓘ 详情</span></div>' +
+      '<div class="small muted">来源：' + a.src + ' · 相似检测：' + a.sim + ' · 质量分 <b>' + a.q + '</b></div>' +
+      '<div class="rv-acts">' +
+      '<button class="pri" data-a="pass">✓ 通过并入库</button>' +
+      '<button data-a="back">↩ 退回补充</button>' +
+      (a.merge ? '<button data-a="merge">⇄ 合并到已有知识</button>' : '') +
+      '</div><div class="rv-result"></div></div>';
+  });
+  html += '<div class="flex between wrap mb16" style="margin-top:18px"><span class="badge b-blue">知识缺口队列 · 3 条</span><span class="small muted">问答三条失败分支的自动回流（悬停查看闭环）</span></div>';
+  GAPS.forEach(function (g) {
+    html += '<div class="gap-row" data-tip="' + g.tip + '" data-tiptitle="缺口闭环">' +
+      '<div style="font-weight:600;font-size:13px">' + g.t + '</div>' +
+      '<div class="small muted">' + g.from + '</div>' +
+      '<div class="small" style="color:var(--brand-deep);font-weight:600">' + g.state + '</div>' +
+      '<div class="small muted" style="text-align:right">' + g.d + ' 天</div></div>';
+  });
+  main.innerHTML = html;
+  var MSG = {
+    pass: "✓ 已通过（双人确认）→ 进入建库流水线：清洗 → 分块 → 嵌入 → 索引，约 10 分钟后可被检索",
+    back: "↩ 已退回提交方 · 待补充现场数据后重新提交（不入库，原记录保留）",
+    merge: "⇄ 已合并至已有知识 · 双方版本均保留在血缘链，可随时回溯"
+  };
+  AUDITS.forEach(function (a, i) {
+    var box = document.getElementById("rv-" + i);
+    box.querySelectorAll(".rv-acts button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var act = btn.dataset.a;
+        box.querySelector(".rv-result").textContent = MSG[act];
+        box.classList.add(act === "pass" ? "approved" : "settled");
+        box.querySelector(".rv-acts").style.display = "none";
+      });
+    });
+  });
+};
+
+/* ================= 1. 知识问答 ================= */
+var QA = {
+  q1: { q: "EX4500-G 在低温环境下开机无显示，怎么排查？",
+    steps: ["实体抽取：型号 EX4500-G · 环境 低温 · 现象 开机无显示", "前置过滤：权限 ✓ · approved ✓ · 质量分 ≥60 ✓", "三路召回：BM25×20 + 向量×30 + 关联×10 → 去重 41 条", "Rerank 重排：Top3 = KI-2831 / KI-1907 / KI-0322", "生成·引用：仅基于 Top3 approved 组织答案 · 必附 KI-ID"],
+    a: "低温场景开机无显示，按以下顺序排查：<br>① 确认供电时序：低温下 DC-DC 启动可能延迟 200–400ms，先量 VBUS 与 3.3V 轨建立时间；<br>② 检查显示模组背光供电（CV-800 模组在 −20℃ 以下有已知启动门限）；<br>③ 若供电正常仍黑屏，读取主控日志确认是否进入低温保护模式（固件 v2.8 前该模式无日志输出）。<br><strong>疑似根因</strong>（KI-2831，root_cause_status = suspected）：低温背光启动门限，需现场确认环境温度与背光电压。",
+    risk: false,
+    cites: [
+      { src: "KI-2831", txt: "EX4500-G 低温启动异常排查指引（solution_chunk）", score: "rerank 88.2" },
+      { src: "KI-1907", txt: "显示模组供电时序问题汇总（solution_chunk）", score: "rerank 84.6" },
+      { src: "KI-0322", txt: "低温批次固件修复说明 v2.8（summary_chunk）", score: "rerank 78.9" }
+    ] },
+  q2: { q: "XT5000 报 E-021 错误码是什么问题？",
+    steps: ["实体抽取：型号 XT5000 · 错误码 E-021", "型号校验：未在产品型号标准表中命中"],
+    a: "型号 <strong>XT5000</strong> 不在型号标准表中，已停止检索——为避免给你错误型号的答案，请先确认：<br>· 编码是否输入正确（相近型号：EX4500-G / TL-220A / SR300）；<br>· 若为新型号，请联系数据运营补录型号标准表后再查询。",
+    risk: false, stop: true, cites: [] },
+  q3: { q: "SR300 在湿热环境下通信丢包有处理经验吗？",
+    steps: ["实体抽取：型号 SR300 · 环境 湿热 · 现象 通信丢包", "前置过滤：approved 且质量分 ≥60 的候选 → 0 条", "三路召回：最高相似度 0.41，低于阈值 0.55"],
+    a: "未找到可信的已审核知识覆盖「SR300 · 湿热 · 通信丢包」组合。<br>已将该问题记入<strong>知识缺口队列</strong>，专家介入后将推送给你；也可以补充现场信息（固件版本、丢包率、组网方式）提交深度排查工单。",
+    risk: false, noanswer: true, cites: [] },
+  q4: { q: "SR300 固件可以直接升级到 v3.2 吗？",
+    steps: ["实体抽取：型号 SR300 · 目标版本 v3.2", "前置过滤：权限 ✓ · approved ✓", "三路召回 + Rerank：Top3 命中 2 条升级相关"],
+    a: "SR300 支持升级到 v3.2，但 <strong>v2.x → v3.2 不允许直接跨大版本升级</strong>：需先升 v3.0（引导分区变更），再升 v3.2。升级过程中断电会导致引导分区损坏，需 JTAG 恢复。<br>参考 KI-2688 的完整升级路径与回滚说明。",
+    risk: true,
+    cites: [
+      { src: "KI-2688", txt: "SR300 固件升级路径与回滚（solution_chunk）", score: "rerank 86.1" },
+      { src: "KI-0451", txt: "引导分区变更公告 v3.0（summary_chunk）", score: "rerank 74.3" }
+    ] }
+};
+RENDER = window.RENDER || {};
+RENDER.chat = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="mod-head">💬 知识问答工作台<span class="sub">外场支持 · IM 问询入口</span><span class="tipmark" data-tiptitle="平台溯源" data-tip="本页:受约束 Agent 按任务调用正式服务|常用服务:产品型号查询 / 知识检索 / 知识反馈提交|其他消费方:研发门户 · 交付质检|回答约束:仅 approved 且质量分 ≥60 · 无据作答一票否决">ⓘ 说明</span></div>' +
+    '<div class="chip-suggest" id="qa-chips"></div>' +
+    '<div class="chatbox" id="qa-box"><div class="chat-msg bot"><div class="avatar">盾</div><div class="chat-bubble">你好，我是智盾知识助手。我只能基于<strong>已审核（approved）</strong>的知识回答，并附来源引用。试试下面的问题；② / ③ / ④ 分别演示型号拦截、无据拒答、高风险转人工三条失败分支。</div></div></div>' +
+    '<div class="chat-inputrow"><input id="qa-input" placeholder="输入问题，或点击上方示例…（本演示仅响应示例问题）"><button class="btn primary" id="qa-send">发送</button></div>';
+  var box = document.getElementById("qa-box");
+  var chips = document.getElementById("qa-chips");
+  Object.keys(QA).forEach(function (k, i) {
+    var tag = ["① 正常命中", "② 型号校验失败", "③ 无答案拒答", "④ 高风险操作"][i];
+    var b = document.createElement("button");
+    b.innerHTML = tag + " · " + QA[k].q;
+    b.addEventListener("click", function () { ask(k); });
+    chips.appendChild(b);
+  });
+  function el(html) { var d = document.createElement("div"); d.innerHTML = html; return d.firstElementChild; }
+  function ask(k) {
+    var qa = QA[k];
+    var uwrap = el('<div class="chat-msg user"><div class="avatar">我</div><div class="chat-bubble"></div></div>');
+    uwrap.querySelector(".chat-bubble").innerHTML = qa.q;
+    box.appendChild(uwrap);
+    var think = el('<div class="chat-msg bot"><div class="avatar">盾</div><div class="chat-bubble"><div class="dm-thinking"><div class="spin"></div><span>链路执行中…</span></div></div></div>');
+    box.appendChild(think);
+    var steps = think.querySelector(".dm-thinking");
+    var si = 0;
+    var iv = setInterval(function () {
+      if (si < qa.steps.length) {
+        var line = document.createElement("div");
+        line.style.cssText = "font-size:11.5px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)";
+        line.textContent = "→ " + qa.steps[si++];
+        think.querySelector(".chat-bubble").appendChild(line);
+      } else {
+        clearInterval(iv);
+        think.remove();
+        var bot = el('<div class="chat-msg bot"><div class="avatar">盾</div><div class="chat-bubble"></div></div>');
+        var bb = bot.querySelector(".chat-bubble");
+        bb.innerHTML = qa.a;
+        if (qa.cites.length) {
+          bb.innerHTML += '<div class="chat-cite"><div class="cc-title">来源引用（可回溯至原始证据）</div>' +
+            qa.cites.map(function (c) {
+              return '<div class="cite-chip"><span class="cc-src">' + c.src + "</span><span>" + c.txt + '</span><span class="cc-score">' + c.score + "</span></div>";
+            }).join("") + "</div>";
+        }
+        if (qa.risk) {
+          bb.innerHTML += '<div class="risk-note">⚠ <span><strong>高风险操作</strong>：涉及固件升级，本答案仅为知识检索结果，执行前必须由技术主管确认升级窗口与回滚方案（人工确认，AI 不替代业务判断）。</span></div>';
+        }
+        if (qa.noanswer) {
+          bb.innerHTML += '<div class="risk-note" style="background:#fdf6e5;border-color:#ede3c0;color:#6b5b1e">ℹ <span>无答案分支：相似度低于阈值 0.55 即拒答——<strong>无答案率是健康指标</strong>，不强行生成。</span></div>';
+        }
+        bb.innerHTML += '<div class="fb-row"><button data-feedback="有用">👍 有用</button><button data-feedback="无用">👎 无用</button><span style="font-size:11.5px;color:var(--ink-3);align-self:center">通过知识反馈提交服务留痕；不直接改写可信知识</span></div>';
+        box.appendChild(bot);
+        bot.querySelectorAll("[data-feedback]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var row = btn.closest(".fb-row");
+            row.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
+            row.querySelector("span").textContent = "已提交“" + btn.dataset.feedback + "”反馈 · 绑定 Query 与知识版本，进入分析和回归";
+          });
+        });
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }, 380);
+  }
+  document.getElementById("qa-send").addEventListener("click", function () {
+    var v = document.getElementById("qa-input").value.trim();
+    if (!v) return;
+    document.getElementById("qa-input").value = "";
+    var hit = Object.keys(QA).find(function (k) { return QA[k].q === v; });
+    if (hit) ask(hit);
+    else {
+      var b = document.getElementById("qa-box");
+      var m = el('<div class="chat-msg bot"><div class="avatar">盾</div><div class="chat-bubble">本演示只响应上方四个示例问题（覆盖正常命中与三条失败分支）。请点击示例提问。</div></div>');
+      b.appendChild(m);
+    }
+  });
+};
+
+/* ================= 2. 数据资产目录 ================= */
+var DOMAINS = ["外场服务", "研发设计", "质量检验", "型号标准"];
+var ASSETS = [
+  { n: "外场服务单记录", d: 0, cnt: 812, q: 82, st: "approved", own: "服务工程师" },
+  { n: "外场故障速报", d: 0, cnt: 126, q: 76, st: "approved", own: "服务工程师" },
+  { n: "客户备注归档", d: 0, cnt: 304, q: 61, st: "approved", own: "数据运营" },
+  { n: "维修替换记录", d: 0, cnt: 261, q: 68, st: "approved", own: "数据运营" },
+  { n: "硬件设计文档", d: 1, cnt: 96, q: 79, st: "approved", own: "研发" },
+  { n: "固件版本说明", d: 1, cnt: 140, q: 84, st: "approved", own: "研发" },
+  { n: "已知问题清单", d: 1, cnt: 210, q: 88, st: "approved", own: "研发" },
+  { n: "测试用例库", d: 1, cnt: 352, q: 72, st: "approved", own: "测试" },
+  { n: "质检报告", d: 2, cnt: 190, q: 81, st: "approved", own: "质检" },
+  { n: "来料检验记录", d: 2, cnt: 421, q: 58, st: "review", own: "质检" },
+  { n: "返修分析报告", d: 2, cnt: 88, q: 74, st: "approved", own: "质检" },
+  { n: "交付预检模板", d: 2, cnt: 64, q: 77, st: "approved", own: "质检" },
+  { n: "产品型号标准表", d: 3, cnt: 37, q: 99, st: "approved", own: "AI PM" },
+  { n: "型号别名映射表", d: 3, cnt: 183, q: 91, st: "approved", own: "AI PM" }
+];
+RENDER.assets = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML = '<div class="mod-head">📚 数据资产目录<span class="sub">14 项纳管资产 · 统一治理</span><span class="tipmark" data-tiptitle="资产治理" data-tip="主表:KnowledgeItem 是稳定业务事实|派生:chunk 与索引可随时重建|版本:知识 · chunk · Embedding · 索引 · 检索策略五级血缘|门槛:approved + 质量分 ≥60 才进候选池">ⓘ 说明</span></div><div class="dm-toolbar" id="as-filter"></div><div id="as-body"></div>';
+  var tb = document.getElementById("as-filter");
+  ["全部"].concat(DOMAINS).forEach(function (d, i) {
+    var b = document.createElement("button");
+    b.textContent = d + (i > 0 ? "域" : " · 14 项资产 / 4 域");
+    if (i === 0) b.classList.add("on");
+    b.addEventListener("click", function () {
+      tb.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on"); draw(i === 0 ? -1 : i - 1);
+    });
+    tb.appendChild(b);
+  });
+  function draw(dom) {
+    var rows = ASSETS.filter(function (a) { return dom < 0 || a.d === dom; });
+    document.getElementById("as-body").innerHTML =
+      '<div class="tablewrap"><table class="tbl"><tr><th>数据资产</th><th>所属域</th><th class="num">条目</th><th>质量分</th><th>状态</th><th>责任角色</th></tr>' +
+      rows.map(function (a) {
+        var qColor = a.q >= 80 ? "var(--good)" : a.q >= 60 ? "var(--brand)" : "#eb6834";
+        return "<tr><td><strong>" + a.n + "</strong></td><td>" + DOMAINS[a.d] + '</td><td class="num">' + a.cnt + '</td><td><div class="flex"><div class="qbar"><i style="width:' + a.q + "%;background:" + qColor + '"></i></div><span class="small muted">' + a.q + "</span></div></td><td>" +
+          (a.st === "approved" ? '<span class="badge b-green dot g">approved</span>' : '<span class="badge b-orange">待审核</span>') + "</td><td>" + a.own + "</td></tr>";
+      }).join("") + "</table></div>" +
+      '<p class="small muted mt8 mb0">质量分 &lt; 60 的资产不进入召回池（如「来料检验记录 58」当前处于整改中）；「待审核」资产只在独立审核视图对有权限角色可见——<strong>不进召回池、排序池、答案上下文、预检清单</strong>。点击上方域名筛选。</p>';
+  }
+  draw(-1);
+};
+
+/* ================= 3. 交付预检 ================= */
+/* 自动化执行组件：可程序化的核验项由脚本组件自动执行（编排服务调度） */
+var AUTOC = [
+  { t: "固件版本核对：OTA 接口读取，要求 ≥ v2.8", script: "fw_check.py", ms: 800, ok: true, res: "实测 v2.8.3 ≥ v2.8 ✓" },
+  { t: "通信协议参数扫描（Modbus 地址表 / 波特率）", script: "proto_scan.py", ms: 1200, ok: false, res: "波特率实测 19200 ≠ 要求 9600 ✗" },
+  { t: "防护等级标签比对（扫码 → BOM 一致性）", script: "label_verify.py", ms: 600, ok: true, res: "IP67 标签与 BOM 一致 ✓" }
+];
+/* 人工核验项：物理检验与高风险项，自动化不覆盖 */
+var PC = [
+  { t: "核对产品型号与硬件版本（EX4500-G · HW2.1）", lv: "低" },
+  { t: "低温启动自检：−20℃ 冷启动 3 次全部通过", lv: "高" },
+  { t: "外壳密封性核验（物理检验）", lv: "中" },
+  { t: "老化测试 48h 记录归档", lv: "中" }
+];
+RENDER.precheck = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="mod-head">📋 预检候选生成<span class="sub">交付质检场景 · 服务已稳定上线</span><span class="tipmark" data-tiptitle="预检规则" data-tip="正式服务:预检候选生成|生成:precheck_chunk 检索 · 只引用 approved 模板|高风险:必须质检负责人人工确认，AI 不替代放行判断|来源:每条预检项附 KI-ID，可回溯模板">ⓘ 说明</span></div>' +
+    '<div class="flex wrap mb16"><select id="pc-model" class="chat-inputrow" style="border:1px solid var(--hairline);border-radius:9px;padding:8px 12px;font-family:inherit"><option>EX4500-G（边缘控制器）</option><option>TL-220A（采集终端）</option><option>SR300（工业网关）</option></select>' +
+    '<select style="border:1px solid var(--hairline);border-radius:9px;padding:8px 12px;font-family:inherit"><option>场景：出厂交付预检</option><option>场景：返修复检</option></select>' +
+    '<button class="btn primary" id="pc-gen">生成预检清单</button></div><div id="pc-body"><p class="small muted">预检项由 precheck_chunk（200–400 字）检索生成，且<strong>只引用 approved 模板</strong>——点击生成。</p></div>';
+  document.getElementById("pc-gen").addEventListener("click", function () {
+    var body = document.getElementById("pc-body");
+    body.innerHTML = '<div class="flex between wrap mb16"><span class="badge b-blue dot">EX4500-G · 出厂交付预检 · 模板 KI-1900（approved）</span><span class="small muted">完成度 <strong id="pc-pct">0%</strong>（高风险项需人工确认签字）</span></div><div id="pc-list"></div>';
+    var list = document.getElementById("pc-list");
+    PC.forEach(function (p) {
+      var cls = p.lv === "高" ? "b-orange" : p.lv === "中" ? "b-blue" : "b-gray";
+      var d = document.createElement("label");
+      d.className = "pc-item";
+      d.innerHTML = '<input type="checkbox"><div class="grow"><div class="pc-t" style="font-weight:600">' + p.t + '</div><div class="small muted">风险等级 <span class="badge ' + cls + '">' + p.lv + '</span>' + (p.lv === "高" ? " · 需质检负责人人工确认，AI 不替代放行判断" : "") + "</div></div>";
+      d.querySelector("input").addEventListener("change", function () {
+        d.classList.toggle("done", this.checked);
+        var done = list.querySelectorAll(".pc-item.done").length;
+        document.getElementById("pc-pct").textContent = Math.round(done / PC.length * 100) + "%";
+      });
+      list.appendChild(d);
+    });
+  });
+};
+
+/* ================= 4. 评测看板 ================= */
+RENDER.evaldash = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="mod-head">📊 评测看板<span class="sub">200 条固定评测集 · 六维度</span><span class="tipmark" data-tiptitle="评测闭环" data-tip="评测集:200 条固定 · 防止指标漂移|闭环:有用 / 无用反馈与 bad case 持续入集|锚点:图中实心点为实测，空心点为示意|硬约束:来源引用率 100% · 待审核拦截 100%">ⓘ 说明</span></div>' +
+    '<div class="stat-tiles">' +
+    '<div class="tile"><div class="tv">95%</div><div class="tl">Top3 命中率（固定 200 条评测集）</div></div>' +
+    '<div class="tile"><div class="tv">0.87</div><div class="tl">MRR（示意）</div></div>' +
+    '<div class="tile"><div class="tv">92%</div><div class="tl">无答案正确拒答率（示意）</div></div>' +
+    '<div class="tile"><div class="tv">100%</div><div class="tl">来源引用率 · 上线硬约束</div></div>' +
+    '<div class="tile"><div class="tv">100%</div><div class="tl">待审核 / 低质量拦截（硬约束用例）</div></div>' +
+    '<div class="tile"><div class="tv">100%</div><div class="tl">高风险人工确认提示覆盖（示意）</div></div>' +
+    "</div>" +
+    '<div class="card"><h4 class="mt0">Top3 命中率趋势（评测集 v5 · 200 条固定）</h4><div id="ed-chart"></div></div>' +
+    '<div class="tablewrap mt16"><table class="tbl"><tr><th>版本</th><th>变更内容</th><th class="num">Top3</th><th class="num">MRR</th><th class="num">硬约束</th><th>结论</th></tr>' +
+    '<tr><td class="mono">检索策略 v2.2</td><td>反馈特征接入 Rerank（轻权重）</td><td class="num">88.0%</td><td class="num">0.85</td><td class="num">全过</td><td><span class="badge b-green dot g">放量</span></td></tr>' +
+    '<tr><td class="mono">检索策略 v2.3</td><td>别名归一修复 + 评测集补 12 条跨型号用例</td><td class="num">95%</td><td class="num">0.87</td><td class="num">全过</td><td><span class="badge b-green dot g">放量 · 当前版本</span></td></tr>' +
+    '<tr><td class="mono">试验：纯语义权重 ↑</td><td>alpha 语义 0.8（试验分支）</td><td class="num">86.5%</td><td class="num">0.83</td><td class="num">拦截用例 ×1 失败</td><td><span class="badge b-orange">回滚</span> 单项否决</td></tr>' +
+    '</table></div><p class="small muted mt8 mb0">第三行演示回归纪律的价值：整体分仍高于旧版本，但硬约束用例失败 → 单项否决回滚。<strong>不以整体分交换安全边界</strong>。</p>';
+  // 趋势小图
+  var stages = [
+    { l: "25-07 基线", v: 45, real: 1 }, { l: "25-12 建模", v: 62 }, { l: "26-01 分块", v: 74 },
+    { l: "26-01 混合召回", v: 83 }, { l: "26-02 Rerank", v: 88 }, { l: "26-05 至今", v: 95, real: 1 }
+  ];
+  var W = 720, H = 190, x0 = 46, x1 = 700, y0 = 24, y1 = 148;
+  var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, width: "100%" });
+  function X(i) { return x0 + (i / (stages.length - 1)) * (x1 - x0); }
+  function Y(v) { return y1 - (v / 100) * (y1 - y0); }
+  [0, 50, 100].forEach(function (v) {
+    svg.appendChild(svgEl("line", { x1: x0, y1: Y(v), x2: x1, y2: Y(v), class: "gridline" }));
+    var t = svgEl("text", { x: x0 - 8, y: Y(v) + 4, class: "tick", "text-anchor": "end" }); t.textContent = v + "%"; svg.appendChild(t);
+  });
+  var path = stages.map(function (s, i) { return (i ? "L" : "M") + X(i) + "," + Y(s.v); }).join(" ");
+  svg.appendChild(svgEl("path", { d: path, fill: "none", stroke: "#2a78d6", "stroke-width": 2.5 }));
+  stages.forEach(function (s, i) {
+    svg.appendChild(svgEl("circle", { cx: X(i), cy: Y(s.v), r: 5, fill: s.real ? "#1c5cab" : "#fcfcfb", stroke: "#2a78d6", "stroke-width": 2 }));
+    var t = svgEl("text", { x: X(i), y: y1 + 20, class: "tick", "text-anchor": "middle", "font-size": "10.5" }); t.textContent = s.l; svg.appendChild(t);
+    var hit = svgEl("circle", { cx: X(i), cy: Y(s.v), r: 14, fill: "transparent" });
+    svg.appendChild(hit);
+    hit.addEventListener("pointermove", function (e) {
+      zdTip.show(e.clientX, e.clientY, s.l, [{ name: "Top3 命中率", color: "#2a78d6", value: s.v + "%" + (s.real ? "（实测锚点）" : "（示意）") }]);
+    });
+    hit.addEventListener("pointerleave", zdTip.hide);
+  });
+  svg.appendChild(svgEl("line", { x1: x0, y1: Y(95), x2: x1, y2: Y(95), stroke: "#0ca30c", "stroke-width": 1.3, "stroke-dasharray": "5 4" }));
+  document.getElementById("ed-chart").appendChild(svg);
+};
+
+/* ================= 5. 检索分析 ================= */
+var CANDS = [
+  { id: "KI-2831", t: "EX4500-G 低温启动异常排查（solution）", s: 88.2, model: "匹配", ver: "v2.8+", q: 82, rc: "suspected", fb: 12, top: true },
+  { id: "KI-1907", t: "显示模组供电时序问题汇总（solution）", s: 84.6, model: "匹配", ver: "—", q: 79, rc: "confirmed", fb: 5, top: true },
+  { id: "KI-0322", t: "低温批次固件修复说明 v2.8（summary）", s: 78.9, model: "匹配", ver: "v2.8", q: 84, rc: "confirmed", fb: 3, top: true },
+  { id: "KI-2750", t: "CV-800 显示模组黑屏处理（solution）", s: 76.4, model: "不匹配", ver: "—", q: 71, rc: "suspected", fb: 1, top: false },
+  { id: "KI-1204", t: "TL-220A 低温采集异常（symptom）", s: 71.3, model: "不匹配", ver: "—", q: 68, rc: "unknown", fb: 0, top: false }
+];
+var PENDING = { id: "KI-3410", t: "EX4500-G 低温黑屏现场速报（待审核）", s: 85.0, model: "匹配", ver: "—", q: 45, rc: "unknown", fb: 0 };
+RENDER.search = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="mod-head">🔍 检索分析<span class="sub">链路透明 · Bad Case 归因</span><span class="tipmark" data-tiptitle="检索分析" data-tip="可观测:每次问答的召回 / 重排 / 过滤全链路|开关:对比前置过滤开 / 关的候选差异|案例:KI-3410（待审核）旧模式下会以 85 分进入 Top2——Bad Case #5 根因">ⓘ 说明</span></div>' +
+    '<div class="card mb16"><strong>Query</strong>：<span class="mono">EX4500-G 在低温环境下开机无显示，怎么排查？</span><div class="switchrow"><div class="switch on" id="sf-switch"></div><span id="sf-label">前置过滤：开（权限 · approved · 质量分 ≥60）——关闭可演示旧版失败模式</span></div></div>' +
+    '<div id="funnel"></div><h4 style="margin:18px 0 8px">Rerank 候选（悬停看特征分解）</h4><div id="cands"></div>' +
+    '<p class="small muted mb0" id="search-note"></p>';
+  var on = true;
+  function draw() {
+    // 漏斗
+    var steps = [
+      { n: "结构化前置过滤", c: on ? "1,142 条可召回（拦截 96 条）" : "已关闭——1,238 条全部进入召回池", w: on ? 88 : 96, warn: !on },
+      { n: "BM25 召回（ES）", c: "Top 20 · 型号 / 错误码精确命中", w: 20 },
+      { n: "向量召回（BGE+Milvus）", c: "Top 30 · 现象 / 环境语义相似", w: 30 },
+      { n: "关联案例扩展", c: "Top 10 · 同源案例", w: 10 },
+      { n: "合并去重", c: "41 条候选（按 knowledge_id）", w: 41 },
+      { n: "Rerank 重排", c: "BGE Reranker + 业务特征 → Top 5", w: 5 },
+      { n: "生成上下文", c: "Top 3 approved 来源", w: 3 }
+    ];
+    document.getElementById("funnel").innerHTML = steps.map(function (s) {
+      return '<div class="funnel-row"><div style="font-weight:600;font-size:13.5px">' + s.n + '</div><div class="small muted mono" style="text-align:right">' + s.c + '</div><div class="funnel-bar" style="width:' + (s.w * 1.0) + '%;background:' + (s.warn ? "#eb6834" : "var(--brand)") + '"></div></div>';
+    }).join("");
+    // 候选
+    var list = on ? CANDS : [CANDS[0], PENDING, CANDS[1], CANDS[2], CANDS[3], CANDS[4]];
+    document.getElementById("cands").innerHTML = list.map(function (c, i) {
+      var blocked = !on && c === PENDING;
+      return '<div class="cand ' + (c.top && !blocked ? "top3" : "") + (blocked ? " blocked" : "") + '">' +
+        '<span class="mono small" style="font-weight:700">' + c.id + "</span>" +
+        '<div><div style="font-weight:600;font-size:13.5px">' + c.t + '</div><div class="small muted">型号' + c.model + " · 质量 " + c.q + " · 根因 " + c.rc + " · 反馈 +" + c.fb + "</div></div>" +
+        '<div style="text-align:right"><div style="font-weight:800;font-variant-numeric:tabular-nums;color:' + (blocked ? "#eb6834" : "var(--brand-deep)") + '">' + c.s.toFixed(1) + "</div>" +
+        '<div class="small muted">' + (blocked ? "应拦截（待审核）" : c.top ? "Top3 ✓" : "落选") + "</div></div></div>";
+    }).join("");
+    document.getElementById("search-note").innerHTML = on
+      ? "前置过滤开启时：KI-3410（待审核 · 质量 45）在召回前即被硬拦截，<strong>审核状态与质量分不参与排序，它们决定候选资格</strong>。"
+      : "演示旧版失败模式（先召回后过滤 / 无过滤）：待审核的 KI-3410 以 85.0 分排到第 2 位——若过滤放在 Rerank 之后或交给 Prompt，未审核结论就会进入答案。这正是 Bad Case #5 的根因。";
+  }
+  document.getElementById("sf-switch").addEventListener("click", function () {
+    on = !on; this.classList.toggle("on", on); draw();
+  });
+  draw();
+};
+
+/* ================= 通用 hover 提示（data-tip，键值行） ================= */
+(function () {
+  var cur = null;
+  document.addEventListener("mouseover", function (e) {
+    var t = e.target.closest ? e.target.closest("[data-tip]") : null;
+    if (t === cur) return;
+    cur = t;
+    if (!t) { zdTip.hide(); return; }
+    var rows = t.getAttribute("data-tip").split("|").map(function (p) {
+      var i = p.indexOf(":");
+      return { name: p.slice(0, i), value: p.slice(i + 1) };
+    });
+    zdTip.show(e.clientX, e.clientY, t.getAttribute("data-tiptitle") || "", rows);
+  });
+})();
+
+/* ================= 登录页（统一身份认证 · Mock） ================= */
+RENDER.login = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="login-wrap">' +
+      '<div class="lg-logo">🛡 智盾 · 统一身份认证</div>' +
+      '<div class="lg-sub">演示环境 · 选择身份进入对应子系统（Mock，无需密码）——前台与后台是三个独立系统</div>' +
+      '<div class="lg-cards">' +
+        '<div class="lg-card" data-go="#/portal/chat"><div class="who">👷 张工</div><div class="role">外场支持工程师 · 前台用户</div><div class="sys">工程师知识门户</div><div class="dom">portal.zhidun.internal</div></div>' +
+        '<div class="lg-card" data-go="#/qc/qctasks"><div class="who">✅ 李质检</div><div class="role">交付质检 · 前台用户</div><div class="sys">交付质检工作台</div><div class="dom">qc.zhidun.internal</div></div>' +
+        '<div class="lg-card" data-go="#/admin/stream"><div class="who">🗂 王运营</div><div class="role">数据运营 · 平台管理</div><div class="sys">平台管理控制台</div><div class="dom">admin.zhidun.internal</div></div>' +
+      '</div>' +
+      '<div class="lg-links"><a href="#/pano/svcs">先看平台全景（服务目录）→</a><a href="index.html">← 返回产品总览</a></div>' +
+    '</div>';
+  main.querySelectorAll(".lg-card").forEach(function (c) {
+    c.addEventListener("click", function () { location.hash = c.dataset.go; });
+  });
+};
+
+/* ================= 工程师门户 · 我的历史 ================= */
+var HIST = [
+  { tm: "09-07 14:32", q: "EX4500-G 在低温环境下开机无显示，怎么排查？", r: "命中", rb: "b-green", fb: "👍 有用", note: "" },
+  { tm: "09-07 11:08", q: "XT5000 报 E-021 错误码是什么问题？", r: "拦截", rb: "b-orange", fb: "—", note: "型号未收录 · 已入缺口队列", tip: "闭环:补录型号标准表后同名查询即可命中 · 见后台「审核工作台」" },
+  { tm: "09-06 17:45", q: "SR300 在湿热环境下通信丢包有处理经验吗？", r: "拒答", rb: "b-gray", fb: "—", note: "缺口跟进 · 专家已派", tip: "闭环:专家产出 solution → 审核 → 推送给我 · 见后台「审核工作台」" },
+  { tm: "09-06 09:21", q: "SR300 固件可以直接升级到 v3.2 吗？", r: "高风险", rb: "b-violet", fb: "👍 有用", note: "已转人工确认（闸口 3）" },
+  { tm: "09-05 16:03", q: "TL-220A 批次噪声有什么共性原因？", r: "命中", rb: "b-green", fb: "👎 无用 → 已进 bad case", note: "" }
+];
+RENDER.history = function () {
+  var main = document.getElementById("demo-main");
+  var html =
+    '<div class="mod-head">🕘 我的历史<span class="sub">张工 · 近 30 天提问与反馈</span><span class="tipmark" data-tiptitle="个人视图" data-tip="数据来源:QueryLog（服务层埋点，非前端埋点）|反馈:有用 / 无用一键回写 → 评测集 bad case|缺口跟进:拒答与拦截自动入列，专家补齐后推送">ⓘ 说明</span></div>' +
+    '<div class="tablewrap"><table class="tbl"><tr><th>时间</th><th>问题</th><th>结果</th><th>我的反馈</th><th>跟进</th></tr>';
+  HIST.forEach(function (h) {
+    html += '<tr><td class="mono small">' + h.tm + '</td><td style="font-size:13px">' + h.q + '</td>' +
+      '<td><span class="badge ' + h.rb + '">' + h.r + '</span></td>' +
+      '<td style="font-size:12.5px">' + h.fb + '</td>' +
+      '<td style="font-size:12px">' + (h.tip ? '<span class="svc-con hit" data-tip="' + h.tip + '" data-tiptitle="缺口闭环">' + h.note + ' ⓘ</span>' : (h.note || "—")) + '</td></tr>';
+  });
+  html += '</table></div>';
+  main.innerHTML = html;
+};
+
+/* ================= 质检工作台 · 预检任务 ================= */
+var QCTASKS = [
+  { no: "WO-2026-1187", model: "EX4500-G", scene: "出厂交付预检", state: "待处理", tpl: "KI-1900", srcs: "KI-1900 · KI-0322 · KI-2831" },
+  { no: "WO-2026-1186", model: "SR300", scene: "返修复检", state: "待处理", tpl: "KI-2688", srcs: "KI-2688 · KI-0451" },
+  { no: "WO-2026-1185", model: "TL-220A", scene: "出厂交付预检", state: "已完成", tpl: "KI-1204", srcs: "KI-1204" },
+  { no: "WO-2026-1183", model: "EX4500-G", scene: "出厂交付预检", state: "已完成", tpl: "KI-1900", srcs: "KI-1900 · KI-1907" }
+];
+RENDER.qctasks = function () {
+  var main = document.getElementById("demo-main");
+  var html =
+    '<div class="mod-head">📋 预检任务队列<span class="sub">待处理 2 单 · 今日已完 2 单</span><span class="tipmark" data-tiptitle="质检工作台" data-tip="生成:precheck_chunk 检索 · 只引用 approved 模板|自动化:可程序化核验项由脚本组件自动执行|高风险:质检负责人人工确认，AI 不替代放行|来源:每项附 KI-ID · 可回溯到原始证据">ⓘ 说明</span></div>';
+  QCTASKS.forEach(function (t, i) {
+    html += '<div class="task-row' + (t.state === "已完成" ? " done" : "") + '" data-i="' + i + '">' +
+      '<span class="mono small" style="font-weight:700">' + t.no + '</span>' +
+      '<div><b style="font-size:13.5px">' + t.model + ' · ' + t.scene + '</b><div class="small muted">引用 ' + t.srcs + '</div></div>' +
+      '<span class="small muted">模板 ' + t.tpl + '</span>' +
+      '<span class="badge ' + (t.state === "待处理" ? "b-orange" : "b-green") + '">' + t.state + '</span>' +
+      '<span class="small muted" style="text-align:right">' + (t.state === "待处理" ? "进入 →" : "—") + '</span></div>';
+  });
+  main.innerHTML = html;
+  main.querySelectorAll(".task-row:not(.done)").forEach(function (row) {
+    row.addEventListener("click", function () { RENDER.qcdetail(+row.dataset.i); });
+  });
+};
+RENDER.qcdetail = function (i) {
+  var t = QCTASKS[i];
+  var main = document.getElementById("demo-main");
+  var total = AUTOC.length + PC.length;
+  main.innerHTML =
+    '<div class="mod-head">📋 ' + t.no + ' · ' + t.model + ' ' + t.scene + '<span class="sub">模板 ' + t.tpl + '（approved）· 自动化组件 + 人工核验</span><span class="tipmark" data-tiptitle="预检执行模式" data-tip="自动化:可程序化核验项由脚本组件自动执行（编排服务调度）|人工:物理检验与高风险项由质检员逐项确认|失败处置:组件未通过自动转人工复核，AI 不替代放行|边界:查看与确认，知识修改走后台审核双人确认">ⓘ 说明</span></div>' +
+    '<div class="flex between wrap mb16"><span class="badge b-blue">引用来源：' + t.srcs.split(" · ").map(function (k) { return '<span class="src-chip">' + k + '</span>'; }).join("") + '</span><span class="small muted">完成度 <strong id="pc-pct">0%</strong>（自动化 ' + AUTOC.length + ' 项 + 人工 ' + PC.length + ' 项）</span></div>' +
+    '<div class="flex between wrap" style="margin-bottom:8px"><h4 style="margin:0;font-size:13.5px">⚙️ 自动化执行组件<span class="small muted" style="font-weight:400;margin-left:8px">脚本组件由编排服务调度 · 结果自动回写工单</span></h4><button class="btn primary" id="ac-run" style="font-size:13px;padding:6px 14px">▶ 执行自动化组件</button></div>' +
+    '<div id="ac-list"></div>' +
+    '<h4 style="margin:16px 0 8px;font-size:13.5px">✋ 人工核验项<span class="small muted" style="font-weight:400;margin-left:8px">物理检验与高风险项 · 自动化不覆盖</span></h4><div id="pc-list"></div>' +
+    '<div class="flex wrap" style="margin-top:14px;gap:10px"><button class="btn primary" id="qc-done">完成本单</button><button class="btn ghost" id="qc-back">← 返回任务队列</button></div>';
+  function pct() {
+    var done = document.querySelectorAll("#ac-list .pc-item.done, #pc-list .pc-item.done").length;
+    document.getElementById("pc-pct").textContent = Math.round(done / total * 100) + "%";
+  }
+  var acList = document.getElementById("ac-list");
+  AUTOC.forEach(function (a, k) {
+    var d = document.createElement("div");
+    d.className = "pc-item";
+    d.id = "ac-" + k;
+    d.innerHTML = '<div class="grow"><div class="pc-t" style="font-weight:600">' + a.t + '</div><div class="small muted mono">组件 ' + a.script + ' · 自动执行</div></div><span class="badge b-gray" id="acb-' + k + '">待执行</span>';
+    acList.appendChild(d);
+  });
+  document.getElementById("ac-run").addEventListener("click", function () {
+    var runBtn = this;
+    runBtn.disabled = true;
+    runBtn.textContent = "⏳ 执行中…";
+    var k = 0;
+    (function next() {
+      if (k >= AUTOC.length) { runBtn.textContent = "✓ 已执行 · 结果已回写工单"; return; }
+      var a = AUTOC[k];
+      var row = document.getElementById("ac-" + k), bd = document.getElementById("acb-" + k);
+      bd.className = "badge b-blue";
+      bd.textContent = "执行中…";
+      var log = document.createElement("div");
+      log.className = "small muted mono";
+      log.style.marginTop = "4px";
+      log.textContent = "→ 调度 " + a.script + " …";
+      row.querySelector(".grow").appendChild(log);
+      setTimeout(function () {
+        log.textContent = "→ " + a.script + " · " + (a.ms / 1000).toFixed(1) + "s · " + a.res;
+        if (a.ok) {
+          bd.className = "badge b-green dot g";
+          bd.textContent = "✓ 通过 · 自动完成";
+          row.classList.add("done");
+        } else {
+          bd.className = "badge b-orange";
+          bd.textContent = "✗ 未通过 · 转人工";
+          var lab = document.createElement("label");
+          lab.style.cssText = "display:flex;gap:6px;align-items:center;margin-top:6px;font-size:12px;color:#8a3512";
+          lab.innerHTML = '<input type="checkbox"> 人工复核后处置（质检负责人确认）';
+          lab.querySelector("input").addEventListener("change", function () {
+            row.classList.toggle("done", this.checked);
+            pct();
+          });
+          row.querySelector(".grow").appendChild(lab);
+        }
+        pct();
+        k++;
+        next();
+      }, a.ms);
+    })();
+  });
+  var list = document.getElementById("pc-list");
+  PC.forEach(function (p) {
+    var cls = p.lv === "高" ? "b-orange" : p.lv === "中" ? "b-blue" : "b-gray";
+    var d = document.createElement("label");
+    d.className = "pc-item";
+    d.innerHTML = '<input type="checkbox"><div class="grow"><div class="pc-t" style="font-weight:600">' + p.t + '</div><div class="small muted">风险等级 <span class="badge ' + cls + '">' + p.lv + '</span>' + (p.lv === "高" ? " · 需质检负责人人工确认，AI 不替代放行判断" : "") + " · <span class='mono'>来源 " + t.tpl + "</span></div></div>";
+    d.querySelector("input").addEventListener("change", function () {
+      d.classList.toggle("done", this.checked);
+      pct();
+    });
+    list.appendChild(d);
+  });
+  document.getElementById("qc-back").addEventListener("click", function () { RENDER.qctasks(); });
+  document.getElementById("qc-done").addEventListener("click", function () {
+    t.state = "已完成";
+    RENDER.qctasks();
+  });
+};
+
+/* ================= 管理控制台 · Agent 运行轨迹 ================= */
+var AGENT_RUNS = {
+  multi: {
+    label: "同一案例：组合调用与转人工",
+    query: "E2200（固件 v3.2）低温启动反复重启，已经过一次固件升级，交付前能否放行？",
+    outcome: "已返回历史证据与预检候选；最终放行由确定性风险闸转交负责人确认。共完成 3 次服务调用。",
+    finalState: "HUMAN_CONFIRM_REQUIRED",
+    steps: [
+      { r: "R0", k: "observe", t: "观察任务状态", d: "已获得用户角色、型号 E2200、固件 v3.2、低温环境、重启现象和“交付放行”目标。", s: "RUNNING", n: "选择首个服务" },
+      { r: "R0", k: "decision", t: "决策：先确认型号与版本边界", d: "后续知识和预检规则都必须与标准型号、固件适用范围一致。", s: "RUNNING", n: "调用产品型号查询" },
+      { r: "R1", k: "call", t: "调用服务 · 产品型号查询", d: '{"model_code":"E2200","firmware":"v3.2"}', s: "TOOL_RUNNING", n: "等待服务返回", tool: 1 },
+      { r: "R1", k: "result", t: "服务返回 · 产品型号查询", d: "valid=true；v3.2 在支持范围；适用硬件 HW2.x；别名已归一。", s: "RUNNING", n: "读取结果并再决策", tool: 1 },
+      { r: "R1", k: "decision", t: "再次决策：查找已审核历史证据", d: "型号与版本已确认，但还不能判断是否属于已知问题。", s: "RUNNING", n: "调用知识检索", tool: 1 },
+      { r: "R2", k: "call", t: "调用服务 · 知识检索", d: '{"model":"E2200","firmware":"v3.2","environment":"低温","symptom":"启动反复重启","top_k":3}', s: "TOOL_RUNNING", n: "等待服务返回", tool: 2 },
+      { r: "R2", k: "result", t: "服务返回 · 知识检索", d: "命中 KI-2831 / KI-1907；均为 approved；确认存在固件兼容历史案例，附适用范围和来源。", s: "RUNNING", n: "读取结果并再决策", tool: 2 },
+      { r: "R2", k: "decision", t: "再次决策：生成交付预检候选", d: "用户目标包含交付放行，需要把历史证据转成可执行检查候选并标记风险。", s: "RUNNING", n: "调用预检候选生成", tool: 2 },
+      { r: "R3", k: "call", t: "调用服务 · 预检候选生成", d: '{"model":"E2200","firmware":"v3.2","scene":"出厂交付","evidence_ids":["KI-2831","KI-1907"]}', s: "TOOL_RUNNING", n: "等待服务返回", tool: 3 },
+      { r: "R3", k: "result", t: "服务返回 · 预检候选生成", d: "返回 6 项检查候选、验证方法与执行角色；其中“低温复测”和“最终放行”标记为高风险人工确认项。", s: "RUNNING", n: "检查停止与风险条件", tool: 3 },
+      { r: "R3", k: "decision", t: "决策：Agent 不得作出最终放行", d: "证据与候选已充分，但最终放行超出 Agent 权限。运营指标查询和数据资产目录查询与本任务无关，本轮不调用。", s: "RUNNING", n: "进入确定性风险闸", tool: 3 },
+      { r: "R3", k: "handoff", t: "风险闸：转交付负责人确认", d: "保留型号、证据、预检候选、服务参数与运行轨迹；Agent 不执行固件操作，也不替代最终放行。", s: "HUMAN_CONFIRM_REQUIRED", n: "等待人工确认", tool: 3 }
+    ]
+  },
+  ask: {
+    label: "信息不足时追问",
+    query: "SR300 最近经常掉线，怎么处理？",
+    outcome: "关键参数不足，Agent 没有盲目检索或生成，状态转为等待用户补充。",
+    finalState: "WAITING_USER",
+    steps: [
+      { r: "R0", k: "observe", t: "读取任务状态", d: "已识别型号 SR300 和现象“掉线”，但没有固件版本、网络环境与频率。", s: "RUNNING", n: "判断信息充分性" },
+      { r: "R0", k: "decision", t: "决策：先调用产品型号查询", d: "需要确认该型号有哪些版本字段和适用范围，才能提出最小必要追问。", s: "RUNNING", n: "调用产品型号查询" },
+      { r: "R1", k: "call", t: "调用服务 · 产品型号查询", d: '{"model_code":"SR300"}', s: "TOOL_RUNNING", n: "等待服务返回", tool: 1 },
+      { r: "R1", k: "result", t: "服务返回 · 产品型号查询", d: "valid=true；存在 v2.x / v3.x 两条固件分支，相关知识不通用。", s: "RUNNING", n: "读取结果并再决策", tool: 1 },
+      { r: "R1", k: "ask", t: "再次决策：追问用户", d: "请补充：当前固件版本、掉线发生在有线还是无线网络、发生频率。", s: "WAITING_USER", n: "等待用户输入", tool: 1 }
+    ]
+  },
+  stop: {
+    label: "证据充分时停止",
+    query: "EX4500-G v2.8 低温开机无显示，是否有已审核案例？",
+    outcome: "一次检索已满足任务，Agent 判断无需继续调用其他服务并停止。",
+    finalState: "COMPLETED",
+    steps: [
+      { r: "R0", k: "observe", t: "读取任务状态", d: "型号、版本、环境、现象和任务意图均完整；目标只是查找已审核案例。", s: "RUNNING", n: "选择工具" },
+      { r: "R0", k: "decision", t: "决策：调用知识检索", d: "任务不要求根因判断或生成排查路径，先检索可信案例即可。", s: "RUNNING", n: "调用知识检索" },
+      { r: "R1", k: "call", t: "调用服务 · 知识检索", d: '{"model":"EX4500-G","firmware":"v2.8","environment":"低温","status":"approved","top_k":3}', s: "TOOL_RUNNING", n: "等待服务返回", tool: 1 },
+      { r: "R1", k: "result", t: "服务返回 · 知识检索", d: "Top3 均为 approved；命中 KI-2831，rerank=88.2，来源与适用范围完整。", s: "RUNNING", n: "检查停止条件", tool: 1 },
+      { r: "R1", k: "finish", t: "停止：直接返回案例与引用", d: "已满足“查找案例”的任务目标，无需生成预检候选，也不调用与任务无关的运营或资产服务。", s: "COMPLETED", n: "停止", tool: 1 }
+    ]
+  },
+  risk: {
+    label: "高风险转人工",
+    query: "SR300 v2.8 可以直接升级到 v3.2 吗？请帮我执行。",
+    outcome: "Agent 可给出升级依据，但确定性风险闸拦截执行请求并转人工确认。",
+    finalState: "HUMAN_CONFIRM_REQUIRED",
+    steps: [
+      { r: "R0", k: "observe", t: "读取任务状态", d: "识别为固件跨版本升级，并包含执行意图。", s: "RUNNING", n: "检索升级依据" },
+      { r: "R1", k: "call", t: "调用服务 · 知识检索", d: '{"model":"SR300","from":"v2.8","to":"v3.2","topic":"升级路径"}', s: "TOOL_RUNNING", n: "等待服务返回", tool: 1 },
+      { r: "R1", k: "result", t: "服务返回 · 知识检索", d: "命中 KI-2688：必须先升级 v3.0；中断存在引导分区损坏风险。", s: "RUNNING", n: "读取结果并再决策", tool: 1 },
+      { r: "R1", k: "decision", t: "再次决策：输出候选步骤", d: "可以解释升级路径，但“执行升级”属于高风险动作。", s: "RUNNING", n: "进入确定性风险闸", tool: 1 },
+      { r: "R1", k: "handoff", t: "风险闸：转技术主管确认", d: "脚本命中 risk_type=firmware_upgrade；禁止 AI 执行，保存依据、参数与回滚要求。", s: "HUMAN_CONFIRM_REQUIRED", n: "等待人工确认", tool: 1 }
+    ]
+  }
+};
+var TRACE_TIMERS = [];
+function stopTrace() { TRACE_TIMERS.forEach(function (x) { clearTimeout(x); }); TRACE_TIMERS = []; }
+var TRACE_KIND_LABELS = {
+  observe: "观察", decision: "决策", call: "调用服务", result: "服务返回",
+  ask: "追问用户", handoff: "转人工", finish: "完成"
+};
+var TRACE_STATE_LABELS = {
+  READY: "待开始", RUNNING: "运行中", TOOL_RUNNING: "服务调用中",
+  COMPLETED: "已完成", WAITING_USER: "等待用户补充",
+  HUMAN_CONFIRM_REQUIRED: "等待人工确认"
+};
+RENDER = window.RENDER || {};
+RENDER.agenttrace = function () {
+  stopTrace();
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="mod-head">🧠 Agent 运行轨迹<span class="sub">观察 → 决策 → 调用服务 → 服务返回 → 再决策</span><span class="tipmark" data-tiptitle="真实性口径" data-tip="机制:对应线上真实的多轮服务决策与状态变化|演示数据:问题、参数、返回值和运行编号均为 Mock|可观察:每轮服务、参数、结果摘要、状态、下一动作与停止原因|边界:展示结构化决策摘要，不展示模型隐藏思维过程">ⓘ 说明</span></div>' +
+    '<div class="trace-note"><b>“调用服务”对应技术事件 tool_call，“服务返回”对应 tool_result。</b><span>主轨迹与 Agent 页使用同一个低温重启交付放行案例。Agent 按任务调用必要服务；无关服务不会为了凑齐六项而被机械调用。问题、参数、返回结果和运行编号均为 Mock。</span></div>' +
+    '<div class="trace-controls" id="trace-controls"></div>' +
+    '<div class="trace-query"><span>用户任务</span><b id="trace-query"></b></div>' +
+    '<div class="trace-layout"><div class="trace-list" id="trace-list"></div>' +
+      '<aside class="trace-state"><h4>当前运行状态</h4>' +
+        '<div class="trace-state-row"><span>运行编号</span><b id="trace-id">—</b></div>' +
+        '<div class="trace-state-row"><span>当前状态</span><b id="trace-status">待开始</b></div>' +
+        '<div class="trace-state-row"><span>决策轮次</span><b id="trace-round">—</b></div>' +
+        '<div class="trace-state-row"><span>服务调用次数</span><b id="trace-tools">0</b></div>' +
+        '<div class="trace-state-row"><span>下一步</span><b id="trace-next">等待开始</b></div>' +
+        '<div class="trace-outcome" id="trace-outcome"></div>' +
+      '</aside></div>';
+  var controls = document.getElementById("trace-controls");
+  Object.keys(AGENT_RUNS).forEach(function (key) {
+    var b = document.createElement("button");
+    b.textContent = AGENT_RUNS[key].label;
+    b.dataset.run = key;
+    b.addEventListener("click", function () { startRun(key); });
+    controls.appendChild(b);
+  });
+  var replay = document.createElement("button");
+  replay.className = "trace-replay";
+  replay.textContent = "↻ 重播当前轨迹";
+  replay.addEventListener("click", function () { startRun(controls.dataset.current || "multi"); });
+  controls.appendChild(replay);
+
+  function startRun(key) {
+    stopTrace();
+    var run = AGENT_RUNS[key];
+    controls.dataset.current = key;
+    controls.querySelectorAll("button[data-run]").forEach(function (b) { b.classList.toggle("on", b.dataset.run === key); });
+    document.getElementById("trace-query").textContent = run.query;
+    document.getElementById("trace-id").textContent = "AG-2026-0908-" + ({ multi: "018", ask: "019", stop: "020", risk: "021" }[key]);
+    document.getElementById("trace-status").textContent = TRACE_STATE_LABELS.READY;
+    document.getElementById("trace-round").textContent = "—";
+    document.getElementById("trace-tools").textContent = "0";
+    document.getElementById("trace-next").textContent = "读取任务";
+    var outcome = document.getElementById("trace-outcome");
+    outcome.classList.remove("show");
+    outcome.textContent = run.outcome;
+    var list = document.getElementById("trace-list");
+    list.innerHTML = "";
+    run.steps.forEach(function (step) {
+      var row = document.createElement("div");
+      row.className = "trace-event " + step.k;
+      row.innerHTML = '<span class="tr-round"></span><span class="tr-kind"></span><div class="tr-body"><b></b><p></p></div>';
+      row.querySelector(".tr-round").textContent = step.r;
+      row.querySelector(".tr-kind").textContent = TRACE_KIND_LABELS[step.k] || step.k;
+      row.querySelector("b").textContent = step.t;
+      row.querySelector("p").textContent = step.d;
+      list.appendChild(row);
+    });
+    var rows = list.querySelectorAll(".trace-event");
+    run.steps.forEach(function (step, i) {
+      TRACE_TIMERS.push(setTimeout(function () {
+        if (i > 0) { rows[i - 1].classList.remove("active"); rows[i - 1].classList.add("done"); }
+        rows[i].classList.add("active");
+        document.getElementById("trace-status").textContent = TRACE_STATE_LABELS[step.s] || step.s;
+        document.getElementById("trace-round").textContent = step.r;
+        document.getElementById("trace-tools").textContent = String(step.tool || 0);
+        document.getElementById("trace-next").textContent = step.n;
+        list.scrollTo({ top: Math.max(0, rows[i].offsetTop - list.offsetTop - 150), behavior: "smooth" });
+        if (i === run.steps.length - 1) {
+          TRACE_TIMERS.push(setTimeout(function () {
+            rows[i].classList.remove("active"); rows[i].classList.add("done");
+            document.getElementById("trace-status").textContent = TRACE_STATE_LABELS[run.finalState] || run.finalState;
+            outcome.classList.add("show");
+          }, 420));
+        }
+      }, 180 + i * 520));
+    });
+  }
+  startRun("multi");
+};
+
+/* ================= 管理控制台 · 实时事件流（活数据） ================= */
+var EVPOOL = [
+  { t: "查询", c: "b-blue", txt: "EX4500-G · 低温开机无显示 → 命中 KI-2831（rerank 88.2 · Top1）" },
+  { t: "查询", c: "b-blue", txt: "TL-220A · 批次噪声共性原因 → 命中 KI-1204（rerank 79.4）" },
+  { t: "拦截", c: "b-orange", txt: "型号校验拦下 XT5000 · E-021 → 提示补录型号标准表（闸口 1）" },
+  { t: "拒答", c: "b-gray", txt: "SR300 · 湿热 · 通信丢包 → 无 approved 覆盖，记入知识缺口" },
+  { t: "反馈", c: "b-green", txt: "排查路径标记「有用」→ QueryLog +1 · 有用率样本更新" },
+  { t: "反馈", c: "b-green", txt: "答案标记「无用」→ 已入 bad case 队列，下周评测回归评审" },
+  { t: "高风险", c: "b-violet", txt: "SR300 v3.2 升级询问 → 转人工确认（闸口 3 · AI 不替代放行）" },
+  { t: "审核", c: "b-blue", txt: "KI-3412 合并至 KI-2688 → 进入建库流水线（清洗→分块→嵌入→索引）" },
+  { t: "降级", c: "b-orange", txt: "检索 3.2s > 3s → 明确重试提示，不伪装成功（E1）" },
+  { t: "服务", c: "b-blue", txt: "「产品型号查询」被「预检候选生成」调用 · 本单第 2 次 · 今日累计 312 次" },
+  { t: "自动化", c: "b-blue", txt: "fw_check.py 通过（v2.8.3 ≥ v2.8）· 结果自动回写工单 WO-2026-1187" },
+  { t: "自动化", c: "b-violet", txt: "proto_scan.py 波特率校验未通过 → 自动转人工复核（同高风险闸口）" }
+];
+RENDER = window.RENDER || {};
+RENDER.stream = function () {
+  var main = document.getElementById("demo-main");
+  main.innerHTML =
+    '<div class="mod-head">📡 实时事件流<span class="sub">服务层埋点 · QueryLog 与闸口日志</span><span class="tipmark" data-tiptitle="埋点口径" data-tip="来源:服务层埋点（工具注册表 QueryLog 写回 + 评测钩子），非前端埋点|事件:查询 · 拦截 · 拒答 · 反馈 · 高风险转人工 · 审核入库 · 降级 · 自动化执行|用途:运营监控 + bad case 回流 + 调用量统计|口径:事件内容为 Mock，Top3 95% / 有用率 80%+ 为实测">ⓘ 说明</span></div>' +
+    '<div class="strip">' +
+      '<div class="tile"><div class="tv">328</div><div class="tl">今日查询（示意）</div></div>' +
+      '<div class="tile"><div class="tv">95%</div><div class="tl">Top3 命中（固定 200 条评测集）</div></div>' +
+      '<div class="tile"><div class="tv">83%</div><div class="tl">有用率（示意 · 实测 80%+）</div></div>' +
+      '<div class="tile"><div class="tv">12</div><div class="tl">型号拦截（示意）</div></div>' +
+      '<div class="tile"><div class="tv">3</div><div class="tl">高风险转人工（示意）</div></div>' +
+    '</div>' +
+    '<div class="feed-head"><span class="live-dot"></span>实时事件<span class="small muted" style="font-weight:400">（每 2 秒滚动 · Mock）</span><button id="feed-toggle">⏸ 暂停</button></div>' +
+    '<div class="feed-box" id="feed"></div>';
+  var feed = document.getElementById("feed");
+  var running = true;
+  var last = -1;
+  function now() { return new Date().toLocaleTimeString("zh-CN", { hour12: false }); }
+  function push() {
+    var i = Math.floor(Math.random() * EVPOOL.length);
+    if (i === last) i = (i + 1) % EVPOOL.length;
+    last = i;
+    var e = EVPOOL[i];
+    var row = document.createElement("div");
+    row.className = "feed-row";
+    row.innerHTML = '<span class="tm">' + now() + '</span><span class="badge ' + e.c + '">' + e.t + '</span><span>' + e.txt + '</span>';
+    feed.insertBefore(row, feed.firstChild);
+    while (feed.children.length > 30) feed.removeChild(feed.lastChild);
+  }
+  for (var k = 0; k < 9; k++) push();
+  STREAM_IV = setInterval(function () { if (running) push(); }, 2000);
+  document.getElementById("feed-toggle").addEventListener("click", function () {
+    running = !running;
+    this.textContent = running ? "⏸ 暂停" : "▶ 继续";
+  });
+};
+
+/* ================= 路由 ================= */
+var STREAM_IV = null;
+function stopStream() { if (STREAM_IV) { clearInterval(STREAM_IV); STREAM_IV = null; } }
+function setChrome(domain, name, user) {
+  document.getElementById("ah-sys").textContent = name;
+  document.getElementById("ah-dom").textContent = domain;
+  var cu = document.getElementById("chrome-user"), lo = document.getElementById("chrome-logout");
+  if (user) { cu.textContent = user; lo.style.display = ""; } else { cu.textContent = ""; lo.style.display = "none"; }
+}
+function buildNav(sys) {
+  var side = document.getElementById("demo-side");
+  side.innerHTML = "";
+  var S = SYSTEMS[sys];
+  var g = document.createElement("div");
+  g.className = "ds-group";
+  g.textContent = S.name;
+  side.appendChild(g);
+  S.nav.forEach(function (m) {
+    var b = document.createElement("button");
+    b.textContent = m.t; b.dataset.mod = m.id;
+    b.addEventListener("click", function () { location.hash = "#/" + sys + "/" + m.id; });
+    side.appendChild(b);
+  });
+}
+function route() {
+  stopStream();
+  stopTrace();
+  var h = location.hash.replace(/^#\/?/, "");
+  var seg = h.split("/");
+  var sys = seg[0] || "login";
+  if (sys === "login" || !SYSTEMS[sys]) {
+    document.querySelector(".demo-shell").classList.add("logged-out");
+    setChrome("sso.zhidun.internal", "智盾统一身份认证", null);
+    RENDER.login();
+    return;
+  }
+  if (sys === "pano") {
+    document.querySelector(".demo-shell").classList.add("logged-out");
+    setChrome("zhidun.internal", "平台全景 · 服务目录", null);
+    RENDER.svcs();
+    return;
+  }
+  document.querySelector(".demo-shell").classList.remove("logged-out");
+  var S = SYSTEMS[sys];
+  setChrome(S.domain, S.name, S.user);
+  buildNav(sys);
+  var mod = seg[1] && RENDER[seg[1]] ? seg[1] : S.nav[0].id;
+  document.querySelectorAll(".demo-side button").forEach(function (x) { x.classList.toggle("on", x.dataset.mod === mod); });
+  RENDER[mod]();
+}
+document.getElementById("chrome-logout").addEventListener("click", function () { location.hash = "#/login"; });
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>

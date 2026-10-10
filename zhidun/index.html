@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智盾 — 数据资产与 AI 服务平台 · 产品讲解</title>
+<style>
+:root{
+  --bg:#f4f7fb; --bg2:#ecf1f8; --panel:#ffffff; --panel2:#f9fbfe;
+  --line:rgba(30,41,59,.09); --line2:rgba(30,41,59,.18);
+  --tx:#0f1c2e; --tx2:#3f4f63; --tx3:#63748a;
+  --acc:#2563eb; --acc2:#1d4ed8; --cyan:#0e7490; --amber:#b45309; --red:#e11d48; --violet:#6d28d9; --teal:#0f766e;
+  --grad:linear-gradient(135deg,#3b82f6,#22d3ee);
+  --ontx:#051532;
+  --shadow:0 12px 32px rgba(23,42,71,.1);
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:14.5px;line-height:1.75;overflow-x:hidden;
+  background-image:radial-gradient(ellipse 60% 40% at 85% -5%,rgba(34,211,238,.06),transparent),radial-gradient(ellipse 50% 35% at 5% 10%,rgba(37,99,235,.05),transparent);}
+::selection{background:rgba(37,99,235,.2)}
+a{color:var(--cyan);text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+
+/* ---------- NAV ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(248,250,253,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);box-shadow:0 1px 12px rgba(23,42,71,.05)}
+nav .bar{max-width:1280px;margin:0 auto;padding:0 28px;height:58px;display:flex;align-items:center;gap:22px}
+nav .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;letter-spacing:.5px;white-space:nowrap}
+nav .logo .mark{width:26px;height:26px;border-radius:8px;background:var(--grad);display:grid;place-items:center;font-size:14px;color:var(--ontx)}
+nav .links{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+nav .links::-webkit-scrollbar{display:none}
+nav .links a{color:var(--tx2);font-size:12.5px;padding:6px 11px;border-radius:8px;white-space:nowrap;transition:.2s}
+nav .links a:hover{color:var(--tx);background:rgba(30,41,59,.06)}
+nav .links a.on{color:var(--ontx);background:var(--grad);font-weight:600}
+
+/* ---------- HERO ---------- */
+header{padding:120px 0 70px;position:relative}
+header .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:1px solid rgba(37,99,235,.4);border-radius:99px;color:var(--acc2);font-size:12.5px;background:rgba(37,99,235,.07)}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--acc2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h1{font-size:46px;line-height:1.22;font-weight:800;margin:18px 0 8px;letter-spacing:.5px}
+h1 .en{display:block;font-size:15px;font-weight:500;color:var(--tx3);letter-spacing:3px;margin-top:10px}
+h1 .hl{display:block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.slogan{font-size:17px;color:var(--tx2);margin:14px 0 6px}
+.slogan b{color:var(--tx)}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 26px}
+.hero-tags span{font-size:12px;color:var(--tx2);border:1px solid var(--line);border-radius:8px;padding:4px 10px;background:rgba(30,41,59,.04)}
+.hero-tags span i{color:var(--acc2);font-style:normal;margin-right:5px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:12px;padding:14px 12px;text-align:center}
+.kpi .num{font-size:24px;font-weight:800;color:var(--acc2);font-variant-numeric:tabular-nums}
+.kpi .num small{font-size:12px;font-weight:500;color:var(--tx3)}
+.kpi .lab{font-size:12px;color:var(--tx2);margin-top:4px;min-height:2.8em;display:flex;align-items:center;justify-content:center;line-height:1.4;text-align:center}
+.btnrow{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.btn{display:inline-block;font-size:13.5px;font-weight:700;padding:10px 22px;border-radius:10px;transition:.2s}
+.btn.pri{background:var(--grad);color:var(--ontx);box-shadow:0 6px 18px rgba(37,99,235,.25)}
+.btn.pri:hover{transform:translateY(-2px)}
+.btn.gho{border:1px solid var(--line2);color:var(--tx2)}
+.btn.gho:hover{color:var(--tx);border-color:var(--acc)}
+
+/* live panel */
+.live{background:linear-gradient(180deg,#ffffff,#f2f6fb);border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.live .hd{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);background:rgba(14,116,144,.04)}
+.live .hd .sig{display:flex;gap:3px}
+.live .hd .sig i{width:10px;height:10px;border-radius:50%}
+.live .hd .sig i:nth-child(1){background:var(--red)}.live .hd .sig i:nth-child(2){background:var(--amber)}.live .hd .sig i:nth-child(3){background:var(--acc)}
+.live .hd b{font-size:13.5px}
+.live .hd .clock{margin-left:auto;font-size:12px;color:var(--tx3);font-variant-numeric:tabular-nums}
+.live .body{padding:14px 18px;height:342px;display:flex;flex-direction:column;gap:2px;overflow:hidden;position:relative}
+.live .body::after{content:"";position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(180deg,transparent,#f2f6fb);pointer-events:none}
+.ev{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:10px;background:rgba(30,41,59,.04);margin-bottom:6px;animation:evin .5s ease;position:relative;z-index:1;border:1px solid var(--line)}
+@keyframes evin{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.ev .tag{flex:none;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.5px;margin-top:2px;white-space:nowrap}
+.ev .tag.retrieve{background:rgba(37,99,235,.08);color:var(--acc)}
+.ev .tag.filter{background:rgba(225,29,72,.08);color:var(--red)}
+.ev .tag.review{background:rgba(180,83,9,.09);color:var(--amber)}
+.ev .tag.eval{background:rgba(14,116,144,.08);color:var(--cyan)}
+.ev .tag.fb{background:rgba(109,40,217,.07);color:var(--violet)}
+.ev .txt{font-size:12.8px;color:var(--tx2);line-height:1.55}
+.ev .txt b{color:var(--tx);font-weight:600}
+.ev .txt .ok{color:var(--teal)}
+.ev .t{margin-left:auto;flex:none;font-size:11px;color:var(--tx3);font-variant-numeric:tabular-nums;padding-top:2px}
+.live .ft{display:flex;gap:10px;padding:11px 18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--tx3)}
+.live .ft b{color:var(--tx2)}
+
+/* ---------- SECTION SHELL ---------- */
+section{padding:78px 0 30px}
+.sec-head{margin-bottom:34px}
+.sec-head .no{font-size:13px;font-weight:700;color:var(--acc2);letter-spacing:3px;font-variant-numeric:tabular-nums}
+.sec-head h2{font-size:28px;font-weight:800;margin:6px 0 8px;letter-spacing:.5px}
+.sec-head p.sub{color:var(--tx2);max-width:880px}
+.sec-head p.sub b{color:var(--tx)}
+
+/* ---------- CARDS ---------- */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;transition:.25s}
+.card:hover{border-color:rgba(37,99,235,.45);transform:translateY(-3px);box-shadow:var(--shadow)}
+.card h4{font-size:15.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card p,.card li{font-size:13.2px;color:var(--tx2)}
+.card ul{padding-left:18px}
+.card .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex:none}
+.num-tag{font-size:11px;font-weight:700;color:var(--amber);letter-spacing:1px}
+.pain .big{font-size:15px;color:var(--tx);font-weight:600;margin:2px 0 6px}
+.resp{margin-top:10px;border-top:1px dashed var(--line2);padding-top:9px;font-size:12.4px;color:var(--tx2)}
+.resp b{color:var(--acc2)}
+.ulab{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--cyan);margin:20px 0 10px}
+.users{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.users .u{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;transition:.25s}
+.users .u:hover{border-color:rgba(37,99,235,.45);transform:translateY(-2px);box-shadow:var(--shadow)}
+.users .u b{font-size:13.8px;color:var(--tx);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.users .u .tag{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--amber);border:1px solid rgba(180,130,20,.35);padding:1px 8px;border-radius:99px}
+.users .u .p{font-size:12.3px;color:var(--tx2);margin-top:7px}
+.users .u .gain{font-size:12.3px;color:var(--acc2);font-weight:600;margin-top:6px}
+.inv{margin-top:18px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--panel),var(--bg2));padding:5px 18px}
+.inv>summary{cursor:pointer;list-style:none;padding:11px 0;font-size:12.8px;font-weight:700;color:var(--acc2);display:flex;align-items:center;justify-content:space-between}
+.inv>summary::-webkit-details-marker{display:none}
+.inv>summary::after{content:"展开 14 项资产与 7 类角色 ↓";font-size:11px;font-weight:600;color:var(--tx3)}
+.inv[open]>summary::after{content:"收起 ↑"}
+.inv .row{display:flex;gap:12px;align-items:flex-start;padding:11px 0}
+.inv .row{border-top:1px dashed var(--line2)}
+.inv .row>b{flex:none;font-size:12.5px;color:var(--tx);padding-top:3px;white-space:nowrap}
+.inv .chips{display:flex;flex-wrap:wrap;gap:6px}
+.inv .chips span{font-size:11.5px;color:var(--tx2);border:1px solid var(--line);border-radius:99px;padding:2px 10px;background:rgba(30,41,59,.04)}
+.inv-tbl{width:100%;border-collapse:collapse;margin-top:4px}
+.inv-tbl th{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--tx3);text-align:left;padding:9px 6px 6px;border-bottom:1px solid var(--line2)}
+.inv-tbl td{padding:9px 6px;border-bottom:1px dashed var(--line);vertical-align:top}
+.inv-tbl tbody tr:last-child td{border-bottom:none}
+.inv-tbl td.dm{color:var(--cyan);font-weight:700;font-size:12.5px;white-space:nowrap}
+.inv-tbl td.cnt{font-weight:800;color:var(--acc2);font-variant-numeric:tabular-nums;text-align:center;vertical-align:middle}
+.promises{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.promises span{font-size:12px;color:var(--cyan);border:1px solid rgba(14,116,144,.35);padding:4px 12px;border-radius:99px;background:rgba(14,116,144,.05)}
+
+/* ---------- PLATFORM PRODUCT ARCH ---------- */
+.arch{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start}
+.arch-brief{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px;padding:14px 18px;border:1px solid rgba(37,99,235,.24);border-radius:14px;background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(14,116,144,.04))}
+.arch-brief b{display:block;font-size:14px;color:var(--acc2);margin-bottom:2px}
+.arch-brief span{font-size:12.6px;color:var(--tx2)}
+.arch-brief em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--cyan);white-space:nowrap;border:1px solid rgba(14,116,144,.3);border-radius:99px;padding:4px 10px;background:rgba(14,116,144,.05)}
+.layer-stack{display:flex;flex-direction:column;gap:8px;position:relative}
+.lband{display:grid;grid-template-columns:120px 1fr;gap:0;border-radius:11px;overflow:hidden;border:1px solid var(--line);cursor:pointer;transition:.22s;background:var(--panel)}
+.lband:hover{transform:translateX(4px)}
+.lband.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 8px 24px rgba(23,42,71,.12)}
+.lband .side{background:linear-gradient(180deg,var(--c2),var(--c));color:var(--ontx);display:flex;flex-direction:column;justify-content:center;padding:12px;font-weight:800;font-size:13.5px;gap:2px}
+.lband .side small{font-size:10px;font-weight:600;opacity:.78;letter-spacing:1px}
+.lband .main{padding:11px 16px;background:rgba(30,41,59,.03)}
+.lband .main .t{font-size:13.8px;font-weight:650;color:var(--tx);display:flex;align-items:center;gap:8px}
+.lband .main .d{font-size:12.2px;color:var(--tx3);margin-top:1px}
+.state{font-size:9.6px;font-weight:800;padding:1px 7px;border-radius:6px;letter-spacing:.5px;flex:none}
+.state.now{background:rgba(15,118,110,.12);color:var(--teal)}
+.state.done{background:rgba(37,99,235,.1);color:var(--acc2)}
+.arch-detail{position:sticky;top:78px;background:linear-gradient(180deg,var(--panel2),var(--bg2));border:1px solid var(--line2);border-radius:16px;padding:24px 26px;min-height:420px}
+.arch-detail .lh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.arch-detail .lh .chip{font-size:11px;font-weight:800;padding:4px 12px;border-radius:8px;letter-spacing:1px}
+.arch-detail h3{font-size:19px;font-weight:800}
+.arch-detail .what{font-size:13.5px;color:var(--tx2);margin-bottom:14px}
+.arch-detail .what b{color:var(--tx)}
+.arch-detail table{width:100%;border-collapse:collapse;font-size:12.8px}
+.arch-detail td{padding:8px 6px;border-top:1px solid var(--line);vertical-align:top;color:var(--tx2)}
+.arch-detail td:first-child{color:var(--tx);font-weight:600;width:96px;white-space:nowrap}
+.arch-boundary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.arch-boundary div{border:1px solid var(--line);border-radius:11px;padding:11px 14px;background:rgba(30,41,59,.025);font-size:12.2px;color:var(--tx2)}
+.arch-boundary b{display:block;color:var(--tx);font-size:12.5px;margin-bottom:2px}
+.service-contract{margin-top:20px}
+.service-contract-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:10px}
+.service-contract-head b{display:block;font-size:14px;color:var(--tx);margin-bottom:2px}
+.service-contract-head span{display:block;font-size:11.6px;line-height:1.55;color:var(--tx3)}
+.service-contract-head i{flex:none;font-style:normal;font-size:10px;font-weight:800;color:var(--teal);border:1px solid rgba(15,118,110,.28);border-radius:99px;background:rgba(15,118,110,.06);padding:4px 10px;white-space:nowrap}
+.service-contract-wrap{border:1px solid var(--line);border-radius:14px;overflow-x:auto;background:linear-gradient(180deg,var(--panel),var(--bg2))}
+.service-contract-table{width:100%;min-width:1120px;border-collapse:collapse;font-size:11.5px}
+.service-contract-table th{padding:9px 11px;text-align:left;background:rgba(14,116,144,.055);color:var(--tx);font-size:10.5px;letter-spacing:.45px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.service-contract-table td{padding:10px 11px;border-bottom:1px solid var(--line);color:var(--tx2);vertical-align:top;line-height:1.55}
+.service-contract-table tr:last-child td{border-bottom:none}
+.service-contract-table td:first-child{font-weight:750;color:var(--tx);white-space:nowrap}
+.service-contract-table td:first-child small{display:block;color:var(--cyan);font-weight:750;margin-bottom:2px}
+.service-contract-table .accept{color:var(--tx);font-weight:600}
+.service-contract-foot{margin-top:8px;font-size:10.8px;color:var(--tx3)}
+.service-contract-foot b{color:var(--acc2)}
+.fade-swap{animation:swap .35s ease}
+@keyframes swap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- FLOW 状态机 ---------- */
+.flow-wrap{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:16px;padding:26px}
+
+/* ---------- AGENTS ---------- */
+.maestro{display:grid;grid-template-columns:.95fr 1.05fr;gap:20px;margin-bottom:20px}
+.mem{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:16px;padding:22px}
+.mem h4{font-size:15px;margin-bottom:12px}
+.mem .row{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:12.6px}
+.mem .row:first-of-type{border-top:none}
+.mem .row b{color:var(--cyan)}
+.mem .row span{color:var(--tx2)}
+.tools{border:1px solid var(--line);border-radius:12px;padding:14px 18px;background:rgba(30,41,59,.03)}
+.tools .tl{font-size:12px;font-weight:700;color:var(--tx2);letter-spacing:1px;margin-bottom:8px}
+.tools .chips{display:flex;flex-wrap:wrap;gap:7px}
+.tools .chips span{font-size:11.6px;color:var(--tx2);background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.25);padding:3px 10px;border-radius:7px}
+.aflow{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line2);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);margin-bottom:20px}
+.af-cap{display:flex;align-items:center;gap:9px;margin-bottom:14px;font-size:11.5px;font-weight:800;letter-spacing:1.5px;color:var(--tx3)}
+.af-cap i{font-style:normal;color:var(--acc2)}
+.af-cap .hint{font-weight:600;letter-spacing:0;color:var(--tx3);font-size:11px}
+/* ---- 产品闭环 · 总流程动画（知识 Agent） ---- */
+.loop{margin:2px 0 2px}
+.lp-sec{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--tx3);margin:13px 0 8px}
+.lp-pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(116px,1fr));gap:8px}
+.lp-st{position:relative;border:1px solid var(--line);border-radius:11px;padding:10px 6px 9px;text-align:center;background:rgba(30,41,59,.02);opacity:.4;transition:.3s}
+.lp-st .ico{font-size:16px}
+.lp-st b{display:block;font-size:11.6px;margin-top:3px;line-height:1.35;color:var(--tx)}
+.lp-st span{display:block;font-size:10px;color:var(--tx3);margin-top:3px;line-height:1.42}
+.lp-st .arw{position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:11px;z-index:2;margin:0}
+.lp-st.on{opacity:1;border-color:rgba(37,99,235,.5);background:rgba(37,99,235,.05);transform:translateY(-2px)}
+.lp-st.done{opacity:1;border-color:rgba(15,118,110,.65);background:rgba(15,118,110,.07)}
+.lp-st.agent{border-color:rgba(109,40,217,.5)}
+.lp-st.agent.on{border-color:var(--violet);background:rgba(109,40,217,.08);box-shadow:0 0 0 3px rgba(109,40,217,.14),0 6px 18px rgba(109,40,217,.2);animation:agpulse 1s infinite}
+.lp-st.agent .mtag{display:inline-block;margin-top:4px;font-size:9px;font-weight:800;color:#fff;background:linear-gradient(135deg,#6d28d9,#8b5cf6);border-radius:6px;padding:1px 7px;letter-spacing:.5px}
+@keyframes agpulse{0%,100%{box-shadow:0 0 0 3px rgba(109,40,217,.14),0 6px 18px rgba(109,40,217,.2)}50%{box-shadow:0 0 0 6px rgba(109,40,217,.08),0 6px 22px rgba(109,40,217,.28)}}
+.lp-st.gate{border-color:rgba(180,83,9,.6);background:rgba(180,83,9,.05)}
+.lp-st.gate.on{border-color:var(--amber);background:rgba(180,83,9,.06);box-shadow:0 0 0 3px rgba(180,83,9,.1)}
+.lp-st.gate:not(.on):not(.done),.lp-st.agent:not(.on):not(.done){opacity:.78}
+.lp-zone{position:relative;border:1.5px dashed rgba(109,40,217,.45);border-radius:14px;padding:14px 10px 10px;margin-top:2px;transition:.3s}
+.lp-zone.hot{border-color:rgba(109,40,217,.9);box-shadow:0 0 0 4px rgba(109,40,217,.08)}
+.lp-ztag{position:absolute;top:-9px;left:14px;font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(135deg,#6d28d9,#8b5cf6);border-radius:99px;padding:2px 11px;cursor:help;z-index:3}
+.lp-back{margin-top:12px;border:1px dashed rgba(109,40,217,.45);background:rgba(109,40,217,.04);color:var(--violet);border-radius:10px;padding:9px 14px;font-size:11.8px;font-weight:600;text-align:center;opacity:.4;transition:.3s}
+.lp-back.on{opacity:1}
+.lp-svc{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.lp-svc span{border:1px solid var(--line);border-radius:99px;padding:3px 11px;font-size:11.6px;color:var(--tx2);background:rgba(30,41,59,.03);cursor:help;transition:.15s}
+.lp-svc span:hover{border-color:rgba(14,116,144,.45);color:var(--tx)}
+@media (max-width:1080px){.lp-st .arw{display:none}}
+
+/* ---------- AGENT FLOW · PRODUCT VIEW ---------- */
+.agent-evolution{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:10px;align-items:stretch;margin-bottom:16px}
+.agent-evolution>div{border:1px solid var(--line);border-radius:13px;padding:14px 16px;background:linear-gradient(180deg,var(--panel),var(--bg2))}
+.agent-evolution>div:last-child{border-color:rgba(180,83,9,.38);background:rgba(180,83,9,.04)}
+.agent-evolution i{display:block;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:1px;color:var(--acc2);margin-bottom:3px}
+.agent-evolution b{display:block;font-size:14px;color:var(--tx)}
+.agent-evolution span{display:block;font-size:12px;color:var(--tx2);margin-top:3px;line-height:1.55}
+.agent-evolution>em{font-style:normal;display:grid;place-items:center;color:var(--tx3);font-size:17px}
+.concept-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.concept-row div{border-left:3px solid var(--cc,var(--acc));border-radius:0 10px 10px 0;padding:9px 13px;background:rgba(37,99,235,.045)}
+.concept-row div:nth-child(2){--cc:var(--violet);background:rgba(109,40,217,.045)}
+.concept-row div:nth-child(3){--cc:var(--teal);background:rgba(15,118,110,.045)}
+.concept-row div:nth-child(4){--cc:var(--cyan);background:rgba(14,116,144,.045)}
+.concept-row b{display:block;font-size:12.6px;color:var(--tx)}
+.concept-row span{display:block;font-size:11.5px;color:var(--tx2);margin-top:2px}
+.agent-legend{display:inline-flex;gap:14px;align-items:center;flex-wrap:wrap;margin-left:8px}
+.agent-lane{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center;padding:9px 10px;border-top:1px dashed var(--line2)}
+.agent-lane:first-child{border-top:none}
+.agent-lane .lane-name{padding:0 5px}
+.agent-lane .lane-name b{display:block;font-size:12px;color:var(--tx)}
+.agent-lane .lane-name span{display:block;font-size:10.5px;color:var(--tx3)}
+.agent-lane .lp-pipe.one{grid-template-columns:1fr}
+.agent-lane .lp-pipe.two{grid-template-columns:repeat(2,1fr)}
+.agent-lane .lp-st{opacity:.38;text-align:left;padding:10px 14px;min-height:68px;background:var(--panel)}
+.agent-lane .lp-st .ico{float:left;margin-right:10px;line-height:1.4}
+.agent-lane .lp-st b{font-size:12.2px;margin-top:0}
+.agent-lane .lp-st span{font-size:10.7px}
+.agent-lane .lp-st .mtag{float:right;margin-top:3px}
+.agent-lane.deterministic{background:rgba(180,83,9,.025)}
+.agent-lane.agent-zone{background:rgba(109,40,217,.025)}
+.agent-lane.service-lane{background:rgba(15,118,110,.03)}
+.agent-lane .lp-st.service{border-color:rgba(15,118,110,.45);background:rgba(15,118,110,.05)}
+.agent-lane .lp-st.done{opacity:1;transform:none;box-shadow:none;background:var(--panel);border-color:var(--line2)}
+.agent-lane .lp-st.agent.done{background:rgba(109,40,217,.07);border-color:rgba(109,40,217,.5)}
+.agent-lane .lp-st.gate.done{background:rgba(180,83,9,.06);border-color:rgba(180,83,9,.5)}
+.agent-lane .lp-st.service.done{background:rgba(15,118,110,.07);border-color:rgba(15,118,110,.5)}
+.agent-lane.lp-zone{margin:8px 0;padding:16px 10px 10px}
+.agent-lane.lp-zone .lp-ztag{top:-10px}
+.agent-loop-zone.lp-zone{margin:8px 0;padding:16px 10px 10px}
+.agent-loop-zone.lp-zone .lp-ztag{top:-10px}
+.owner-tag{display:inline-block!important;width:auto;margin-top:6px!important;padding:1px 7px;border-radius:6px;background:rgba(37,99,235,.09);color:var(--acc2)!important;font-size:9.3px!important;font-weight:800;letter-spacing:.25px}
+.owner-map{margin-top:16px;border:1px solid rgba(37,99,235,.24);border-radius:13px;padding:12px 14px;background:rgba(37,99,235,.035)}
+.owner-map .owner-head{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--acc2);margin-bottom:8px}
+.owner-map .owner-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.owner-map .owner-grid span{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel);font-size:10.4px;color:var(--tx2);text-align:center}
+.owner-map .owner-grid b{display:block;color:var(--tx);font-size:10.7px;margin-bottom:1px}
+.agent-cycle-note{margin-top:10px;border:1px dashed rgba(109,40,217,.4);border-radius:10px;padding:8px 12px;background:rgba(109,40,217,.035);font-size:11.4px;color:var(--violet);text-align:center;font-weight:650}
+.service-six{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:7px}
+.service-six span{display:block;text-align:center;border:1px solid rgba(15,118,110,.28);border-radius:8px;padding:4px 6px;background:rgba(15,118,110,.05);font-size:10.3px;color:var(--teal)}
+.fl-lg{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:var(--tx2);letter-spacing:0}
+.fl-lg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.fl-lg i.c{background:#d97706}.fl-lg i.m{background:#8b5cf6}.fl-lg i.f{background:#0891b2}
+.fl-lg i.z{background:none;border:1.5px dashed #8b5cf6;box-sizing:border-box}
+[data-tt]{cursor:help}
+.fl-tl{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--tx3);margin-bottom:8px}
+.af-src{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.af-out{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.af-chip{border:1px solid var(--line);border-radius:10px;background:rgba(30,41,59,.03);padding:7px 10px;font-size:11.8px;color:var(--tx2);text-align:center}
+.af-chip.out{border-color:rgba(14,116,144,.4);background:rgba(14,116,144,.05);font-weight:600}
+.af-stub{display:grid;place-items:center;height:20px;color:var(--tx3);font-size:12px}
+.af-hub{background:var(--grad);color:var(--ontx);border-radius:12px;padding:11px 18px;font-weight:800;font-size:14.5px;text-align:center;cursor:help;letter-spacing:.3px;box-shadow:0 6px 18px rgba(37,99,235,.25)}
+.af-bus{display:grid;gap:10px;position:relative;border-top:2px dashed rgba(37,99,235,.45);margin-top:3px}
+.af-bus i{display:block;height:18px;width:2px;background:rgba(37,99,235,.45);margin:0 auto}
+.af-bus::before{content:"";position:absolute;top:-10px;left:50%;width:2px;height:9px;background:rgba(37,99,235,.45);transform:translateX(-50%)}
+.af-agents{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.af-node{border:1px solid var(--line);border-radius:12px;padding:12px 8px 10px;text-align:center;background:linear-gradient(180deg,var(--panel),var(--bg2));transition:.2s;cursor:pointer;position:relative;overflow:hidden}
+.af-node::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--grad))}
+.af-node:hover{transform:translateY(-3px);border-color:rgba(14,116,144,.45);box-shadow:var(--shadow)}
+.af-node .em{font-size:17px}
+.af-node b{display:block;font-size:12.4px;margin-top:3px}
+.af-node span{display:block;font-size:10.4px;color:var(--tx3);margin-top:2px;line-height:1.4}
+.af-node .k{display:inline-block;margin-top:6px;font-size:9.6px;font-weight:800;color:var(--amber);background:rgba(180,83,9,.09);border-radius:6px;padding:1px 7px;white-space:nowrap}
+.af-node .pbdg{position:absolute;top:7px;right:7px}
+.pbdg{font-size:9px;font-weight:800;padding:1px 5px;border-radius:5px;letter-spacing:.5px}
+.pbdg.p0{background:rgba(37,99,235,.13);color:var(--acc2)}
+.pbdg.p1{background:rgba(14,116,144,.13);color:var(--cyan)}
+.pbdg.p2{background:rgba(109,40,217,.13);color:var(--violet)}
+.af-loop{margin-top:14px;border:1px dashed rgba(109,40,217,.45);background:rgba(109,40,217,.04);color:var(--violet);border-radius:10px;padding:9px 14px;font-size:11.8px;font-weight:600;text-align:center}
+.tt{position:fixed;z-index:200;max-width:350px;background:#ffffff;border:1px solid var(--line2);border-radius:12px;box-shadow:0 16px 40px rgba(23,42,71,.16);padding:13px 15px;font-size:12px;pointer-events:none;opacity:0;transform:translateY(4px);transition:.15s}
+.tt.show{opacity:1;transform:none}
+.tt h6{font-size:13px;display:flex;gap:7px;align-items:center;margin-bottom:7px}
+.tt table{width:100%;border-collapse:collapse}
+.tt td{padding:3px 0;border-top:1px dashed var(--line);vertical-align:top;color:var(--tx2);line-height:1.5}
+.tt td:first-child{color:var(--tx);font-weight:700;width:46px;white-space:nowrap;padding-right:8px}
+.tt .tkpi{color:var(--amber);font-weight:700}
+
+/* ---------- RAG ---------- */
+.rag-journey{display:grid;gap:10px;margin-bottom:18px}
+.rag-track{display:grid;grid-template-columns:150px 1fr;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(180deg,var(--panel),var(--bg2))}
+.rag-track-label{display:flex;flex-direction:column;justify-content:center;padding:14px 16px;background:rgba(37,99,235,.055);border-right:1px solid var(--line)}
+.rag-track.iter .rag-track-label{background:rgba(15,118,110,.055)}
+.rag-track-label i{font-style:normal;font-size:9.8px;font-weight:800;letter-spacing:1px;color:var(--acc2)}
+.rag-track.iter .rag-track-label i{color:var(--teal)}
+.rag-track-label b{font-size:13px;color:var(--tx);margin-top:2px}
+.rag-steps{display:grid;grid-template-columns:repeat(4,1fr)}
+.rag-step{position:relative;padding:12px 14px;border-left:1px dashed var(--line)}
+.rag-step:first-child{border-left:none}
+.rag-step::after{content:"→";position:absolute;right:-6px;top:50%;transform:translateY(-50%);color:var(--tx3);z-index:2}
+.rag-step:last-child::after{display:none}
+.rag-step i{font-style:normal;font-size:9.6px;font-weight:800;letter-spacing:.7px;color:var(--tx3)}
+.rag-step b{display:block;font-size:12.3px;color:var(--tx);margin:2px 0}
+.rag-step span{display:block;font-size:10.8px;color:var(--tx2);line-height:1.5}
+.cap{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.cap b{font-size:14.5px}
+.cap .sim{font-size:10px;color:var(--amber);border:1px solid rgba(180,83,9,.4);background:rgba(180,83,9,.06);border-radius:6px;padding:1px 8px;font-weight:700;white-space:nowrap}
+.rebtn{margin-left:auto;font-size:11px;padding:4px 12px;border-radius:8px;border:1px solid var(--line2);background:transparent;color:var(--tx2);cursor:pointer;font-family:inherit;transition:.2s}
+.rebtn:hover{color:var(--tx);border-color:var(--acc)}
+.ingest{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line2);border-radius:16px;padding:20px 22px;margin-bottom:20px}
+.ipipe{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.ist{border:1px solid var(--line);border-radius:11px;padding:10px 8px 9px;text-align:center;background:rgba(30,41,59,.02);opacity:.4;transition:.35s;position:relative}
+.ist .ico{font-size:17px}
+.ist b{display:block;font-size:11.8px;margin-top:3px}
+.ist span{display:block;font-size:9.8px;color:var(--tx3);margin-top:3px;line-height:1.45}
+.ist .arw{position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:11px;z-index:2}
+.ist.on{opacity:1;border-color:rgba(37,99,235,.5);background:rgba(37,99,235,.05);transform:translateY(-2px)}
+.ist.done{opacity:1;border-color:rgba(15,118,110,.45);background:rgba(15,118,110,.04)}
+.ifoot{display:flex;gap:10px;align-items:center;margin-top:13px;flex-wrap:wrap}
+.ilibs{display:flex;gap:7px;flex-wrap:wrap}
+.ilib{font-size:10.8px;border:1px solid rgba(37,99,235,.35);background:rgba(37,99,235,.06);color:var(--acc2);border-radius:8px;padding:3px 10px;opacity:.3;transition:.3s}
+.ilib.on{opacity:1}
+.icnt{margin-left:auto;font-size:11.6px;color:var(--tx3);white-space:nowrap}
+.icnt b{color:var(--acc2);font-size:14px;font-variant-numeric:tabular-nums}
+.rag-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.rag-grid.g3{grid-template-columns:repeat(3,1fr);margin-bottom:20px}
+.rag-glab{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--tx3);margin:8px 0 10px}
+.strategy-wrap{border:1px solid var(--line);border-radius:14px;overflow-x:auto;background:linear-gradient(180deg,var(--panel),var(--bg2));margin-bottom:18px}
+.strategy-table{width:100%;min-width:960px;border-collapse:collapse;font-size:12.2px}
+.strategy-table th{padding:10px 12px;text-align:left;background:rgba(14,116,144,.055);color:var(--tx);font-size:11px;letter-spacing:.5px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.strategy-table td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--tx2);vertical-align:top;line-height:1.6}
+.strategy-table tr:last-child td{border-bottom:none}
+.strategy-table tbody tr:hover td{background:rgba(37,99,235,.035)}
+.strategy-table .sn{font-weight:800;color:var(--acc2);font-variant-numeric:tabular-nums}
+.strategy-table .sname{font-weight:750;color:var(--tx);white-space:nowrap}
+.strategy-table .stage{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:5px;background:rgba(37,99,235,.11);color:var(--acc2);white-space:nowrap}
+.strategy-table .stage.p1{background:rgba(14,116,144,.11);color:var(--cyan)}
+.strategy-table .rule{font-weight:650;color:var(--tx)}
+.case-launch{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px dashed rgba(109,40,217,.35);border-radius:12px;background:rgba(109,40,217,.035);padding:11px 14px;margin:-4px 0 18px}
+.case-launch b{display:block;font-size:12.5px;color:var(--tx)}
+.case-launch span{display:block;font-size:10.8px;color:var(--tx3);margin-top:1px}
+.case-btn{flex:none;border:1px solid rgba(109,40,217,.38);border-radius:8px;background:var(--panel);color:var(--violet);padding:6px 13px;font:700 11px/1.4 inherit;cursor:pointer;transition:.2s}
+.case-btn:hover{background:rgba(109,40,217,.07);transform:translateY(-1px)}
+.case-dialog{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;width:min(980px,calc(100vw - 40px));max-height:86vh;border:1px solid var(--line2);border-radius:16px;padding:0;background:var(--panel);color:var(--tx);box-shadow:0 24px 70px rgba(15,28,46,.24);overflow:hidden}
+.case-dialog::backdrop{background:rgba(15,28,46,.48);backdrop-filter:blur(3px)}
+.case-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.case-dialog-head b{font-size:13.5px;color:var(--violet)}
+.case-dialog-head span{font-size:10.5px;color:var(--tx3);margin-left:8px}
+.case-close{border:1px solid var(--line2);border-radius:8px;background:var(--panel);color:var(--tx2);width:30px;height:30px;cursor:pointer;font-size:16px;line-height:1}
+.case-close:hover{border-color:var(--violet);color:var(--violet)}
+.case-dialog-body{padding:18px;overflow:auto;max-height:calc(86vh - 58px)}
+.long-case{border:none;border-radius:0;background:transparent;padding:0;margin:0}
+.long-case .case-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.long-case .case-head b{font-size:13.5px;color:var(--violet)}
+.long-case .case-head span{font-size:10px;color:var(--tx3);border:1px solid var(--line2);border-radius:99px;padding:1px 8px;background:var(--panel)}
+.case-scenario{border:1px solid rgba(109,40,217,.2);border-radius:11px;background:rgba(109,40,217,.035);padding:10px 12px;margin-bottom:12px;font-size:11px;line-height:1.65;color:var(--tx2)}
+.case-scenario b{color:var(--violet)}
+.case-scenario .strike{color:var(--red);text-decoration:line-through;text-decoration-thickness:1px}
+.case-phase{display:flex;align-items:center;gap:8px;margin:13px 0 7px;font-size:10px;font-weight:850;letter-spacing:.7px;color:var(--acc2);text-transform:uppercase}
+.case-phase::after{content:"";height:1px;flex:1;background:var(--line)}
+.case-flow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.case-step{position:relative;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:var(--panel);font-size:10.8px;line-height:1.58;color:var(--tx2)}
+.case-step b{display:block;color:var(--tx);font-size:11.2px;margin-bottom:3px}
+.case-step em{font-style:normal;color:var(--cyan);font-weight:750}
+.case-decisions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.case-decision{border-left:3px solid var(--acc2);border-radius:8px;background:var(--bg2);padding:9px 11px;font-size:10.8px;line-height:1.55;color:var(--tx2)}
+.case-decision b{display:block;color:var(--tx);margin-bottom:2px}
+.long-case .case-result{margin-top:10px;font-size:11px;color:var(--tx2)}
+.long-case .case-result b{color:var(--acc2)}
+.rag{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:13px;padding:16px;transition:.22s;position:relative}
+.rag:hover{transform:translateY(-3px);border-color:rgba(37,99,235,.5);box-shadow:var(--shadow)}
+.rag .top{display:flex;align-items:center;gap:5px;margin-bottom:8px}
+.rag .top .idx{margin-right:auto}
+.rag .idx{font-size:11px;font-weight:800;color:var(--tx3);font-variant-numeric:tabular-nums}
+.rag .st{font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;letter-spacing:1px}
+.rag .st.ingest{background:rgba(37,99,235,.08);color:var(--acc)}
+.rag .st.infer{background:rgba(15,118,110,.08);color:var(--teal)}
+.rag h5{font-size:14px;margin-bottom:6px}
+.rag p{font-size:12.2px;color:var(--tx2);line-height:1.62}
+.rag .para{margin-top:9px;font-size:11.6px;color:var(--cyan);border-top:1px dashed var(--line2);padding-top:7px;font-variant-numeric:tabular-nums}
+.rag-note{margin-top:18px;font-size:12.6px;color:var(--tx3)}
+.rag-note b{color:var(--acc2)}
+
+/* ---------- 模型与评测 ---------- */
+.sel3{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:0;align-items:stretch;margin-bottom:14px}
+.sst{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:13px;padding:16px 18px}
+.sst .no{font-size:10.5px;font-weight:800;letter-spacing:1px;color:var(--cyan)}
+.sst b.t{display:block;font-size:15px;margin:2px 0 8px}
+.sst ul{list-style:none;display:grid;gap:6px}
+.sst li{font-size:12.2px;color:var(--tx2);display:flex;gap:8px}
+.sst li::before{content:"·";color:var(--acc2);font-weight:900}
+.sst li i{font-style:normal;color:var(--tx)}
+.sarw{display:grid;place-items:center;color:var(--tx3);font-size:15px}
+.selnote{border:1px dashed rgba(14,116,144,.4);background:rgba(14,116,144,.04);border-radius:10px;padding:10px 16px;font-size:12.4px;color:var(--tx2);text-align:center;margin-bottom:22px}
+.selnote b{color:var(--cyan)}
+table.matrix{width:100%;border-collapse:collapse;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:12.8px;margin-bottom:8px}
+table.matrix th{background:rgba(14,116,144,.05);color:var(--tx);font-size:12px;letter-spacing:.5px;padding:11px 14px;text-align:left;border-bottom:1px solid var(--line2)}
+table.matrix td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--tx2);vertical-align:top}
+table.matrix tr:last-child td{border-bottom:none}
+table.matrix tr:hover td{background:rgba(148,163,184,.045)}
+table.matrix td b{color:var(--tx)}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.badge.innet{background:rgba(15,118,110,.1);color:var(--teal)}
+.badge.ext{background:rgba(180,83,9,.1);color:var(--amber)}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.pr{border:1px solid var(--line);border-radius:12px;padding:15px 17px;background:rgba(30,41,59,.03);font-size:12.8px;color:var(--tx2)}
+.pr b{display:block;color:var(--tx);font-size:13.5px;margin-bottom:5px}
+.pr b i{font-style:normal;margin-right:7px}
+.spec{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.spec .v{font-size:19px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
+.spec .v small{font-size:11px;font-weight:500;color:var(--tx3)}
+.spec .k{font-size:11.6px;color:var(--tx2);margin-top:2px}
+.eval-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px}
+.ec{border-radius:14px;padding:19px 20px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--bg2));position:relative;overflow:hidden}
+.ec::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--ec)}
+.ec h5{font-size:15px;margin-bottom:3px}
+.ec .scope{font-size:11px;color:var(--tx3);letter-spacing:1px;margin-bottom:10px}
+.ec ul{list-style:none;display:grid;gap:7px}
+.ec li{font-size:12.4px;color:var(--tx2);display:flex;justify-content:space-between;gap:10px;border-top:1px dashed var(--line);padding-top:7px}
+.ec li:first-child{border-top:none;padding-top:0}
+.ec li em{font-style:normal;color:var(--tx);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pipe{display:flex;gap:0;overflow-x:auto;padding:6px 0}
+.pstep{flex:1 1 0;min-width:150px;text-align:center;position:relative;padding-top:8px}
+.pstep .bub{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin:0 auto 8px;font-weight:800;font-size:14px;background:rgba(14,116,144,.08);border:1px solid rgba(14,116,144,.4);color:var(--cyan)}
+.pstep b{display:block;font-size:12.8px}
+.pstep span{font-size:11px;color:var(--tx3);display:block;line-height:1.45}
+.pstep::after{content:"→";position:absolute;right:-7px;top:22px;color:var(--tx3);font-size:14px}
+.pstep:last-child::after{display:none}
+
+/* ---------- HARNESS ---------- */
+.edge-loop{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;counter-reset:loop}
+.el{border:1px solid rgba(109,40,217,.35);background:rgba(109,40,217,.04);border-radius:11px;padding:13px 14px;font-size:12.2px;color:var(--tx2);counter-increment:loop;position:relative}
+.el b{display:block;color:var(--violet);font-size:12.6px;margin-bottom:3px}
+.el b::before{content:counter(loop,decimal-leading-zero);font-size:10px;color:var(--tx3);margin-right:7px;font-weight:800}
+
+/* ---------- ROADMAP ---------- */
+.phase-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.phase-tabs button{font-size:13px;padding:8px 18px;border-radius:10px;border:1px solid var(--line2);background:transparent;color:var(--tx2);cursor:pointer;transition:.2s;font-family:inherit}
+.phase-tabs button b{display:block;text-align:left;font-size:13.5px}
+.phase-tabs button small{display:block;font-size:10.5px;color:var(--tx3);text-align:left}
+.phase-tabs button.on{background:linear-gradient(135deg,var(--pc,#10b981),var(--pc2,#34d399));color:var(--ontx);border-color:transparent;box-shadow:0 6px 18px rgba(23,42,71,.16)}
+.phase-tabs button.on small{color:rgba(5,21,50,.72)}
+.phase-body{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.phase-panel{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.phase-panel h4{font-size:17px;margin-bottom:4px}
+.phase-panel .goal{font-size:13px;color:var(--acc2);margin-bottom:14px}
+.kv{display:grid;gap:9px}
+.kv .r{display:grid;grid-template-columns:74px 1fr;gap:12px;font-size:12.8px}
+.kv .r b{color:var(--cyan);font-size:12.2px;letter-spacing:.5px;padding-top:1px}
+.kv .r span{color:var(--tx2)}
+.kv .r span i{font-style:normal;color:var(--tx)}
+.milestones{display:grid;gap:10px}
+.ms{display:grid;grid-template-columns:96px 1fr;gap:12px;font-size:12.8px;color:var(--tx2);border-top:1px dashed var(--line2);padding-top:9px}
+.ms b{color:var(--amber);font-variant-numeric:tabular-nums;font-size:12.2px}
+.ms i{font-style:normal;color:var(--tx)}
+.gantt{margin-top:26px;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:22px 24px 18px}
+.gantt .gtitle{font-size:13px;font-weight:700;color:var(--tx2);letter-spacing:1px;margin-bottom:16px}
+.grow{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:center;margin-bottom:9px}
+.grow .gl{font-size:12.2px;color:var(--tx2);text-align:right}
+.grow .gl b{color:var(--tx)}
+.gtrack{height:25px;background:rgba(30,41,59,.06);border-radius:8px;position:relative;overflow:visible}
+.gbar{position:absolute;top:4px;bottom:4px;border-radius:6px;background:linear-gradient(90deg,var(--gc),var(--gc2));width:0;transition:width 1.2s cubic-bezier(.2,.7,.3,1);display:flex;align-items:center;padding-left:9px;font-size:10px;font-weight:700;color:var(--ontx);white-space:nowrap;box-shadow:0 2px 10px rgba(23,42,71,.18);overflow:hidden}
+.gbar.plan{background:none;border:1.6px dashed var(--gc);box-shadow:none;color:var(--tx2)}
+.gtoday{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed #334155;opacity:.65}
+.gtoday em{position:absolute;top:-15px;left:-24px;font-style:normal;font-size:9.5px;font-weight:700;color:#334155;white-space:nowrap}
+.gaxis{display:grid;grid-template-columns:170px 1fr;gap:14px;margin-top:6px}
+.gaxis .ticks{display:grid;grid-template-columns:repeat(7,1fr);font-size:10.5px;color:var(--tx3)}
+
+/* ---------- FOOTER ---------- */
+footer{margin-top:80px;border-top:1px solid var(--line);padding:36px 0 46px;color:var(--tx3);font-size:12.3px}
+footer .cols{display:grid;grid-template-columns:1fr;gap:30px}
+footer b{color:var(--tx2)}
+footer .flogo{font-size:15px;color:var(--tx);font-weight:700;margin-bottom:8px;display:flex;gap:9px;align-items:center}
+footer .flogo .mark{width:24px;height:24px;border-radius:7px;background:var(--grad);display:grid;place-items:center;font-size:12px;color:var(--ontx)}
+footer ul{list-style:none;display:grid;gap:6px}
+footer .deep{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px}
+footer .deep a{font-size:11.6px;border:1px solid var(--line);border-radius:7px;padding:3px 10px;color:var(--tx2);background:rgba(30,41,59,.03)}
+footer .deep a:hover{color:var(--tx);border-color:var(--acc)}
+.totop{position:fixed;right:26px;bottom:26px;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.92);border:1px solid var(--line2);color:var(--tx2);display:grid;place-items:center;cursor:pointer;opacity:0;pointer-events:none;transition:.25s;z-index:99;backdrop-filter:blur(8px);box-shadow:var(--shadow)}
+.totop.show{opacity:1;pointer-events:auto}
+.totop:hover{color:var(--tx);border-color:var(--acc)}
+
+@media (max-width:1080px){
+  header .grid,.arch,.maestro,.phase-body{grid-template-columns:1fr}
+  .af-agents,.rag-grid{grid-template-columns:repeat(3,1fr)}
+  .cards3,.principles,.eval-cols,.users{grid-template-columns:repeat(2,1fr)}
+  .edge-loop{grid-template-columns:repeat(3,1fr)}
+  h1{font-size:36px}
+  .sel3{grid-template-columns:1fr}
+  .sarw{display:none}
+  .ipipe{grid-template-columns:repeat(3,1fr)}
+  .ist .arw{display:none}
+  .agent-evolution{grid-template-columns:1fr}
+  .agent-evolution>em{transform:rotate(90deg)}
+  .rag-track{grid-template-columns:120px 1fr}
+  .rag-steps{grid-template-columns:repeat(2,1fr)}
+  .rag-step::after{display:none}
+  .service-six{grid-template-columns:repeat(3,1fr)}
+  .owner-map .owner-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:640px){
+  .kpis,.af-agents,.rag-grid,.cards3,.cards2,.principles,.eval-cols{grid-template-columns:1fr}
+  .af-src,.af-out{grid-template-columns:1fr}
+  .inv .row{flex-direction:column;gap:6px}
+  .tt{max-width:270px}
+  .rag-grid.g3{grid-template-columns:1fr}
+  .case-launch{align-items:flex-start;flex-direction:column}
+  .case-flow,.case-decisions{grid-template-columns:1fr}
+  .arch-brief{flex-direction:column}
+  .arch-boundary{grid-template-columns:1fr}
+  .service-contract-head{flex-direction:column}
+  .concept-row{grid-template-columns:1fr}
+  .rag-track{grid-template-columns:1fr}
+  .rag-track-label{border-right:none;border-bottom:1px solid var(--line)}
+  .rag-steps,.service-six{grid-template-columns:1fr}
+  .owner-map .owner-grid{grid-template-columns:1fr 1fr}
+  .agent-lane{grid-template-columns:1fr}
+  .agent-lane .lp-pipe.two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <div class="bar">
+    <div class="logo"><span class="mark">盾</span>智盾 <span style="font-size:11px;color:var(--tx3);font-weight:500">数据资产与 AI 服务平台</span></div>
+    <div class="links">
+      <a href="#overview">背景</a><a href="#arch">架构</a><a href="#rag">知识应用 / RAG</a><a href="#agents">Agent 流程</a><a href="#eval">模型选型与评测</a><a href="#roadmap">项目排期表</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header>
+  <div class="wrap grid">
+    <div>
+      <span class="pill"><span class="dot"></span>已上线运行 · 全内网部署 · 面向约 120 名嵌入式工程师与约 16 名质检交付人员</span>
+      <h1>智盾<span class="hl">数据资产与 AI 服务平台</span><span class="en">ZHIDUN — ENTERPRISE DATA ASSET &amp; AI SERVICE PLATFORM</span></h1>
+      <div class="slogan">产品定位一句话：<b>面向约 120 名嵌入式工程师与约 16 名质检交付人员的数据资产与 AI 服务平台</b>，把型号知识、外场经验、交付规则治理成<b>可治理、可追踪的资产</b>，并将六项核心服务稳定上线，供业务流程与受约束 Agent 复用。</div>
+      <div class="hero-tags">
+        <span><i>◆</i>可信知识治理</span>
+        <span><i>◆</i>RAG</span>
+        <span><i>◆</i>受约束知识 Agent</span>
+        <span><i>◆</i>权限与风险控制</span>
+        <span><i>◆</i>200 条固定评测集</span>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="num" data-count="95" data-suffix="%">0</div><div class="lab">评测集 Top3 命中率<br>（起点 ≈45%）</div></div>
+        <div class="kpi"><div class="num" data-count="80" data-suffix="%+">0</div><div class="lab">用户有用率<br>（业务用户反馈）</div></div>
+        <div class="kpi"><div class="num" data-count="-30" data-suffix="%">0</div><div class="lab">已知问题交付退回率<br>（已知问题口径）</div></div>
+        <div class="kpi"><div class="num" data-count="46" data-suffix="–70">0<small> 万/年</small></div><div class="lab">年化节省目标<br>（规模化目标值）</div></div>
+      </div>
+      <div class="btnrow">
+        <a class="btn pri" href="demo.html#/portal/chat">打开业务问答 Demo</a>
+        <a class="btn gho" href="demo.html#/admin/agenttrace">查看 Agent 运行轨迹</a>
+        <a class="btn gho" href="#roadmap">查看项目排期表 ↓</a>
+      </div>
+    </div>
+    <div class="live" id="live">
+      <div class="hd"><span class="sig"><i></i><i></i><i></i></span><b>可信知识检索 · 脱敏模拟运行轨迹</b><span style="margin-left:auto;display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--tx3)">演示时长</span><span class="clock" id="clock" style="margin-left:0">00:00:00</span></span></div>
+      <div class="body" id="evbody"></div>
+      <div class="ft"><span>真实机制的 Mock 回放：<b>问题、参数、结果与运行编号均为模拟数据</b></span><span style="margin-left:auto">全内网 · 可追溯</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 01 背景 ================= -->
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">01 / 背景与定位</div>
+      <h2>三类真问题，一个根因</h2>
+      <p class="sub">智盾面向约 120 名嵌入式工程师，覆盖多型号研发、外场排障和交付质检，主要解决型号知识易混淆、外场经验分散和跨环节数据难复用的问题。项目首期以 <b>RAG + 固定 Workflow</b> 完成知识问答并验证经验复用价值，随后将数据、权限和质量规则平台化，六项核心服务通过上线验收，并在此基础上由受约束 <b>Agent 按任务动态调用</b>。</p>
+    </div>
+    <div class="ulab">平台用户是谁 · 为谁解决什么问题</div>
+    <div class="users">
+      <div class="u">
+        <b>👷 外场支持工程师<span class="tag">核心用户 · 最高频</span></b>
+        <div class="p">排障要在 800+ 条历史候选材料中逐条查找，新人依赖老师傅口口相传</div>
+        <div class="gain">→ 一条带来源引用的可信答案，检索不到就明说</div>
+      </div>
+      <div class="u">
+        <b>🔬 产品研发</b>
+        <div class="p">相似问题跨型号被重复研判，经验散落在个人材料里</div>
+        <div class="gain">→ 已知问题一次沉淀、全员复用，型号 / 版本精确查询</div>
+      </div>
+      <div class="u">
+        <b>✅ 交付质检</b>
+        <div class="p">预检靠人工逐项核对，高风险项容易漏</div>
+        <div class="gain">→ 预检清单自动生成 + 自动化组件执行，高风险强制人工</div>
+      </div>
+      <div class="u">
+        <b>🗂 数据运营 / 管理层</b>
+        <div class="p">数据割裂、各说各话，AI 用数缺治理抓手</div>
+        <div class="gain">→ 统一资产目录 + 审核队列 + 评测看板</div>
+      </div>
+    </div>
+    <div class="cards3 pain">
+      <div class="card">
+        <div class="num-tag">问题 01 · 型号维度</div>
+        <div class="big">型号知识混淆，排障方向一开始就错</div>
+        <ul>
+          <li>多型号并行研发，相似问题跨型号误判</li>
+          <li>精确实体（型号 / 版本 / 错误码）被语义检索泛化——基线时期的头号 Bad Case</li>
+        </ul>
+        <div class="resp"><b>产品响应</b>：任务入口校验型号与适用范围；检索前置硬过滤，跨型号知识进不了候选池。</div>
+      </div>
+      <div class="card">
+        <div class="num-tag">问题 02 · 经验维度</div>
+        <div class="big">外场经验分散，难检索、难复用</div>
+        <ul>
+          <li>800+ 条服务单、外场记录和个人材料等历史候选材料散落各处</li>
+          <li>新人依赖老师傅口口相传，培训周期长</li>
+        </ul>
+        <div class="resp"><b>产品响应</b>：冷启动治理高频知识，建立可信检索与来源引用，答案附 KnowledgeItem ID。</div>
+      </div>
+      <div class="card">
+        <div class="num-tag">问题 03 · 协作维度</div>
+        <div class="big">跨环节数据割裂，各说各话</div>
+        <ul>
+          <li>研发、排障、质检无法共享同一份事实</li>
+          <li>交付预检靠人工核对，高风险项易漏</li>
+        </ul>
+        <div class="resp"><b>产品响应</b>：以数据资产与数据服务连接三类场景——14 项资产 · 4 个数据域 · 7 类角色。</div>
+      </div>
+    </div>
+    <details class="inv">
+      <summary>按需展开：数据资产与角色范围</summary>
+      <table class="inv-tbl">
+        <thead><tr><th style="width:118px">数据域</th><th>14 项数据资产</th><th style="width:44px">项数</th></tr></thead>
+        <tbody>
+          <tr><td class="dm">外场服务域</td><td><div class="chips"><span>外场服务单记录</span><span>外场故障速报</span><span>客户备注归档</span><span>维修替换记录</span></div></td><td class="cnt">4</td></tr>
+          <tr><td class="dm">研发设计域</td><td><div class="chips"><span>硬件设计文档</span><span>固件版本说明</span><span>已知问题清单</span><span>测试用例库</span></div></td><td class="cnt">4</td></tr>
+          <tr><td class="dm">质量检验域</td><td><div class="chips"><span>质检报告</span><span>来料检验记录</span><span>返修分析报告</span><span>交付预检模板</span></div></td><td class="cnt">4</td></tr>
+          <tr><td class="dm">型号标准域</td><td><div class="chips"><span>产品型号标准表</span><span>型号别名映射表</span></div></td><td class="cnt">2</td></tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <b>7 类角色</b>
+        <div class="chips">
+          <span>外场工程师</span><span>产品研发</span><span>测试</span><span>质检</span><span>技术主管</span><span>数据运营</span><span>AI PM</span>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ================= 02 平台产品架构 ================= -->
+<section id="arch">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">02 / 平台产品架构</div>
+      <h2>一套平台能力，支撑三类业务场景</h2>
+      <p class="sub">从业务消费向下拆到数据资产：场景提出任务，AI 服务承接能力，平台治理保证可信，数据资产提供统一来源。</p>
+    </div>
+    <div class="arch-brief">
+      <div><b>我负责的平台产品架构</b><span>定义各层的能力边界、输入输出、权限规则、质量门槛和验收标准，让单点 RAG 应用演进为可复用的平台服务与受约束 Agent。</span></div>
+      <em>业务 → 服务 → 治理 → 数据</em>
+    </div>
+    <div class="arch">
+      <div class="layer-stack" id="layerStack">
+        <div class="lband" data-layer="l1" style="--c:#60a5fa;--c2:#3b82f6">
+          <div class="side">L1<small>BUSINESS</small></div>
+          <div class="main"><div class="t">业务应用层 <span class="state done">三类场景</span></div><div class="d">外场支持 · 产品研发 · 交付质检 · 面向约 120 名嵌入式工程师</div></div>
+        </div>
+        <div class="lband" data-layer="l2" style="--c:#22d3ee;--c2:#06b6d4">
+          <div class="side">L2<small>AI SERVICE</small></div>
+          <div class="main"><div class="t">AI 服务层 <span class="state done">六项稳定上线</span></div><div class="d">知识检索 · 预检候选生成 · 运营指标查询 · 产品型号查询 · 知识反馈提交 · 数据资产目录查询</div></div>
+        </div>
+        <div class="lband" data-layer="l3" style="--c:#34d399;--c2:#10b981">
+          <div class="side">L3<small>GOVERNANCE</small></div>
+          <div class="main"><div class="t">平台治理层 <span class="state done">统一规则</span></div><div class="d">7 类角色权限 · 数据目录 · 质量规则 · 全流程追踪 · 高风险人工确认</div></div>
+        </div>
+        <div class="lband" data-layer="l4" style="--c:#a78bfa;--c2:#8b5cf6">
+          <div class="side">L4<small>DATA ASSET</small></div>
+          <div class="main"><div class="t">数据资产层 <span class="state done">统一纳管</span></div><div class="d">4 个数据域 · 14 项数据资产 · 数据来源、处理过程与使用去向可追踪</div></div>
+        </div>
+      </div>
+      <div class="arch-detail" id="archDetail"></div>
+    </div>
+    <div class="arch-boundary">
+      <div><b>产品侧定义</b>平台能力规划、模块边界、任务输入输出、权限与质量规则、验收口径。</div>
+      <div><b>协作交付</b>研发、数据和测试依据产品架构完成技术实现、接口联调与上线验证。</div>
+    </div>
+    <div class="service-contract">
+      <div class="service-contract-head">
+        <div><b>六项核心服务：从能力名称落到可验收的服务合同</b><span>每项服务同时定义业务输入、可消费输出、授权角色和失败条件；六项均已完成研发实现、权限验收、调用方联调、失败降级、审计留痕与回归验证。</span></div>
+        <i>M3 · 六项稳定上线</i>
+      </div>
+      <div class="service-contract-wrap">
+        <table class="service-contract-table">
+          <thead><tr><th style="width:13%">核心服务</th><th style="width:21%">输入</th><th style="width:23%">输出</th><th style="width:18%">使用角色</th><th>验收标准</th></tr></thead>
+          <tbody>
+            <tr><td><small>API-001</small>知识检索</td><td>自然语言问题；可选型号、固件版本和返回条数；默认仅检索 approved 知识。</td><td>Top 结果、KnowledgeItem ID、质量分、根因状态、适用范围、来源、警告及是否有答案。</td><td>外场工程师、技术主管、授权内部系统。</td><td class="accept">合法请求返回带来源的 approved 结果；型号非法返回 422；无可信来源不强行生成；P95 目标 &lt; 500ms。</td></tr>
+            <tr><td><small>API-002</small>预检候选生成</td><td>标准型号、固件版本；可选交付场景。</td><td>候选检查项、来源知识、风险等级、验证方法、建议执行角色，并注明需负责人确认。</td><td>质检 / 交付负责人、授权质检系统。</td><td class="accept">无 eligible 知识时返回空清单和明确提示；高风险项必须人工确认；P95 目标 &lt; 2s。</td></tr>
+            <tr><td><small>API-003</small>运营指标查询</td><td>指标 ID、统计周期和日期。</td><td>指标值、分子、分母、统计周期、数据来源和质量警告。</td><td>管理层、AI PM、授权内部报告系统。</td><td class="accept">口径、分子分母和来源可追溯；读取已注册指标快照；P95 目标 &lt; 200ms。</td></tr>
+            <tr><td><small>API-004</small>产品型号查询</td><td>型号编码、名称、简称或历史别名。</td><td>标准型号编码、名称、系列、硬件版本、当前固件和别名。</td><td>全部内部角色、授权内部系统。</td><td class="accept">别名能归一到标准型号；不存在型号进入明确失败分支，不让模型猜；P95 目标 &lt; 100ms。</td></tr>
+            <tr><td><small>API-005</small>知识反馈提交</td><td>Query ID、KnowledgeItem ID、有用 / 无用 / 未找到、可选原因和提交角色。</td><td>反馈 ID 与 recorded 状态。</td><td>内部用户、授权内部系统。</td><td class="accept">反馈可追溯到查询与知识版本；只进入分析和回归，不直接改写可信知识；P95 目标 &lt; 200ms。</td></tr>
+            <tr><td><small>API-006</small>数据资产目录查询</td><td>数据域、资产类型和搜索词。</td><td>资产 ID、名称、数据域、类型、负责人、质量分、更新频率和服务入口。</td><td>全部内部角色，按数据权限过滤。</td><td class="accept">无权限资产不可见；元数据与质量状态完整；结果可继续定位服务文档；P95 目标 &lt; 300ms。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="service-contract-foot"><b>稳定上线口径：</b>服务可被授权角色和内部系统持续调用，研发实现、鉴权与权限、调用方联调、SLA 与失败降级、审计留痕、固定评测集回归均通过；“稳定上线”不等于年化收益目标已经达成。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 知识应用 0→1 与 RAG 迭代 ================= -->
+<section id="rag">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">03 / 知识应用 0→1 与 RAG 迭代</div>
+      <h2>先跑通知识应用，再把 RAG 从 45% 做到 95%</h2>
+      <p class="sub">首期用 <b>RAG + 固定 Workflow</b> 跑通“提问—检索—带来源回答/拒答—反馈”的业务闭环；价值验证后，这条可信检索链路成为后续知识 Agent 调用的基础能力。</p>
+    </div>
+    <div class="arch-boundary" style="margin-top:0;margin-bottom:18px">
+      <div><b>产品侧定义</b>业务任务、可信数据、核心 Bad Case、评测集、失败条件和验收门槛，并依据结果确定优化方向。</div>
+      <div><b>研发 / 数据协作</b>完成文档处理、索引、召回、重排、模型调参与部署，并提供版本效果和性能数据。</div>
+    </div>
+    <div class="rag-journey">
+      <div class="rag-track">
+        <div class="rag-track-label"><i>PRODUCT 0→1</i><b>知识应用落地</b></div>
+        <div class="rag-steps">
+          <div class="rag-step"><i>01 · 定义任务</i><b>高频知识问答</b><span>聚焦外场查经验慢、跨型号易混的问题。</span></div>
+          <div class="rag-step"><i>02 · 收敛范围</i><b>可信知识先行</b><span>从 800+ 条历史候选材料中优先治理约 200 条高频知识。</span></div>
+          <div class="rag-step"><i>03 · 交付 MVP</i><b>RAG + Workflow</b><span>固定完成检索、引用、拒答与权限校验。</span></div>
+          <div class="rag-step"><i>04 · 上线闭环</i><b>反馈持续回流</b><span>有用/无用与 Bad Case 进入评测和知识运营。</span></div>
+        </div>
+      </div>
+      <div class="rag-track iter">
+        <div class="rag-track-label"><i>RAG ITERATION</i><b>效果迭代</b></div>
+        <div class="rag-steps">
+          <div class="rag-step"><i>T1 · 建立基线</i><b>Top3 约 45%</b><span>用 200 条历史问题暴露串型号与误召回。</span></div>
+          <div class="rag-step"><i>T2–T3 · 治理数据</i><b>补字段、重组知识</b><span>统一型号、版本、审核状态与适用范围。</span></div>
+          <div class="rag-step"><i>T4–T5 · 重做检索</i><b>过滤 + 多路召回</b><span>精确实体、语义现象分路召回，再经 Rerank 与证据包构造提升可用性。</span></div>
+          <div class="rag-step"><i>T6 · 回归验证</i><b>Top3 95%</b><span>固定集验证检索效果；上线反馈另行衡量端到端有用性。</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ingest" id="ingest">
+      <div class="cap"><b>离线建库 · 冷启动治理流水线</b><span class="sim">模拟数据 · 进入视野自动演示</span><button class="rebtn" id="ingReplay">↻ 重播</button></div>
+      <div class="ipipe">
+        <div class="ist"><span class="ico">📥</span><b>材料接入</b><span>800+ 条历史候选材料：服务单 · 外场记录 · 个人材料</span><span class="arw">→</span></div>
+        <div class="ist"><span class="ico">🗂</span><b>格式分类</b><span>PDF / 截图 / 日志 / 文本分流，不同格式不同处理</span><span class="arw">→</span></div>
+        <div class="ist"><span class="ico">🖨</span><b>OCR 提取</b><span>服务单与截图数字化 · 技术实现由研发负责</span><span class="arw">→</span></div>
+        <div class="ist"><span class="ico">🤖</span><b>AI 字段提取</b><span>现象 / 型号 / 根因 / 方案 · 抽样正确率 ≈85%</span><span class="arw">→</span></div>
+        <div class="ist"><span class="ico">📏</span><b>质量规则</b><span>枚举校验 · 质量分 &lt;60 不入库</span><span class="arw">→</span></div>
+        <div class="ist"><span class="ico">✅</span><b>双人确认</b><span>工程师确认 → 技术主管审核 → approved</span></div>
+      </div>
+      <div class="ifoot">
+        <div class="ilibs">
+          <span class="ilib">summary chunk 200–350 字</span><span class="ilib">symptom chunk 250–500</span><span class="ilib">solution chunk 300–600 · 重叠 50–80</span><span class="ilib">precheck chunk 200–400</span>
+        </div>
+        <div class="icnt">高频知识优先入审 <b id="ingCnt">0</b> 条（从 800+ 条候选材料中分层筛选）<span id="ingDone" style="display:none"> · 优先批次治理完成 ✅</span></div>
+      </div>
+    </div>
+<div class="rag-glab">建库阶段 · 6 策略（对应上方冷启动流水线）</div>
+    <div class="strategy-wrap">
+      <table class="strategy-table">
+        <thead><tr><th style="width:5%">序号</th><th style="width:12%">策略</th><th style="width:9%">阶段</th><th style="width:42%">关键设计</th><th>验收与协作边界</th></tr></thead>
+        <tbody>
+          <tr><td class="sn">01</td><td class="sname">数据治理</td><td><span class="stage">P0</span></td><td>原始材料留档；候选材料去重、分版本并补齐关键字段，显式区分疑似、已排除和已确认根因，避免把排查过程洗成最终结论。</td><td><span class="rule">字段正确率约 85% → 95%</span>；产品定知识口径和质量规则，业务专家确认，研发实现处理链路。</td></tr>
+          <tr><td class="sn">02</td><td class="sname">知识建模与分块</td><td><span class="stage">P0</span></td><td>先形成可审核的 KnowledgeItem，再按查案例、找现象、取方案、做预检四类任务生成 chunk；不按统一字数盲切。</td><td>产品定义任务和字段；命中片段必须能回到父级知识条目与原始证据。</td></tr>
+          <tr><td class="sn">03</td><td class="sname">嵌入模型</td><td><span class="stage">P0</span></td><td>以中文召回质量、内网合规、时延、稳定性和索引重建成本作为选型标准。</td><td>产品定标准与评测集；研发实测候选，最终选用 <span class="rule">BGE Embedding</span>。</td></tr>
+          <tr><td class="sn">04</td><td class="sname">元数据</td><td><span class="stage">P0</span></td><td>chunk 继承型号、版本、审核状态、根因状态、风险等级和适用范围，为召回前硬过滤提供条件。</td><td>型号或版本不符时不得进入候选池。</td></tr>
+          <tr><td class="sn">05</td><td class="sname">索引分工</td><td><span class="stage">P0</span></td><td>结构化字段负责权限与型号版本边界，BM25 负责型号、版本和故障码等精确实体，向量索引负责口语化现象与语义相似案例。</td><td>产品按 Bad Case 定义各通道适用场景和一致性规则；研发完成主表、关键词与向量检索实现。</td></tr>
+          <tr><td class="sn">06</td><td class="sname">索引选型边界</td><td><span class="stage p1">P1</span></td><td>当前项目资料只确认向量召回能力，不把 HNSW / IVF 等底层实现写成既成事实；候选算法需在真实数据和固定评测集上比较。</td><td>产品给出数据规模、更新频率、召回率、P95 时延和重建成本要求；研发完成基准测试并留存版本证据。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <dialog class="case-dialog" id="longCaseDialog" aria-labelledby="longCaseTitle">
+      <div class="case-dialog-head"><div><b id="longCaseTitle">长工单如何变成一条可信答案</b><span>脱敏流程示例 · 建库 → 检索 → 生成 → 反馈回归</span></div><button class="case-close" id="closeLongCase" type="button" aria-label="关闭案例">×</button></div>
+      <div class="case-dialog-body">
+        <div class="long-case">
+          <div class="case-scenario"><b>业务风险：</b>09:00 现场报障 → 10:00 怀疑电源 → 11:30 已排除电源 → 14:00 确认固件兼容问题。若整单向量化或按字数盲切，系统可能只召回“<span class="strike">怀疑电源</span>”，把中间假设当成最终根因。</div>
+          <div class="case-phase">A · 建库阶段：把材料治理成可信知识</div>
+          <div class="case-flow">
+            <div class="case-step"><b>① 原始证据留档</b>按时间保留消息、角色、日志、截图、附件和版本变化；清洗不覆盖原文，后续结论可以回指现场。</div>
+            <div class="case-step"><b>② 清洗与版本归一</b>去模板噪声和重复记录，统一型号、版本与别名；保留“疑似 / 已排除 / 已确认”状态，不把中间判断改写成事实。</div>
+            <div class="case-step"><b>③ 建立 KnowledgeItem</b>抽取现象、环境、适用型号、根因状态、方案、验证步骤、风险与来源；AI 生成候选，不能自行发布。</div>
+            <div class="case-step"><b>④ 专业人员确认</b>工程师确认字段，技术主管审核结论与适用范围；只有 <em>approved</em> 且质量达标的知识才获得正式检索资格。</div>
+            <div class="case-step"><b>⑤ 按用户任务分块</b>生成 summary / symptom / solution / precheck 四类 chunk；solution 保留必要重叠，避免操作与回滚要求被切断。</div>
+            <div class="case-step"><b>⑥ 建立检索表示</b>结构化字段管权限与型号版本，BM25 管精确实体，向量索引管语义现象；所有 chunk 通过 <em>knowledge_id</em> 回到父级知识。</div>
+          </div>
+          <div class="case-phase">B · 在线阶段：从用户问题到可复核结果</div>
+          <div class="case-flow">
+            <div class="case-step"><b>⑦ 先定任务与边界</b>识别用户是在查相似案例、找解决步骤还是做交付预检；型号或版本不清时先追问，不让模型猜。</div>
+            <div class="case-step"><b>⑧ 前置硬过滤</b>在召回前校验权限、approved、质量分、型号版本与适用范围；越权、待审核和不适用内容不进入候选池。</div>
+            <div class="case-step"><b>⑨ 多路召回与重排</b>BM25、向量和关联案例分别找候选，合并去重后由 Reranker 与业务规则排序；型号版本优先于表面语义相似。</div>
+            <div class="case-step"><b>⑩ 构造 Evidence Pack</b>命中小块后补齐必要父级字段和原文邻接证据；去重、控 Token、标记冲突和根因状态，不把整张长工单直接塞给模型。</div>
+            <div class="case-step"><b>⑪ 来源约束生成</b>模型只基于证据包组织答案，关键结论带来源与适用范围；证据不足或冲突时拒答 / 转人工，高风险操作不自动放行。</div>
+            <div class="case-step"><b>⑫ 反馈与回归</b>Bad Case 先冻结输入、知识、模型、Prompt 和 Trace 并稳定复现，再归因；确认后进入版本化评测集，通过门禁才灰度发布。</div>
+          </div>
+          <div class="case-decisions">
+            <div class="case-decision"><b>AI PM 负责什么</b>定义用户任务、知识状态、风险边界、拒答与人工接管条件、评测集、发布门槛和验收指标。</div>
+            <div class="case-decision"><b>研发 / 数据 / 专家如何协作</b>研发实现抽取、索引与运行链路；数据团队维护版本和质量；领域专家确认事实与最终放行。</div>
+          </div>
+          <div class="case-result"><b>产品判断：</b>长工单处理的目标不是“切出更多 chunk”，而是防止中间假设进入正式答案，并让每条结论都可审核、可追溯、可复现、可回归。</div>
+        </div>
+      </div>
+    </dialog>
+<div class="rag-glab">推理阶段 · 6 策略（在线问答链路 · 交互演示见 Demo）</div>
+    <div class="strategy-wrap">
+      <table class="strategy-table">
+        <thead><tr><th style="width:5%">序号</th><th style="width:12%">策略</th><th style="width:9%">阶段</th><th style="width:42%">关键设计</th><th>验收与协作边界</th></tr></thead>
+        <tbody>
+          <tr><td class="sn">07</td><td class="sname">查询转换</td><td><span class="stage p1">P1</span></td><td>识别用户要查资料、判断问题、生成路径还是预检；口语型号和曾用名归一到标准编码，同时保留原始实体。</td><td>低置信度追问或降级，不猜型号、不擅自扩大适用范围。</td></tr>
+          <tr><td class="sn">08</td><td class="sname">检索参数</td><td><span class="stage p1">P1</span></td><td>关键词通道管精确实体，向量通道管语义现象，关联案例通道补结构化关系。</td><td>BM25 Top20 · 向量 Top30 · 关联案例 Top10；研发调参，固定集验证。</td></tr>
+          <tr><td class="sn">09</td><td class="sname">上下文构造</td><td><span class="stage">P0</span></td><td><span class="rule">用于检索的块 ≠ 用于生成的证据包</span>：小块负责命中，再补齐必要父级字段和原文邻接证据；去重、标冲突、控 Token，不把整份长工单直接塞给模型。</td><td>正确证据必须进入最终上下文；过期、越权、疑似或冲突内容必须被过滤或显式标记。</td></tr>
+          <tr><td class="sn">10</td><td class="sname">重排序模型</td><td><span class="stage p1">P1</span></td><td>BGE Reranker 对三路并集精排，再叠加业务特征：型号 / 版本强优先，质量分 / 根因状态中度，反馈轻度。</td><td>审核状态决定资格而非名次；反馈不能覆盖硬约束。</td></tr>
+          <tr><td class="sn">11</td><td class="sname">大语言模型</td><td><span class="stage">P0</span></td><td>模型只承担复杂归纳与来源约束生成；结构化校验优先走规则或小模型。</td><td>产品定选型标准；研发实测候选，最终选用 <span class="rule">DeepSeek-R1-Distill-Llama-70B</span>。</td></tr>
+          <tr><td class="sn">12</td><td class="sname">生成约束</td><td><span class="stage p1">P1</span></td><td>模型只基于 Evidence Pack 组织答案；疑似根因标注“需现场确认”，高风险操作转人工，证据不足或冲突时拒答。</td><td>试点期最多使用 3 条 approved 来源摘要；关键结论带引用，任何规则变化都进入回归。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="case-launch">
+      <div><b>想看复杂材料如何变成可信答案？</b><span>用一个脱敏长工单串联原始证据、知识治理、类型化分块、多路召回、上下文构造和回归门禁。</span></div>
+      <button class="case-btn" id="openLongCase" type="button">查看长工单全流程 →</button>
+    </div>
+        <p class="rag-note">表格中的 P0 / P1 表示策略的<b>引入阶段</b>，不表示技术优先级。RAG 不是一次建完，而是依据 Bad Case 和固定评测集逐步引入策略；12 项策略中 9 项集中在检索侧。</p>
+  </div>
+</section>
+
+<!-- ================= 04 知识 AGENT 如何调用平台服务 ================= -->
+<section id="agents">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">04 / 知识 AGENT 如何调用平台服务</div>
+      <h2>从一个业务问题，到一条可复核结果</h2>
+      <p class="sub">第一阶段用固定的 <b>RAG + Workflow</b> 验证知识检索价值；六项平台服务稳定上线后，再引入受约束 Agent。它根据任务状态和服务结果决定下一步，但权限、可调用服务、停止条件和高风险出口仍由产品规则与确定性代码共同约束。</p>
+    </div>
+
+    <div class="agent-evolution">
+      <div><i>阶段 1 · 已验证</i><b>RAG + 固定 Workflow</b><span>固定执行“检索 → 生成 → 引用/拒答”，足以验证高频知识任务。</span></div>
+      <em>→</em>
+      <div><i>阶段 2 · 已稳定上线</i><b>抽出共性能力</b><span>把数据资产、权限、质量规则和六项服务沉淀到平台，通过上线验收后供业务复用。</span></div>
+      <em>→</em>
+      <div><i>阶段 3 · Agent 化</i><b>按运行结果动态决策</b><span>Agent 在白名单内选服务、读结果并决定继续、追问、停止或转人工。</span></div>
+    </div>
+
+    <div class="concept-row">
+      <div><b>RAG 是“找资料”</b><span>从可信知识中检索与问题相关的依据。</span></div>
+      <div><b>Workflow 是“固定轨道”</b><span>步骤和分支预先写好，输入相同就沿固定流程运行。</span></div>
+      <div><b>Agent 是“动态决策”</b><span>观察状态、选择工具、读取结果，再决定下一步。</span></div>
+      <div><b>平台是“能力底座”</b><span>统一提供数据、权限、质量规则和 6 项公共服务。</span></div>
+    </div>
+
+    <div class="aflow">
+      <div class="af-cap"><i>ONE REQUEST</i>一次请求的真实分工<span class="agent-legend"><span class="fl-lg"><i class="m"></i>AI 判断</span><span class="fl-lg"><i class="c"></i>确定性脚本</span><span class="fl-lg"><i class="f"></i>平台服务</span></span><button class="rebtn" id="lpReplay">↻ 重播</button></div>
+      <div class="loop" id="loopflow">
+        <div class="agent-lane">
+          <div class="lane-name"><b>用户 / 业务系统</b><span>提供任务上下文</span></div>
+          <div class="lp-pipe one">
+            <div class="lp-st" data-tt="ag_input"><span class="ico">🧑</span><b>选择型号、版本并提问</b><span>型号 / 版本是结构化上下文；问题用自然语言描述</span><span class="owner-tag">产品定义：任务输入</span></div>
+          </div>
+        </div>
+        <div class="agent-lane deterministic">
+          <div class="lane-name"><b>确定性 Workflow</b><span>不交给 AI 猜</span></div>
+          <div class="lp-pipe one">
+            <div class="lp-st gate" data-tt="ag_permission"><span class="ico">🛡</span><b>权限与适用范围校验</b><span>账户角色 × 可访问范围 × 型号版本；不符直接拦截</span><span class="owner-tag">产品定义：权限规则</span></div>
+          </div>
+        </div>
+        <div class="agent-loop-zone lp-zone">
+          <span class="lp-ztag">知识 Agent · 自主决策循环</span>
+        <div class="agent-lane agent-zone">
+          <div class="lane-name"><b>Agent Observe</b><span>读取当前状态</span></div>
+          <div class="lp-pipe two">
+            <div class="lp-st agent" data-tt="ag_observe"><span class="ico">👁</span><b>观察任务状态</b><span>读取问题、型号版本、用户角色、对话上下文和已有结果</span><span class="mtag">Observe</span></div>
+            <div class="lp-st agent" data-tt="ag_plan"><span class="ico">🧠</span><b>形成任务计划</b><span>识别意图并拆解下一步：查资料、判断问题、生成路径或预检</span><span class="mtag">Plan</span><span class="owner-tag">产品定义：任务类型与分支</span></div>
+          </div>
+        </div>
+        <div class="agent-lane agent-zone">
+          <div class="lane-name"><b>Agent Act</b><span>选择并调用工具</span></div>
+          <div class="lp-pipe two">
+            <div class="lp-st agent" data-tt="ag_choose"><span class="ico">🧰</span><b>选择白名单工具</b><span>根据计划选择一个服务接口，并生成符合 Schema 的调用参数</span><span class="mtag">Decide</span><span class="owner-tag">产品定义：服务边界</span></div>
+            <div class="lp-st service" data-tt="ag_execute"><span class="ico">🔌</span><b>执行平台服务</b><span>工具适配器调用对应服务，返回结构化 tool_result</span><span class="mtag">Act</span></div>
+          </div>
+        </div>
+        <div class="agent-lane service-lane">
+          <div class="lane-name"><b>平台服务池</b><span>六项均已稳定上线</span></div>
+          <div class="lp-pipe one">
+            <div class="lp-st service" data-tt="ag_services"><span class="ico">🧩</span><b>六项核心服务</b><div class="service-six"><span>知识检索</span><span>预检候选生成</span><span>运营指标查询</span><span>产品型号查询</span><span>知识反馈提交</span><span>数据资产目录查询</span></div></div>
+          </div>
+        </div>
+        <div class="agent-lane agent-zone">
+          <div class="lane-name"><b>Agent Re-observe</b><span>依据运行结果再决策</span></div>
+          <div class="lp-pipe two">
+            <div class="lp-st agent" data-tt="ag_result"><span class="ico">📥</span><b>读取工具结果</b><span>检查是否命中可信资料、是否缺参数、结果是否冲突或不充分</span><span class="mtag">Observe</span></div>
+            <div class="lp-st agent" data-tt="ag_decide"><span class="ico">🔀</span><b>决定下一步</b><span>继续调用另一服务 / 追问用户 / 组织答案 / 拒答 / 转人工</span><span class="mtag">Decide</span><span class="owner-tag">产品定义：停止与兜底条件</span></div>
+          </div>
+        </div>
+        <div class="agent-cycle-note">↩ 若证据不足但仍可推进：带着新状态回到“选择白名单工具”，继续下一轮 Observe → Decide → Act</div>
+        <div class="agent-lane agent-zone">
+          <div class="lane-name"><b>Agent Finish</b><span>满足停止条件</span></div>
+          <div class="lp-pipe one">
+            <div class="lp-st agent" data-tt="ag_finish"><span class="ico">📝</span><b>组织可复核结果</b><span>只基于服务返回内容；附来源和适用范围，证据不足明确拒答</span><span class="mtag">Finish</span></div>
+          </div>
+        </div>
+        </div>
+        <div class="agent-lane deterministic">
+          <div class="lane-name"><b>确定性 Workflow</b><span>风险控制与出口</span></div>
+          <div class="lp-pipe two">
+            <div class="lp-st gate" data-tt="ag_risk"><span class="ico">⚠️</span><b>高风险操作检查</b><span>涉及固件、参数修改或最终放行时，脚本拦截并转人工确认</span><span class="owner-tag">产品定义：人机边界</span></div>
+            <div class="lp-st" data-tt="ag_output"><span class="ico">📤</span><b>返回结果并记录反馈</b><span>答案 / 排查候选 / 预检清单 / 拦截说明；反馈进入后续评测</span><span class="owner-tag">产品定义：输出与验收</span></div>
+          </div>
+        </div>
+        <div class="lp-back" id="lpBack">✓ 本轮结束：运行轨迹、工具调用、用户反馈和 Bad Case 回到评测与知识运营，不直接改写可信知识</div>
+      </div>
+    </div>
+
+    <div class="case-launch">
+      <div><b>想看 Agent 为什么调用、停止或转人工？</b><span>用一个脱敏交付任务讲清服务选择、运行结果再决策与高风险出口；运行轨迹 Demo 用于动态展示 Trace，两者互补。</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="case-btn" id="openAgentCase" type="button">查看 Agent 案例 →</button><a class="case-btn" href="demo.html#/admin/agenttrace" style="text-decoration:none">打开运行轨迹 Demo</a></div>
+    </div>
+    <dialog class="case-dialog" id="agentCaseDialog" aria-labelledby="agentCaseTitle">
+      <div class="case-dialog-head"><div><b id="agentCaseTitle">Agent 案例：低温重启设备能否交付放行</b><span>脱敏流程示例 · 静态案例解释产品判断，Demo 展示动态 Trace</span></div><button class="case-close" id="closeAgentCase" type="button" aria-label="关闭案例">×</button></div>
+      <div class="case-dialog-body">
+        <div class="long-case">
+          <div class="case-scenario"><b>用户任务：</b>外场工程师提交“E2200 低温启动反复重启，已升级固件，交付前能否放行？”系统必须同时回答历史证据与预检候选，但<b>最终放行属于高风险决策，Agent 无权代替负责人确认</b>。</div>
+          <div class="case-phase">A · 这次 Agent 为什么这样调用</div>
+          <div class="case-flow">
+            <div class="case-step"><b>① 固定入口校验</b>确定性 Workflow 校验用户角色、可访问范围和必填上下文；缺型号或版本时先追问，不启动 Agent 猜测。</div>
+            <div class="case-step"><b>② 调用产品型号查询</b>把“E2200”归一为标准型号与当前固件范围。若别名不存在或版本不匹配，进入明确失败分支。</div>
+            <div class="case-step"><b>③ 调用知识检索</b>带标准型号、版本和问题检索 approved 知识；返回 KnowledgeItem ID、根因状态、适用范围、来源与警告。</div>
+            <div class="case-step"><b>④ 读取结果再决策</b>只有证据足以支持“已知问题”且适用范围一致，Agent 才继续；证据冲突或不足则拒答或转专业人员。</div>
+            <div class="case-step"><b>⑤ 调用预检候选生成</b>依据型号、固件和交付场景生成检查项、来源、风险等级、验证方法与建议执行角色。</div>
+            <div class="case-step"><b>⑥ 高风险出口</b>Agent 可以给出候选和证据，但涉及固件、参数修改或最终放行时，由确定性规则拦截并转交交付负责人确认。</div>
+            <div class="case-step"><b>⑦ 结果与反馈留痕</b>返回带引用的历史案例和预检候选；用户反馈通过知识反馈提交服务记录，只进入分析与回归，不直接改写可信知识。</div>
+            <div class="case-step"><b>⑧ 没有调用另外两项服务</b>运营指标查询和数据资产目录查询服务虽然稳定上线，但与本次任务无关。Agent 的价值是按任务选择必要服务，而不是每次调用全部六项。</div>
+          </div>
+          <div class="case-decisions">
+            <div class="case-decision"><b>AI PM 的产品决策</b>定义任务输入、六项服务合同、允许调用条件、服务结果如何改变下一步、拒答 / 停止 / 转人工门槛及验收用例。</div>
+            <div class="case-decision"><b>如何验收这个案例</b>型号无法归一时不进入检索；只返回 approved 且适用的来源；无证据不判断；高风险操作与最终放行必须转人工；Trace 可回放。</div>
+          </div>
+          <div class="case-result"><b>产品结论：</b>页面案例负责讲清“为什么这样决策”，Agent 运行轨迹 Demo 负责展示“实际调用顺序、参数、结果和分支”。现有 Demo 不是案例的替代品，而是案例的可交互证据层。</div>
+        </div>
+      </div>
+    </dialog>
+
+  </div>
+</section>
+
+<!-- ================= 05 模型选型与评测 ================= -->
+<section id="eval">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">05 / 模型选型与评测</div>
+      <h2>先定义业务标准，再让评测结果支持选型</h2>
+      <p class="sub">我负责把业务任务转化为<b>选型标准、评测集、失败条件和验收门槛</b>；研发与部署同事依据标准完成候选模型测试和技术实现，我们共同评审最终选型、适用范围与兜底方案。</p>
+    </div>
+    <div class="sel3">
+      <div class="sst">
+        <div class="no">STEP 1 · 定义标准</div>
+        <b class="t">🎯 从业务任务反推</b>
+        <ul>
+          <li>任务：可信问答、问题判断、排查路径和交付预检</li>
+          <li>标准：全内网、中文可靠、来源约束、时延、成本与稳定性</li>
+          <li>边界：无据作答、跨型号误命中等关键错误直接判失败</li>
+        </ul>
+      </div>
+      <div class="sarw">→</div>
+      <div class="sst">
+        <div class="no">STEP 2 · 制定评测</div>
+        <b class="t">🧪 固定集 + Bad Case</b>
+        <ul>
+          <li>从真实任务建 <i>200 条固定评测集 + bad case 集</i></li>
+          <li>关键任务设<i>硬性失败条件</i>：无据作答 = 直接淘汰</li>
+          <li>跨型号误命中 / 别名命中率 / 疑似根因表述逐一测</li>
+        </ul>
+      </div>
+      <div class="sarw">→</div>
+      <div class="sst">
+        <div class="no">STEP 3 · 共同决策</div>
+        <b class="t">📋 结论与适用边界</b>
+        <ul>
+          <li>研发提供效果、成本、时延与部署验证结果</li>
+          <li>报告四要素：最终选择 · 适用范围 · 已知问题 · 兜底方案</li>
+          <li>我依据业务门槛完成验收，迭代期复用同一评测方法</li>
+        </ul>
+      </div>
+    </div>
+    <table class="matrix">
+      <thead><tr><th style="width:13%">选型对象</th><th style="width:27%">我定义的选型标准</th><th style="width:30%">研发依据标准实测的候选</th><th>最终选型与适用边界</th></tr></thead>
+      <tbody>
+        <tr><td><b>生成模型</b></td><td>全内网、中文归纳、来源约束、拒答与高风险表述、时延和稳定性</td><td>DeepSeek-R1-Distill-Llama-70B · Qwen2.5-72B · GLM-4-32B-0414</td><td><b>DeepSeek-R1-Distill-Llama-70B</b><br>用于复杂归纳与来源约束生成；结构化校验不交给大模型。</td></tr>
+        <tr><td><b>Embedding</b></td><td>精确实体不被泛化、中文语义可召回、时延稳定、索引版本可管理</td><td>BGE Embedding · M3E-large · text2vec</td><td><b>BGE Embedding</b><br>用于中文语义召回；模型版本变化必须重建向量索引并回归。</td></tr>
+        <tr><td><b>Reranker</b></td><td>重排后 Top3 提升、跨型号误召回下降、额外时延可接受、满足内网约束</td><td>BGE Reranker · bge-reranker-base · Cohere Rerank</td><td><b>BGE Reranker + 业务特征</b><br>Cohere 因公有云限制在硬约束粗筛阶段出局。</td></tr>
+        <tr><td><b>文档提取</b></td><td>中文服务单与截图可识别；型号、现象、根因和方案字段可复核</td><td>PaddleOCR · Tesseract</td><td><b>PaddleOCR</b><br>用于材料数字化；关键字段继续进入人工审核与质量规则。</td></tr>
+      </tbody>
+    </table>
+    <div class="eval-cols">
+      <div class="ec" style="--ec:linear-gradient(90deg,#f59e0b,#fbbf24)">
+        <h5>业务层 · 北极星</h5><div class="scope">决定续约与预算的指标</div>
+        <ul>
+          <li>已知问题交付退回率<em>−30%（实测）</em></li>
+          <li>年化节省（规模化目标）<em>46–70 万</em></li>
+          <li>经验复用效率<em>持续跟踪</em></li>
+        </ul>
+      </div>
+      <div class="ec" style="--ec:linear-gradient(90deg,#06b6d4,#22d3ee)">
+        <h5>系统层 · 产品质量</h5><div class="scope">服务链路的 KPI</div>
+        <ul>
+          <li>评测集 Top3 命中率<em>95%（实测）</em></li>
+          <li>用户有用率<em>80%+（实测）</em></li>
+          <li>硬约束用例（拦截 / 拒答 / 人工）<em>必须全部通过</em></li>
+        </ul>
+      </div>
+      <div class="ec" style="--ec:linear-gradient(90deg,#10b981,#34d399)">
+        <h5>评测层 · 效果质量</h5><div class="scope">评测集守护每次变更</div>
+        <ul>
+          <li>固定评测集<em>200 条 · 与审核集分离</em></li>
+          <li>评测维度<em>六维度 + LLM-as-Judge</em></li>
+          <li>人审抽样校准<em>按批抽样</em></li>
+        </ul>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:var(--tx2);letter-spacing:1px;margin:2px 0 12px">简历数据口径 · 定义、分母与判定边界</div>
+    <table class="matrix">
+      <thead><tr><th style="width:16%">简历数据</th><th style="width:31%">产品定义</th><th style="width:31%">分母 / 样本与判定标准</th><th>不能被解释成什么</th></tr></thead>
+      <tbody>
+        <tr><td><b>约 120 名工程师</b></td><td>智盾规划与服务覆盖的嵌入式工程师目标用户规模。</td><td>按组织与角色名册去重统计；“约”表示人员会随组织调整。</td><td>不是 MAU、付费人数或 120 人全部高频使用。</td></tr>
+        <tr><td><b>3 类场景</b></td><td>外场支持、产品研发、交付质检三类可独立描述输入与结果的业务任务域。</td><td>每类至少有明确用户、任务入口、数据来源、服务输出与验收责任人。</td><td>不是三个独立系统，也不是三个 Agent。</td></tr>
+        <tr><td><b>4 个数据域 · 14 项资产</b></td><td>4 个数据域是责任与权限边界；14 项资产是首期进入目录纳管的数据集合。</td><td>资产需具备唯一 ID、Owner、来源、更新频率、质量状态、权限与服务入口，才计入目录。</td><td>不是 14 张数据库表，也不代表所有企业数据已纳管。</td></tr>
+        <tr><td><b>7 类角色权限</b></td><td>外场、研发、测试、质检、技术主管、数据运营、AI PM 七类授权角色。</td><td>以权限矩阵中的可见数据、可调用服务和高风险操作边界是否不同为判定。</td><td>不是七名用户，也不是仅有七种岗位名称。</td></tr>
+        <tr><td><b>800+ · 约 200</b></td><td>800+ 是历史候选材料池；约 200 是依据频次、风险和业务价值优先入审的高频知识。</td><td>候选材料按来源记录去重；高频知识以 KnowledgeItem 为单位，需经过工程师确认与主管审核才可成为 approved 知识。</td><td>800+ 不等于可信知识数；约 200 不等于自动生成后直接发布。</td></tr>
+        <tr><td><b>字段正确率约 85% → 95%</b></td><td>型号、现象、根因、方案等关键字段与原始证据一致的字段占比。</td><td>分子为抽样中正确字段数，分母为同一抽样口径下被核验字段总数；约 85% 为 AI 提取基线，规则与人工纠错后约 95%。</td><td>不是 OCR 字符识别率，也不是回答准确率。</td></tr>
+        <tr><td><b>200 条评测集</b></td><td>从独立历史问题中固定下来的离线回归样本，用于比较不同检索与生成版本。</td><td>与知识审核集、Few-shot 示例分离；输入、期望证据、型号版本和关键失败条件冻结，困难样本不得删除。</td><td>不是 200 条知识，也不是线上全部请求。</td></tr>
+        <tr><td><b>Top3 约 45% → 95%</b></td><td>正确且适用的知识是否出现在检索结果前三位。</td><td>分子为 Top3 内出现标准证据的评测问题数，分母为 200 条固定评测问题；同一数据集、过滤规则和判定标准下比较。</td><td>不是生成答案正确率，也不代表所有问题都能回答。</td></tr>
+        <tr><td><b>用户有用率 80%+</b></td><td>业务用户对一次有效结果明确标记“有用”的比例。</td><td>分子为有用反馈数，分母为有明确有用 / 无用选择的有效反馈数；必须绑定 Query、版本和统计周期。</td><td>不是 120 名用户中的活跃率，也不把未反馈自动算有用。</td></tr>
+        <tr><td><b>已知问题退回率约 −30%</b></td><td>在“已知问题”限定口径下，交付因既有问题再次被退回的相对降幅。</td><td>（基线期退回率 − 上线期退回率）÷ 基线期退回率；两期使用相同已知问题定义和交付样本规则。</td><td>不是全部交付退回下降 30%，也不是减少 30 个百分点。</td></tr>
+        <tr><td><b>六项服务稳定上线</b></td><td>知识检索、预检候选生成、运营指标查询、产品型号查询、知识反馈提交、数据资产目录查询。</td><td>每项均通过研发实现、权限验收、调用方联调、SLA / 降级、审计留痕与固定集回归后计为稳定上线。</td><td>不是六个 Agent，也不是接口能返回 200 就算上线。</td></tr>
+        <tr><td><b>46–70 万元 / 年</b></td><td>规模化阶段的年化节省目标区间。</td><td>按减少的重复研判工时与已知问题退回返工成本建立业务台账，并以实际使用量和财务确认口径年度化验证。</td><td>是目标值，不是已经实现的财务收益。</td></tr>
+      </tbody>
+    </table>
+    <div class="flow-wrap">
+      <div style="font-size:13px;font-weight:700;color:var(--tx2);letter-spacing:1px;margin-bottom:14px">评测六步流水线</div>
+      <div class="pipe">
+        <div class="pstep"><div class="bub">01</div><b>定评测目标</b><span>先明确评什么：检索质量？根因表述？拦截？</span></div>
+        <div class="pstep"><div class="bub">02</div><b>建评测集</b><span>200 条历史问题固定集；bad case 持续回流</span></div>
+        <div class="pstep"><div class="bub">03</div><b>选评测方法</b><span>GSB 对比 / 打分法 / 二值判断，按指标类型选</span></div>
+        <div class="pstep"><div class="bub">04</div><b>LLM-as-Judge</b><span>批量初评：Judge Prompt 固化，抽查一致性</span></div>
+        <div class="pstep"><div class="bub">05</div><b>人审抽样</b><span>人工复核校准 Judge 偏差</span></div>
+        <div class="pstep"><div class="bub">06</div><b>看板迭代</b><span>指标与版本绑定可回滚；不达标不发布</span></div>
+      </div>
+      <div class="selnote" style="margin:16px 0 0"><b>指标提升的因果链（每步都有评测回归记录）：</b>基线 Top3 ≈45%（T1 实测）→ 结构化建模 → 类型化分块 → 前置硬过滤 + 三路召回 → Rerank + 生成约束 → <b>95%（T6 实测）</b>。中间过程为示意走势，两端为实测锚点。</div>
+    </div>
+</section>
+
+<!-- ================= 06 项目排期表 ================= -->
+<section id="roadmap">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="no">06 / 项目排期表</div>
+      <h2>验证 → 平台化 → 业务接入 → 收益验证</h2>
+      <p class="sub">排期分为技术迭代线（T1–T6）和平台建设线（M0–M3）：前者管理检索效果迭代，后者管理资产、治理与服务接入。每个阶段都明确<b>目标、范围、依赖、里程碑和验收标准</b>，用验收结果决定是否进入下一阶段。</p>
+    </div>
+    <div class="phase-tabs" id="phaseTabs">
+      <button class="on" data-p="p0" style="--pc:#3b82f6;--pc2:#60a5fa"><b>P0 验证期</b><small>高频知识任务 · 已完成</small></button>
+      <button data-p="p1" style="--pc:#10b981;--pc2:#34d399"><b>P1 平台化期</b><small>资产与治理能力 · 已完成</small></button>
+      <button data-p="p2" style="--pc:#f59e0b;--pc2:#fbbf24"><b>P2 业务接入期</b><small>六项服务 · 已稳定上线</small></button>
+      <button data-p="p3" style="--pc:#d97706;--pc2:#f59e0b"><b>P3 收益验证期</b><small>目标阶段 · 规模化收益</small></button>
+    </div>
+    <div class="phase-body">
+      <div class="phase-panel" id="phasePanel"></div>
+      <div class="phase-panel">
+        <h4 style="font-size:15px">里程碑（T 技术线 / M 平台线）</h4>
+        <div class="milestones" id="msList"></div>
+      </div>
+    </div>
+    <div class="gantt" id="gantt">
+      <div class="gtitle">能力演进总览（以阶段验收为准，不展示未经核实的精确月份）</div>
+      <div class="grow"><div class="gl"><b>T1</b> 问题定义与基线</div><div class="gtrack"><div class="gbar" style="left:0%;--gc:#3b82f6;--gc2:#60a5fa" data-w="18%">Top3 ≈45%</div></div></div>
+      <div class="grow"><div class="gl"><b>T2–T3</b> 知识建模与分块</div><div class="gtrack"><div class="gbar" style="left:16%;--gc:#3b82f6;--gc2:#60a5fa" data-w="24%">数据与知识结构化</div></div></div>
+      <div class="grow"><div class="gl"><b>T4–T5</b> 召回与重排</div><div class="gtrack"><div class="gbar" style="left:36%;--gc:#2563eb;--gc2:#22d3ee" data-w="24%">过滤 · 混合召回 · Rerank</div></div></div>
+      <div class="grow"><div class="gl"><b>T6</b> 持续评测与优化</div><div class="gtrack"><div class="gbar" style="left:56%;--gc:#2563eb;--gc2:#22d3ee" data-w="28%">Top3 95% · 持续回归</div></div></div>
+      <div class="grow"><div class="gl"><b>M0</b> 任务与边界</div><div class="gtrack"><div class="gbar" style="left:0%;--gc:#f59e0b;--gc2:#fbbf24" data-w="20%">任务 · 权限 · 验收</div></div></div>
+      <div class="grow"><div class="gl"><b>M1–M2</b> 资产与治理</div><div class="gtrack"><div class="gbar" style="left:20%;--gc:#f59e0b;--gc2:#fbbf24" data-w="38%">4 数据域 · 14 项资产</div></div></div>
+      <div class="grow"><div class="gl"><b>M3</b> 服务上线与 Agent</div><div class="gtrack"><div class="gbar" style="left:56%;--gc:#d97706;--gc2:#fbbf24" data-w="28%">六项服务 · 稳定上线</div></div></div>
+      <div class="grow"><div class="gl"><b>P3</b> 收益验证 · 目标</div><div class="gtrack"><div class="gbar plan" style="left:82%;--gc:#d97706" data-w="18%">目标：46–70 万/年</div></div></div>
+      <div class="gaxis"><div></div><div class="ticks"><span>验证</span><span>冷启动</span><span>RAG 迭代</span><span>平台治理</span><span>服务接入</span><span>Agent 化</span><span>收益验证</span></div></div>
+    </div>
+    <div class="promises" style="margin-top:22px">
+      <span>排期三原则 · 验收驱动，不是日期驱动</span><span>增量上线，不做大爆炸</span><span>依赖显式化（模型与 GPU 底座预留联调窗口）</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap cols">
+    <div>
+      <div class="flogo"><span class="mark">盾</span>智盾 · 数据资产与 AI 服务平台</div>
+      <p>本页为单页全景讲解；配套在线 Demo（Mock 数据）提供可交互体验。</p>
+      <div class="deep">
+        <a href="demo.html#/portal/chat">业务问答 Demo（Mock）</a>
+        <a href="demo.html#/admin/agenttrace">Agent 运行轨迹（Mock）</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+/* ---------- clock ---------- */
+var clockEl=document.getElementById('clock');
+var sessT0=Date.now();
+function fmtT(sec){return [Math.floor(sec/3600),Math.floor(sec%3600/60),sec%60].map(function(n){return String(n).padStart(2,'0')}).join(':')}
+function sessT(){return Math.floor((Date.now()-sessT0)/1000)}
+function tick(){clockEl.textContent=fmtT(sessT())}
+tick();setInterval(tick,1000);
+
+/* ---------- live events ---------- */
+var EV=[
+ {c:'retrieve',t:'<b>E-2200 · 低温上电反复重启</b>：三路召回命中 3 条 approved → Top1 直出排查路径'},
+ {c:'filter',t:'待审核材料 <b>KI-1073</b> 尝试进入候选池 → 前置硬过滤拦截（approved=false）'},
+ {c:'retrieve',t:'BM25 <b>Top20</b> + 向量 <b>Top30</b> + 关联案例 <b>Top10</b> → Rerank 后取 <b>Top3</b>'},
+ {c:'eval',t:'固定评测集回归：Top3 <b>95%</b> · 拦截 / 拒答 / 人工确认用例通过发布门槛 <span class="ok">✓</span>'},
+ {c:'fb',t:'外场工程师标记<b>「有用」</b>→ QueryLog 写回排序特征'},
+ {c:'review',t:'技术主管确认 <b>KI-0821</b> 根因状态 → 知识版本 v3 生效，索引增量刷新'},
+ {c:'filter',t:'跨型号查询（E-3100 知识用于 E-2200）→ <b>型号校验闸口拦下</b>，提示正确入口'},
+ {c:'retrieve',t:'「固件升级后 CAN 丢帧」命中 symptom chunk → <b>回父级 KnowledgeItem</b> 取完整上下文'},
+ {c:'eval',t:'别名未命中 Bad Case 复测通过 → 移出失败清单'},
+ {c:'fb',t:'交付预检清单生成：<b>12 项检查</b> · 3 项高风险（固件 / 参数 / 放行）转人工'},
+ {c:'retrieve',t:'低置信查询置信度不足 → 保留候选返回<b>降级结果</b>，未伪装成功'},
+ {c:'fb',t:'用户有用率保持在 <b>80%+</b> · 反馈进入下一轮评测与知识运营'}
+];
+var evBody=document.getElementById('evbody'),evi=0;
+function addEv(){
+  var e=EV[evi%EV.length];evi++;
+  var div=document.createElement('div');div.className='ev';
+  div.innerHTML='<span class="tag '+e.c+'">'+({retrieve:'检索',filter:'拦截',review:'审核',eval:'评测',fb:'反馈'}[e.c])+'</span><span class="txt">'+e.t+'</span><span class="t">'+fmtT(sessT())+'</span>';
+  evBody.prepend(div);
+  while(evBody.children.length>9)evBody.lastChild.remove();
+}
+for(var i0=0;i0<5;i0++)addEv();
+setInterval(addEv,2600);
+
+/* ---------- count up ---------- */
+var nums=document.querySelectorAll('[data-count]');
+var ioN=new IntersectionObserver(function(es){es.forEach(function(en){
+  if(!en.isIntersecting)return;var el=en.target;ioN.unobserve(el);
+  var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||0,10),suf=el.dataset.suffix||'';
+  var m=el.innerHTML.match(/<small>[\s\S]*?<\/small>/);var suffixHTML=m?m[0]:'';
+  var t0=performance.now(),dur=1400;
+  function step(t){var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.innerHTML=(target*e).toFixed(dec)+suf+suffixHTML;
+    if(p<1)requestAnimationFrame(step)}
+  requestAnimationFrame(step);
+})},{threshold:.4});
+nums.forEach(function(n){ioN.observe(n)});
+
+/* ---------- scrollspy ---------- */
+var links=[].slice.call(document.querySelectorAll('nav .links a'));
+var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+var spy=new IntersectionObserver(function(es){es.forEach(function(en){
+  if(en.isIntersecting){links.forEach(function(l){l.classList.remove('on')});
+    var i=secs.indexOf(en.target);if(i>-1)links[i].classList.add('on')}
+})},{rootMargin:'-25% 0px -65% 0px'});
+secs.forEach(function(s){if(s)spy.observe(s)});
+
+/* ---------- 平台产品架构详情 ---------- */
+var ARCH={
+ l1:{name:'L1 业务应用层',chip:'background:rgba(37,99,235,.08);color:#1d4ed8',what:'回答<b>平台为谁服务、解决什么任务</b>。三类场景共用同一套可信数据和 AI 能力，避免各自建设孤立工具。',
+   rows:[['业务场景','外场支持 · 产品研发 · 交付质检'],['核心用户','约 120 名嵌入式工程师'],['典型任务','查找历史经验 · 判断已知问题 · 获取排查参考 · 完成交付预检'],['业务价值','提升经验复用效率，减少已知问题重复研判']]},
+ l2:{name:'L2 AI 服务层',chip:'background:rgba(14,116,144,.08);color:#0e7490',what:'把单点 RAG 验证过的能力封装为<b>可被授权用户和内部系统消费的服务合同</b>，每项能力都必须有明确输入、输出、角色和验收标准。',
+   rows:[['六项服务','知识检索 · 预检候选生成 · 运营指标查询 · 产品型号查询 · 知识反馈提交 · 数据资产目录查询'],['任务契约','每项服务明确输入、输出、可信数据源、授权角色、失败条件和验收标准'],['稳定上线口径','研发实现、鉴权与权限验收、调用方联调、SLA 与失败降级、审计留痕和固定集回归全部通过'],['当前状态','六项服务均已稳定上线，可供授权业务流程与受约束 Agent 调用；收益目标仍需独立验证']]},
+ l3:{name:'L3 平台治理层',chip:'background:rgba(5,150,105,.08);color:#047857',what:'平台化的关键不是功能数量，而是用<b>统一权限、质量和追踪规则</b>保证不同场景复用同一份可信数据。',
+   rows:[['角色权限','建立 7 类角色权限，按业务职责控制数据和服务使用范围'],['质量规则','型号校验 · 授权知识筛选 · 来源引用'],['风险控制','高风险结果必须由专业人员确认'],['全程追踪','记录数据来源、处理过程和使用去向']]},
+ l4:{name:'L4 数据资产层',chip:'background:rgba(109,40,217,.08);color:#6d28d9',what:'将分散资料从“可查文件”转变为<b>可管理、可追踪、可复用的数据资产</b>，为上层治理和 AI 服务提供统一来源。',
+   rows:[['资产范围','4 个数据域 · 14 项首期数据资产'],['冷启动','800+ 条历史候选材料分层处理，约 200 条高频知识优先审核'],['质量结果','抽样字段正确率由约 85% 提升至约 95%'],['平台作用','让外场、研发和质检可以复用同一套数据资产']]}
+};
+var archDetail=document.getElementById('archDetail');
+function showArch(k,band){
+  var d=ARCH[k];
+  document.querySelectorAll('#layerStack .lband').forEach(function(b){b.classList.remove('on')});
+  if(band)band.classList.add('on');
+  archDetail.innerHTML='<div class="fade-swap"><div class="lh"><span class="chip" style="'+d.chip+'">设计要点</span><h3>'+d.name+'</h3></div>'+
+   '<div class="what">'+d.what+'</div><table>'+d.rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('')+'</table></div>';
+}
+document.querySelectorAll('#layerStack .lband').forEach(function(b){
+  b.addEventListener('click',function(){showArch(b.dataset.layer,b)});
+});
+showArch('l1',document.querySelector('#layerStack .lband[data-layer="l1"]'));
+
+/* ---------- TT 富 tooltip（Agent 编排） ---------- */
+var TT={
+ ag_input:{n:'🧑 任务输入',rows:[
+  ['输入','型号、版本、自然语言问题与当前业务场景'],
+  ['为什么结构化','型号与版本会直接决定知识适用范围，不交给模型猜测'],
+  ['异常','缺少必填信息时先提示补充，不进入后续调用'],
+  ['我的产品定义','明确每类任务的必填项、可选项与输出形态']]},
+ ag_permission:{n:'🛡 权限与适用范围校验',rows:[
+  ['实现','确定性脚本查询用户角色、可访问范围与型号版本规则'],
+  ['通过','把已确认的上下文写入任务状态'],
+  ['不通过','直接拦截并说明缺少的权限或适用范围'],
+  ['我的产品定义','定义角色权限矩阵、校验时点和拦截出口']]},
+ ag_observe:{n:'👁 Observe · 观察状态',rows:[
+  ['读取','用户问题、型号版本、角色权限、对话历史与已有 tool_result'],
+  ['产出','供下一次决策使用的任务状态'],
+  ['边界','这里只汇总当前信息，不越过权限补猜数据']]},
+ ag_plan:{n:'🧠 Plan · 形成任务计划',rows:[
+  ['自主判断','识别当前任务属于查资料、问题判断、排查路径或交付预检'],
+  ['拆解','判断先解决哪个子任务，以及需要哪些信息'],
+  ['我的产品定义','限定任务类型、允许分支及缺信息时的处理方式']]},
+ ag_choose:{n:'🧰 Decide · 选择工具',rows:[
+  ['自主判断','根据当前状态选择下一项可用服务，而不是固定调用全部服务'],
+  ['约束','只能从白名单选择，并按参数 Schema 生成调用参数'],
+  ['我的产品定义','定义工具白名单、服务输入输出和调用前置条件']]},
+ ag_execute:{n:'🔌 Act · 执行服务',rows:[
+  ['执行','工具适配器把 Agent 参数转换为平台服务请求'],
+  ['返回','统一返回结构化 tool_result，供 Agent 再次观察'],
+  ['工程实现','研发负责接口、超时、重试与错误码实现']]},
+ ag_services:{n:'🧩 六项核心服务',rows:[
+  ['状态','六项服务均已稳定上线'],
+  ['范围','知识检索 · 预检候选生成 · 运营指标查询 · 产品型号查询 · 知识反馈提交 · 数据资产目录查询'],
+  ['与工具的关系','服务是平台能力；工具适配器是 Agent 调用服务的入口'],
+  ['上线验收','实现、权限、联调、SLA / 降级、审计和回归均通过；Agent 按任务调用，不默认全调']]},
+ ag_result:{n:'📥 Re-observe · 读取结果',rows:[
+  ['检查','可信资料是否命中、参数是否齐全、结果是否冲突或不足'],
+  ['更新','将结果和调用状态写回当前任务上下文'],
+  ['价值','下一步决策依据实际结果变化，而不是沿固定流程继续']]},
+ ag_decide:{n:'🔀 Decide · 决定下一步',rows:[
+  ['继续','仍可推进时选择另一服务并进入下一轮'],
+  ['追问','缺少用户才能提供的信息时暂停并请求补充'],
+  ['结束','证据充分时组织结果；无据时拒答；高风险时转人工'],
+  ['我的产品定义','定义继续、追问、结束、拒答和转人工的条件']]},
+ ag_finish:{n:'📝 Finish · 组织结果',rows:[
+  ['依据','只使用工具返回的可信内容'],
+  ['输出','答案、问题候选、排查路径或预检清单'],
+  ['约束','附来源与适用范围；证据不足不伪装成功']]},
+ ag_risk:{n:'⚠️ 高风险操作检查',rows:[
+  ['触发','涉及固件升级、参数修改、设备关键操作或最终放行'],
+  ['实现','确定性规则拦截，系统不自动执行'],
+  ['出口','保留候选和依据，交给专业人员确认'],
+  ['我的产品定义','划分风险等级并明确人机责任边界']]},
+ ag_output:{n:'📤 输出、验收与回流',rows:[
+  ['出口','正常结果、补充信息请求、拒答或人工确认提示'],
+  ['留痕','记录运行轨迹、调用结果和用户反馈'],
+  ['我的产品定义','定义结果格式、引用要求、失败出口与验收指标']]},
+ hub:{n:'🛡 智盾编排服务 · 受约束知识 Agent',rows:[
+  ['职责','管理任务状态 · 选择白名单服务 · 读取结果再决策 · 异常降级 · 反馈留痕'],
+  ['动态决策','根据任务与已有 tool_result，决定继续调用、追问、组织结果、拒答或转人工'],
+  ['确定性边界','型号与权限入口校验、高风险出口和最终放行由代码与人工控制'],
+  ['异常降级','检索超时 → 重试提示；无 approved → 明确拒答；生成失败 → 保留候选结果'],
+  ['我的产品定义','业务任务、服务白名单与 Schema、风险等级、停止条件和验收标准']]},
+ kbs:{n:'💡 知识检索服务',rows:[
+  ['职责','三路召回 + 重排，只出 approved 候选，答案附 KI-ID'],
+  ['输入','外场问题（含口语与型号别名）'],
+  ['输出','带来源引用的候选与答案'],
+  ['KPI','评测集 Top3 95%'],
+  ['工具','ES · Milvus · BGE Reranker']]},
+ pre:{n:'📋 预检候选生成服务',rows:[
+  ['输入','标准型号、固件版本与可选交付场景'],
+  ['输出','候选检查项、来源、风险、验证方法与建议执行角色'],
+  ['验收','无 eligible 知识返回空清单；高风险项必须人工确认'],
+  ['定位','只生成候选，不替代交付负责人最终放行']]},
+ ops:{n:'📊 运营指标查询服务',rows:[
+  ['输入','指标 ID、统计周期和日期'],
+  ['输出','指标值、分子、分母、周期、来源与质量警告'],
+  ['验收','只读取已注册指标快照，口径与来源全程可追溯'],
+  ['定位','服务管理与运营决策，不参与单次故障答案生成']]},
+ model:{n:'🔎 产品型号查询服务',rows:[
+  ['输入','型号编码、名称、简称或历史别名'],
+  ['输出','标准型号、系列、硬件版本、当前固件和别名'],
+  ['验收','别名可归一；不存在或不适用时明确失败，不让模型猜'],
+  ['定位','为知识检索与预检提供结构化边界']]},
+ feedback:{n:'📝 知识反馈提交服务',rows:[
+  ['输入','Query ID、KnowledgeItem ID、反馈结果与可选原因'],
+  ['输出','反馈 ID 与 recorded 状态'],
+  ['验收','反馈可追溯到查询和知识版本，不直接改写可信知识'],
+  ['定位','进入 Bad Case 分析、评测回归和知识运营']]},
+ assets:{n:'🗂 数据资产目录查询服务',rows:[
+  ['输入','数据域、资产类型和搜索词'],
+  ['输出','资产 ID、负责人、质量分、更新频率和服务入口'],
+  ['验收','按权限过滤，元数据和质量状态完整'],
+  ['定位','支持数据发现与治理，不等于读取资产正文']]},
+ harness:{n:'⚙️ Agent Harness · 运行时外壳',rows:[
+  ['职责','Agent 生命周期托管：任务五要素校验 · 工具调用 · 权限闸门 · Trace 与血缘'],
+  ['权限','三闸门：读取放行留痕 · 写入确认目标 · 高风险人工确认'],
+  ['评测钩子','每次链路变更自动触发固定评测集回归'],
+  ['价值','每个决策点可回放、可审计；单个服务可独立升级而不动全局']]},
+ lpin:{n:'📥 材料接入',rows:[
+  ['来源','800+ 条历史候选材料：服务单 · 故障速报 · 个人材料 · 维修记录'],
+  ['口径','候选池 ≠ 可信池——入库必须过双人审核'],
+  ['责任','数据运营归集，工程师与技术主管审核'],
+  ['风险','新旧版本并存是最大脏数据源，接入即分层']]},
+ lpgov:{n:'🗂 治理提取',rows:[
+  ['步骤','格式分类 → OCR → AI 字段提取 → 质量规则；具体工具由研发评估实现'],
+  ['效果','字段抽样正确率 ≈85%，人工纠错后 ≈95%'],
+  ['拦截','质量分 <60 不入库，枚举值与运行时契约对齐'],
+  ['AI 角色','工具性提取，不做业务判断']]},
+ lprev:{n:'✅ 双人审核',rows:[
+  ['流程','工程师确认 → 技术主管审核 → approved'],
+  ['原则','资格与名次分离：审核状态不进排序特征'],
+  ['产出','ReviewRecord 留痕，根因状态由主管确认'],
+  ['为什么','可信是检索的前提，不是检索的调优项']]},
+ lppool:{n:'📚 可信知识池',rows:[
+  ['形态','KnowledgeItem 主表（PostgreSQL）+ Evidence 原始证据'],
+  ['资格','approved · 质量分 ≥60 · 型号版本归一'],
+  ['血缘','答案 → KI-ID → Evidence → MinIO 全程可回溯'],
+  ['派生','ES / Milvus 索引可按版本重建，主表是事实源']]},
+ lpzone:{n:'🛡 知识 Agent · 编排范围',rows:[
+  ['范围','在 Observe → Decide → Act 循环中读取状态、选择服务并根据返回结果继续决策'],
+  ['单 Agent','一个受约束 Agent + 六项白名单服务，不拆成多个子 Agent'],
+  ['确定性外壳','入口权限、服务范围、参数 Schema、高风险出口与停止条件由代码控制'],
+  ['设计原则','只开放任务所需的有限自主权，所有调用和状态变化可追踪']]},
+ lpentry:{n:'🧑 任务入口',rows:[
+  ['三类场景','外场排障 · 研发复用 · 交付质检'],
+  ['任务类型','查资料 / 判断问题 / 排查路径 / 交付预检'],
+  ['纪律','型号与适用范围校验前置到入口，不后置补救'],
+  ['规模','约 120 名工程师 · 7 类角色权限']]},
+ lpgate1:{n:'🛡 型号权限校验 · 约束闸口',rows:[
+  ['行为','型号或权限不符即拦——不猜型号'],
+  ['为什么','型号错一步，排障方向全错：基线期头号 Bad Case'],
+  ['出口','拦截说明 + 正确型号的知识入口'],
+  ['KPI','跨型号混淆 0（硬约束用例）']]},
+ lpagent1:{n:'🤖 意图与实体解析 · 模型判断 1/2',rows:[
+  ['模型判断','抽取型号 · 现象 · 任务类型与风险 → 选择链路'],
+  ['边界','选择题式路由：只在预定义链路中选，不自由发挥'],
+  ['别名','口语叫法 / 曾用名归一到标准型号编码'],
+  ['兜底','低置信度不硬选，降级或转人工']]},
+ lproute:{n:'🔧 工具路由 · 约束闸口',rows:[
+  ['机制','六项服务注册为白名单工具，每项都有用途描述、参数 Schema、权限和超时规则'],
+  ['工具表','知识检索 · 预检候选生成 · 运营指标查询 · 产品型号查询 · 知识反馈提交 · 数据资产目录查询'],
+  ['实现边界','ES、Milvus、数据库等属于服务内部实现，不直接暴露给 Agent'],
+  ['我的产品定义','明确服务边界、输入输出、可用角色、风险等级与验收标准']]},
+ lprecall:{n:'⚙️ 过滤与召回',rows:[
+  ['前置硬过滤','权限 · approved · 质量分 ≥60 · 型号版本条件'],
+  ['三路召回','BM25 Top20（精确实体）· 向量 Top30（语义）· 关联案例 Top10'],
+  ['产出','≈41 候选进入重排'],
+  ['原则','待审核材料从不进入候选池']]},
+ lprerank:{n:'⇅ Rerank',rows:[
+  ['机制','BGE Reranker 精排 + 业务特征叠加'],
+  ['优先级','型号/版本强优先 · 质量分/根因中度 · 反馈轻度'],
+  ['护栏','反馈不覆盖硬约束，审核状态不参与排序'],
+  ['产出','Top3（均为 approved）']]},
+ lpagent2:{n:'🤖 组织带来源答案 · 模型判断 2/2',rows:[
+  ['模型判断','只用 Top3 approved 来源组织答案'],
+  ['硬约束','必附 KI-ID · 疑似根因必标「需现场确认」· 检索不到就拒答'],
+  ['边界','限定材料的作文：不引入外部知识，不自由发挥'],
+  ['KPI','无据作答在评测中一票否决']]},
+ lpgate2:{n:'🛡 高风险闸 · 约束闸口',rows:[
+  ['触发','固件 / 参数 / 放行类操作'],
+  ['行为','转人工确认，系统不自动执行'],
+  ['验收','高风险项必须转人工确认'],
+  ['原则','AI 给候选与依据，人做最终业务判断']]},
+ lpout:{n:'📤 返回结果',rows:[
+  ['四种出口','带来源答案 · 预检清单 · 型号拦截 · 无据拒答'],
+  ['降级','生成失败保留候选返回——不伪装成功'],
+  ['回写','QueryLog · 有用/无用反馈 · Trace 全留痕'],
+  ['去向','反馈进入回流段，喂下一轮检索']]},
+ lpfb:{n:'↺ 反馈与日志回写',rows:[
+  ['数据','有用/无用 · QueryLog · Trace'],
+  ['去向','排序特征（轻度）+ 失败复盘 + 评测回流'],
+  ['原则','反馈只影响名次，不覆盖型号/版本硬约束'],
+  ['埋点','hero 事件流四通道之一']]},
+ lpfeat:{n:'📈 特征与 bad case',rows:[
+  ['双通道','排序特征迭代 + 评测 bad case 回流'],
+  ['守护','200 条固定评测集，任何变更必回归'],
+  ['纪律','不删困难样本刷指标'],
+  ['效果','Top3 45% → 95% 的机制所在']]},
+ lpops:{n:'🧹 知识运营',rows:[
+  ['缺口','拒答与拦截归集成知识缺口队列'],
+  ['增补','外场记录归集 → 治理 → 双人审核 → approved'],
+  ['回写','可信知识池 + 索引增量刷新'],
+  ['闭环','闭环转一圈，检索准一分']]},
+ lpback:{n:'↩ 回环 · 运营回写',rows:[
+  ['含义','知识运营的增补成果回写可信知识池'],
+  ['动作','增补 → 双人审核 → approved → 索引增量刷新'],
+  ['效果','拒答变可答、bad case 变特征——检索随使用变准'],
+  ['验证','固定评测集回归，指标不回退才发布']]}
+};
+var ttEl=document.createElement('div');ttEl.className='tt';document.body.appendChild(ttEl);
+function showTT(el){
+  var d=TT[el.dataset.tt];if(!d)return;
+  ttEl.innerHTML='<h6>'+d.n+'</h6><table>'+d.rows.map(function(r){return '<tr><td>'+r[0]+'</td><td'+(r[0]==='KPI'?' class="tkpi"':'')+'>'+r[1]+'</td></tr>'}).join('')+'</table>';
+  ttEl.classList.add('show');
+  ttEl.style.maxWidth=Math.min(350,innerWidth-20)+'px';
+  var r=el.getBoundingClientRect(),tw=ttEl.offsetWidth,th=ttEl.offsetHeight;
+  var x=r.left+r.width/2-tw/2;x=Math.max(10,Math.min(x,innerWidth-tw-10));
+  var y=r.top-th-10;if(y<66)y=r.bottom+10;
+  ttEl.style.left=x+'px';ttEl.style.top=y+'px';
+}
+function hideTT(){ttEl.classList.remove('show')}
+document.querySelectorAll('[data-tt]').forEach(function(el){
+  el.addEventListener('mouseenter',function(){showTT(el)});
+  el.addEventListener('mouseleave',hideTT);
+});
+document.addEventListener('click',function(e){
+  var el=e.target&&e.target.closest?e.target.closest('[data-tt]'):null;
+  if(el){showTT(el)}else{hideTT()}
+});
+window.addEventListener('scroll',hideTT,{passive:true});
+
+/* ---------- ingest pipeline ---------- */
+var ingSts=[].slice.call(document.querySelectorAll('#ingest .ist'));
+var ingLibs=[].slice.call(document.querySelectorAll('#ingest .ilib'));
+var ingCntEl=document.getElementById('ingCnt');
+var ingDoneEl=document.getElementById('ingDone');
+var ingTimers=[];
+function ingClear(){
+  ingTimers.forEach(clearTimeout);ingTimers=[];
+  ingSts.forEach(function(s){s.classList.remove('on','done')});
+  ingLibs.forEach(function(l){l.classList.remove('on')});
+  ingCntEl.textContent='0';ingDoneEl.style.display='none';
+}
+function ingRun(){
+  ingClear();
+  ingSts.forEach(function(s,i){ingTimers.push(setTimeout(function(){
+    s.classList.add('on');
+    if(i>0){ingSts[i-1].classList.remove('on');ingSts[i-1].classList.add('done')}
+  },200+i*620))});
+  ingTimers.push(setTimeout(function(){var l=ingSts[ingSts.length-1];l.classList.remove('on');l.classList.add('done')},200+ingSts.length*620));
+  ingLibs.forEach(function(l,j){ingTimers.push(setTimeout(function(){l.classList.add('on')},4100+j*170))});
+  var t0=4700,dur=900,total=200,n=25;
+  for(var k=1;k<=n;k++)ingTimers.push(setTimeout(function(kk){ingCntEl.textContent=Math.round(total*kk/n)},t0+dur*k,k));
+  ingTimers.push(setTimeout(function(){ingDoneEl.style.display=''},t0+dur+80));
+}
+var ingIO=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){ingRun();ingIO.disconnect()}})},{threshold:.3});
+ingIO.observe(document.getElementById('ingest'));
+document.getElementById('ingReplay').addEventListener('click',ingRun);
+
+/* ---------- 长工单案例弹窗 ---------- */
+var longCaseDialog=document.getElementById('longCaseDialog');
+var openLongCase=document.getElementById('openLongCase');
+var closeLongCase=document.getElementById('closeLongCase');
+function showLongCase(){
+  if(typeof longCaseDialog.showModal==='function')longCaseDialog.showModal();
+  else longCaseDialog.setAttribute('open','');
+}
+function hideLongCase(){
+  if(typeof longCaseDialog.close==='function')longCaseDialog.close();
+  else longCaseDialog.removeAttribute('open');
+}
+openLongCase.addEventListener('click',showLongCase);
+closeLongCase.addEventListener('click',hideLongCase);
+longCaseDialog.addEventListener('click',function(e){if(e.target===longCaseDialog)hideLongCase()});
+
+/* ---------- 产品闭环 · 总流程动画 ---------- */
+var lpSts=[].slice.call(document.querySelectorAll('#loopflow .lp-st'));
+var lpBackEl=document.getElementById('lpBack');
+var lpZone=document.querySelector('#loopflow .lp-zone');
+var lpTimers=[];
+function lpClear(){
+  lpTimers.forEach(clearTimeout);lpTimers=[];
+  lpSts.forEach(function(s){s.classList.remove('on','done')});
+  lpBackEl.classList.remove('on');
+  if(lpZone)lpZone.classList.remove('hot');
+}
+function lpRun(){
+  lpClear();
+  lpSts.forEach(function(s,i){lpTimers.push(setTimeout(function(){
+    lpSts.forEach(function(x){x.classList.remove('on')});
+    s.classList.add('on');
+    if(i>0){lpSts[i-1].classList.remove('on');lpSts[i-1].classList.add('done')}
+    if(lpZone)lpZone.classList.toggle('hot',i>=2&&i<=9);
+  },200+i*560))});
+  lpTimers.push(setTimeout(function(){
+    var l=lpSts[lpSts.length-1];l.classList.remove('on');l.classList.add('done');
+    lpBackEl.classList.add('on');
+    if(lpZone)lpZone.classList.remove('hot');
+  },200+lpSts.length*560));
+}
+var lpIO=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){lpRun();lpIO.disconnect()}})},{threshold:.05});
+lpIO.observe(document.getElementById('loopflow'));
+document.getElementById('lpReplay').addEventListener('click',lpRun);
+
+/* ---------- Agent 任务案例弹窗 ---------- */
+var agentCaseDialog=document.getElementById('agentCaseDialog');
+var openAgentCase=document.getElementById('openAgentCase');
+var closeAgentCase=document.getElementById('closeAgentCase');
+function showAgentCase(){
+  if(agentCaseDialog.showModal)agentCaseDialog.showModal();
+  else agentCaseDialog.setAttribute('open','');
+}
+function hideAgentCase(){
+  if(agentCaseDialog.close)agentCaseDialog.close();
+  else agentCaseDialog.removeAttribute('open');
+}
+openAgentCase.addEventListener('click',showAgentCase);
+closeAgentCase.addEventListener('click',hideAgentCase);
+agentCaseDialog.addEventListener('click',function(e){if(e.target===agentCaseDialog)hideAgentCase()});
+
+/* ---------- 项目排期 phases ---------- */
+var PHASES={
+ p0:{h:'P0 · 验证期 <span style="color:var(--tx3);font-weight:400;font-size:13px">｜ 高频知识任务验证</span>',
+  g:'目标：验证「已知问题被重复研判」是真问题，建立首版检索基线与知识对象模型',
+  rows:[['范围','三类场景（外场 / 研发 / 质检）调研；800+ 条历史候选材料入候选池；划定 4 个数据域与责任边界'],
+   ['做什么','纯向量检索基线（Naive RAG）——暴露核心问题：型号等精确实体被语义泛化，症状相似但型号不同的知识被排到前面'],
+   ['不做什么','不做全量灌库、不上自动审核——<i>先证明问题真实存在，再谈解法</i>'],
+   ['验收','基线 Top3 ≈ 45%（实测锚点）；平台定位「做什么、不做什么」与验收口径获得共识']],
+  ms:[['T1 · 问题与基线','<i>问题定义与纯向量基线</i>：三类场景调研 + 历史材料入池；Top3 ≈ 45%'],
+   ['M0 · 产品立项','<i>平台定位与边界</i>：4 数据域 · 三类场景 · 责任边界共识']]},
+ p1:{h:'P1 · 平台化期 <span style="color:var(--tx3);font-weight:400;font-size:13px">｜ 资产与治理能力建设</span>',
+  g:'目标：把「候选材料」变成「可审核、可追溯的知识资产」，检索从语义相似校正为业务相关',
+  rows:[['范围','可信知识池冷启动（800+ 条候选材料分层，约 200 条高频知识优先入审）；14 项数据资产目录 + 质量规则 + 血缘追踪；检索链路改造'],
+   ['做什么','KnowledgeItem 建模（型号标准表 / 根因状态）→ 四类类型化分块 → 前置硬过滤 + 三路召回 → Rerank 与业务约束；RAG 策略 #1–#5、#8–#10、#11/#12 落地'],
+   ['不做什么','审核状态不进排序特征（<i>资格与名次分离</i>）；历史反馈不覆盖型号版本约束'],
+   ['验收','待审核与低质量知识不得进入候选池；抽样字段正确率与检索指标通过阶段验收']],
+  ms:[['M1 · 冷启动','<i>可信知识池</i>：约 200 条高频知识优先入审'],
+   ['T2 · 知识建模','<i>结构化知识对象</i>：KnowledgeItem 主表 + 型号标准表 + 根因状态'],
+   ['T3 · 类型化分块','<i>按检索任务分块</i>：四类 chunk，噪声出库'],
+   ['M2 · 数据资产底座','<i>平台治理</i>：14 项资产目录 + 质量规则 + 追踪'],
+   ['T4 · 混合召回','<i>检索改造</i>：前置硬过滤 + 三路召回'],
+   ['T5 · 重排与约束','<i>结果校正</i>：Reranker + 业务特征重排']]},
+ p2:{h:'P2 · 业务接入期 <span style="color:var(--tx3);font-weight:400;font-size:13px">｜ 六项核心服务已稳定上线</span>',
+  g:'目标：让三类场景复用同一套可信数据与检索能力，用固定评测集把指标推向 95%',
+  rows:[['范围','六项核心服务（知识检索 / 预检候选生成 / 运营指标查询 / 产品型号查询 / 知识反馈提交 / 数据资产目录查询）已稳定上线，供外场、研发、质检相关流程与约 120 名嵌入式工程师按权限使用'],
+   ['做什么','200 条固定评测集（与审核集分离）+ Bad Case 驱动迭代：跨型号误命中 / 疑似根因确定性表述 / 别名命中率 / 反馈不进排序 / 待审核泄漏；任何权重、阈值变更绑定检索策略版本并在评测集回归'],
+   ['不做什么','不以堆叠模型或参数代替产品问题定位；<i>不删除困难样本刷指标</i>'],
+   ['验收','Top3 命中率 95% · 用户有用率 80%+ · 已知问题口径交付退回率 −30%（均为实测口径）']],
+  ms:[['M3 · 稳定上线','<i>核心服务复用</i>：六项服务通过实现、权限、联调、SLA / 降级、审计与回归验收'],
+   ['T6 · 持续迭代','<i>评测与结果优化</i>：Top3 95% · 有用率 80%+ · 已知问题退回率 −30%']]},
+ p3:{h:'P3 · 收益验证期 <span style="color:var(--tx3);font-weight:400;font-size:13px">｜ 目标阶段 · 规模化收益验证</span>',
+  g:'目标：把「有效」翻译成钱——用实际使用数据验证年化节省 46–70 万的目标口径',
+  rows:[['范围','6 项服务全量使用后的收益对照：与业务基线并比（同口径工单的处理时长 / 退回 / 重复研判次数）'],
+   ['做什么','月度收益口径报告（经验复用效率 · 减少重复研判 · 三场景能力复用）；指标维持与回归纪律延续——每版变更可回归、可回滚'],
+   ['不做什么','指标未维持前不扩新场景；<i>收益口径未经业务方确认不进汇报</i>'],
+   ['验收','年化节省 46–70 万（目标值；按实际使用数据与业务对照验证，不提前宣称达成）']],
+  ms:[['指标维持','<i>Top3 / 有用率 / 退回率月度回归</i>：固定评测集 + 硬约束用例不回退'],
+   ['年化对照','<i>年化收益对照报告</i>：业务确认口径 → 规模化推广决策']]}
+};
+var phasePanel=document.getElementById('phasePanel');
+var msList=document.getElementById('msList');
+function showPhase(k,btn){
+  document.querySelectorAll('#phaseTabs button').forEach(function(x){x.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  var p=PHASES[k];
+  phasePanel.innerHTML='<div class="fade-swap"><h4>'+p.h+'</h4><div class="goal">'+p.g+'</div><div class="kv">'+
+   p.rows.map(function(r){return '<div class="r"><b>'+r[0]+'</b><span>'+r[1]+'</span></div>'}).join('')+'</div></div>';
+  msList.innerHTML=p.ms.map(function(m){return '<div class="ms fade-swap"><b>'+m[0]+'</b><span>'+m[1]+'</span></div>'}).join('');
+}
+document.querySelectorAll('#phaseTabs button').forEach(function(b){
+  b.addEventListener('click',function(){showPhase(b.dataset.p,b)});
+});
+showPhase('p0',document.querySelector('#phaseTabs button'));
+
+/* ---------- gantt 生长 ---------- */
+var ganttBox=document.getElementById('gantt');
+if('IntersectionObserver' in window){
+  var ioG=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting){
+      document.querySelectorAll('.gbar').forEach(function(b){b.style.width=b.dataset.w});
+      ioG.disconnect();
+    }
+  })},{threshold:.3});
+  ioG.observe(ganttBox);
+}else{
+  document.querySelectorAll('.gbar').forEach(function(b){b.style.width=b.dataset.w});
+}
+
+/* ---------- totop ---------- */
+var totop=document.getElementById('totop');
+window.addEventListener('scroll',function(){totop.classList.toggle('show',scrollY>700)});
+</script>
+</body>
+</html>

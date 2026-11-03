@@ -90,15 +90,15 @@ dialog{width:min(640px,90vw);border:1px solid var(--line);border-radius:13px;pad
 #prototype-quick-enter{margin:18px 0 0;padding-top:16px;border-top:1px solid #e7e9ef}#prototype-quick-enter>span{display:block;margin-bottom:8px;font-size:11px;color:#98a2b3}#prototype-quick-enter>div{display:flex;gap:10px}#prototype-quick-enter button{flex:1;border:1px solid #e5e9ef;border-radius:6px;background:white;color:#344054;font:inherit;font-size:12px;padding:9px;cursor:pointer}#prototype-quick-enter button:hover{color:#bd1533;background:#fdf0f3}
 .mock-only-label{background:#fff!important;color:#8a94a5!important;border-color:#e2e6ed!important;box-shadow:none!important}
 </style><!-- github-course-data:start -->
-<script src="./data/course-01.js?v=d5cf09cc341b"></script>
-<script src="./data/course-02.js?v=c42d9e92695b"></script>
-<script src="./data/course-03.js?v=2c4b000eed98"></script>
-<script src="./data/course-04.js?v=57c536c00969"></script>
-<script src="./data/course-05.js?v=702efa6b5cfa"></script>
-<script src="./data/course-06.js?v=cd39440c592f"></script>
-<script src="./data/course-07.js?v=5d1d0c84614d"></script>
-<script src="./data/course-08.js?v=1e57781706f7"></script>
-<script src="./data/course-09.js?v=c291330327e3"></script>
+<script src="./data/course-01.js?v=0d9a32da972e"></script>
+<script src="./data/course-02.js?v=d37b4bacb377"></script>
+<script src="./data/course-03.js?v=ec07b24e2eb8"></script>
+<script src="./data/course-04.js?v=1de6ff441d0c"></script>
+<script src="./data/course-05.js?v=933e129abb3a"></script>
+<script src="./data/course-06.js?v=86932c4096f1"></script>
+<script src="./data/course-07.js?v=d10816b0e5dc"></script>
+<script src="./data/course-08.js?v=889e952c1caa"></script>
+<script src="./data/course-09.js?v=141fbc6f385d"></script>
 <!-- github-course-data:end -->
 </head>
 <body><div class="mock-only-label" title="用于讨论指标、页面和交互，展示数值不作为业务统计结果。">交互原型</div>
@@ -447,12 +447,23 @@ const LeaderDashboard=window.LeaderDashboard=(()=>{
 </script><script id="leader-line-hover-script">(()=>{
  const style=document.createElement('style');style.textContent='#leaderChartHoverCard{position:fixed;z-index:2147483000;width:280px;max-width:calc(100vw - 24px);padding:13px 15px;background:#fff;border:1px solid #dce2eb;border-radius:9px;box-shadow:0 8px 28px #18223024;color:#344054;font:12px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;pointer-events:auto}#leaderChartHoverCard[hidden]{display:none}#leaderChartHoverCard[data-pinned=true]{border-color:#bd1533}#leaderChartHoverCard .leader-tip-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}#leaderChartHoverCard strong{flex:1}#leaderChartHoverCard button{border:0;border-radius:4px;padding:4px 6px;font-size:11px;background:#f7f8fb;color:#7e8899;cursor:pointer}#leaderChartHoverCard .line-hover-row{display:flex;align-items:center;gap:8px}#leaderChartHoverCard .line-hover-row i{width:7px;height:7px;border-radius:50%;background:#be1830;flex:none}#leaderChartHoverCard .line-hover-row span{flex:1}#leaderChartHoverCard b{color:#be1830}.leader-chart svg[data-line-hover] circle:focus-visible{outline:none;stroke:#be1830;stroke-width:4}';document.head.append(style);
  const tip=document.createElement('div');tip.id='leaderChartHoverCard';tip.setAttribute('role','tooltip');tip.hidden=true;tip.innerHTML='<div class="leader-tip-head"><strong></strong><button data-pin aria-label="固定图表详情">固定</button><button data-close aria-label="关闭图表详情">×</button></div><div class="line-hover-row"><i></i><span></span><b></b></div>';document.body.append(tip);
- let pinned=false,hovered=false,timer;
+ let pinned=false,hovered=false,activeSvg=null;
  const setPin=v=>{pinned=v;tip.dataset.pinned=String(v);tip.querySelector('[data-pin]').textContent=v?'取消固定':'固定';tip.querySelector('[data-pin]').setAttribute('aria-pressed',String(v));};
- const hide=()=>{if(!pinned&&!hovered)tip.hidden=true;},reset=()=>{setPin(false);hovered=false;tip.hidden=true;};
- tip.onmouseenter=()=>{hovered=true;clearTimeout(timer);};tip.onmouseleave=()=>{hovered=false;timer=setTimeout(hide,1000);};tip.querySelector('[data-pin]').onclick=()=>setPin(!pinned);tip.querySelector('[data-close]').onclick=reset;
- function move(e,force=false){if(pinned&&!force||hovered)return;const svg=e.target.closest?.('svg[data-line-hover]');if(!svg){clearTimeout(timer);timer=setTimeout(hide,1000);return;}const matrix=svg.getScreenCTM();if(!matrix)return;const xy=new DOMPoint(e.clientX,e.clientY).matrixTransform(matrix.inverse()),points=[...svg.querySelectorAll('circle[data-value]')],point=points.reduce((best,p)=>!best||Math.abs(+p.getAttribute('cx')-xy.x)<Math.abs(+best.getAttribute('cx')-xy.x)?p:best,null);if(!point)return;clearTimeout(timer);tip.querySelector('strong').textContent=point.dataset.date;tip.querySelector('span').textContent=point.dataset.series;tip.querySelector('b').textContent=Number(point.dataset.value).toLocaleString('zh-CN')+' 次';tip.hidden=false;tip.style.left=Math.max(12,Math.min(e.clientX+16,innerWidth-tip.offsetWidth-12))+'px';tip.style.top=Math.max(12,Math.min(e.clientY+15,innerHeight-tip.offsetHeight-12))+'px';}
- document.addEventListener('pointermove',move);document.addEventListener('click',e=>{if(e.target.closest?.('svg[data-line-hover]')){setPin(false);move(e,true);setPin(true);}});document.addEventListener('keydown',e=>{if(e.key==='Escape')reset();});document.addEventListener('scroll',hide,true);window.addEventListener('hashchange',reset);
+ const insideTip=node=>node instanceof Node&&tip.contains(node),svgFor=node=>node?.closest?.('svg[data-line-hover]');
+ const hide=()=>{if(!pinned&&!hovered)tip.hidden=true;},reset=()=>{setPin(false);hovered=false;activeSvg=null;tip.hidden=true;};
+ tip.onmouseenter=()=>{hovered=true;};tip.onmouseleave=e=>{hovered=false;if(svgFor(e.relatedTarget)!==activeSvg)hide();};tip.querySelector('[data-pin]').onclick=()=>setPin(!pinned);tip.querySelector('[data-close]').onclick=reset;
+ function move(e,force=false){
+  if(insideTip(e.target)){hovered=true;return;}
+  const svg=svgFor(e.target);hovered=false;
+  if(!svg){hide();return;}if(pinned&&!force)return;
+  const matrix=svg.getScreenCTM();if(!matrix){hide();return;}
+  const xy=new DOMPoint(e.clientX,e.clientY).matrixTransform(matrix.inverse()),points=[...svg.querySelectorAll('circle[data-value]')],clicked=force?e.target.closest?.('circle[data-value]'):null,point=clicked||points.reduce((best,p)=>!best||Math.abs(+p.getAttribute('cx')-xy.x)<Math.abs(+best.getAttribute('cx')-xy.x)?p:best,null);
+  if(!point){hide();return;}activeSvg=svg;tip.querySelector('strong').textContent=point.dataset.date;tip.querySelector('span').textContent=point.dataset.series;tip.querySelector('b').textContent=Number(point.dataset.value).toLocaleString('zh-CN')+' 次';tip.hidden=false;tip.style.left=Math.max(12,Math.min(e.clientX+16,innerWidth-tip.offsetWidth-12))+'px';tip.style.top=Math.max(12,Math.min(e.clientY+15,innerHeight-tip.offsetHeight-12))+'px';
+ }
+ document.addEventListener('pointermove',move);
+ document.addEventListener('pointerout',e=>{const svg=svgFor(e.target);if(!svg&&!insideTip(e.target))return;if(insideTip(e.relatedTarget)||svg&&svgFor(e.relatedTarget)===svg)return;hovered=false;hide();},true);
+ document.addEventListener('click',e=>{if(e.target.closest?.('circle[data-value]')&&svgFor(e.target)){setPin(false);hovered=false;move(e,true);setPin(true);}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')reset();});document.addEventListener('scroll',hide,true);window.addEventListener('hashchange',reset);window.addEventListener('blur',()=>{if(!pinned){hovered=false;hide();}});
 })();
 </script><script id="mock-prototype-entry">'use strict';
 (()=>{

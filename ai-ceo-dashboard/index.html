@@ -90,15 +90,15 @@ dialog{width:min(640px,90vw);border:1px solid var(--line);border-radius:13px;pad
 #prototype-quick-enter{margin:18px 0 0;padding-top:16px;border-top:1px solid #e7e9ef}#prototype-quick-enter>span{display:block;margin-bottom:8px;font-size:11px;color:#98a2b3}#prototype-quick-enter>div{display:flex;gap:10px}#prototype-quick-enter button{flex:1;border:1px solid #e5e9ef;border-radius:6px;background:white;color:#344054;font:inherit;font-size:12px;padding:9px;cursor:pointer}#prototype-quick-enter button:hover{color:#bd1533;background:#fdf0f3}
 .mock-only-label{background:#fff!important;color:#8a94a5!important;border-color:#e2e6ed!important;box-shadow:none!important}
 </style><!-- github-course-data:start -->
-<script src="./data/course-01.js?v=0d9a32da972e"></script>
-<script src="./data/course-02.js?v=d37b4bacb377"></script>
-<script src="./data/course-03.js?v=ec07b24e2eb8"></script>
-<script src="./data/course-04.js?v=1de6ff441d0c"></script>
-<script src="./data/course-05.js?v=933e129abb3a"></script>
-<script src="./data/course-06.js?v=86932c4096f1"></script>
-<script src="./data/course-07.js?v=d10816b0e5dc"></script>
-<script src="./data/course-08.js?v=889e952c1caa"></script>
-<script src="./data/course-09.js?v=141fbc6f385d"></script>
+<script src="./data/course-01.js?v=76c013a2d65e"></script>
+<script src="./data/course-02.js?v=57ec783445bb"></script>
+<script src="./data/course-03.js?v=f47d52e6dcbf"></script>
+<script src="./data/course-04.js?v=ab7c96d82b72"></script>
+<script src="./data/course-05.js?v=3fd32a1d24a7"></script>
+<script src="./data/course-06.js?v=01a599feb6b2"></script>
+<script src="./data/course-07.js?v=bf815a28bb8a"></script>
+<script src="./data/course-08.js?v=565297a6ac2a"></script>
+<script src="./data/course-09.js?v=7812d42e98d9"></script>
 <!-- github-course-data:end -->
 </head>
 <body><div class="mock-only-label" title="用于讨论指标、页面和交互，展示数值不作为业务统计结果。">交互原型</div>
@@ -444,26 +444,47 @@ const LeaderDashboard=window.LeaderDashboard=(()=>{
  document.addEventListener('click',e=>{if(user?.role!=='leader')return;const target=e.target.closest('[data-leader-help],[data-leader-reset],[data-leader-export],[data-leader-course]');if(!target)return;if(target.hasAttribute('data-leader-help')){showHelp(target.dataset.leaderHelp);return;}if(target.hasAttribute('data-leader-reset')){if(location.hash==='#/leader')render();else location.hash='#/leader';return;}if(target.hasAttribute('data-leader-export')){exportCSV();return;}lastHash=hp(current);});
  return {render,returnHash:()=>lastHash};
 })();
-</script><script id="leader-line-hover-script">(()=>{
+</script><script id="leader-line-hover-script">// Keep an interactive tooltip reachable along the short path from its trigger.
+function createHoverBridge(tip){
+ let anchor=null,pointer=null;
+ const point=e=>e&&Number.isFinite(e.clientX)&&Number.isFinite(e.clientY)?{x:e.clientX,y:e.clientY}:null;
+ const cross=(a,b,c)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
+ const triangle=(p,a,b,c)=>{const area=cross(a,b,c);if(Math.abs(area)<.001)return false;const signs=[cross(a,b,p),cross(b,c,p),cross(c,a,p)];return area>0?signs.every(v=>v>=-.001):signs.every(v=>v<=.001);};
+ function contains(event){
+  const p=event?point(event):pointer;if(tip.hidden||!anchor||!p)return false;
+  const r=tip.getBoundingClientRect();if(!r.width||!r.height)return false;
+  const pad=6,left=r.left-pad,right=r.right+pad,top=r.top-pad,bottom=r.bottom+pad;
+  if(p.x>=left&&p.x<=right&&p.y>=top&&p.y<=bottom)return true;
+  if(Math.abs(p.x-anchor.x)<=4&&Math.abs(p.y-anchor.y)<=4)return true;
+  const corners=[{x:left,y:top},{x:right,y:top},{x:right,y:bottom},{x:left,y:bottom}];
+  return corners.some((c,i)=>triangle(p,anchor,c,corners[(i+1)%corners.length]));
+ }
+ return {remember(event){pointer=point(event);},anchor(x,y){anchor={x,y};},contains,clear(){anchor=null;pointer=null;}};
+}
+
+(()=>{
  const style=document.createElement('style');style.textContent='#leaderChartHoverCard{position:fixed;z-index:2147483000;width:280px;max-width:calc(100vw - 24px);padding:13px 15px;background:#fff;border:1px solid #dce2eb;border-radius:9px;box-shadow:0 8px 28px #18223024;color:#344054;font:12px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;pointer-events:auto}#leaderChartHoverCard[hidden]{display:none}#leaderChartHoverCard[data-pinned=true]{border-color:#bd1533}#leaderChartHoverCard .leader-tip-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}#leaderChartHoverCard strong{flex:1}#leaderChartHoverCard button{border:0;border-radius:4px;padding:4px 6px;font-size:11px;background:#f7f8fb;color:#7e8899;cursor:pointer}#leaderChartHoverCard .line-hover-row{display:flex;align-items:center;gap:8px}#leaderChartHoverCard .line-hover-row i{width:7px;height:7px;border-radius:50%;background:#be1830;flex:none}#leaderChartHoverCard .line-hover-row span{flex:1}#leaderChartHoverCard b{color:#be1830}.leader-chart svg[data-line-hover] circle:focus-visible{outline:none;stroke:#be1830;stroke-width:4}';document.head.append(style);
  const tip=document.createElement('div');tip.id='leaderChartHoverCard';tip.setAttribute('role','tooltip');tip.hidden=true;tip.innerHTML='<div class="leader-tip-head"><strong></strong><button data-pin aria-label="固定图表详情">固定</button><button data-close aria-label="关闭图表详情">×</button></div><div class="line-hover-row"><i></i><span></span><b></b></div>';document.body.append(tip);
- let pinned=false,hovered=false,activeSvg=null;
+ const hoverBridge=createHoverBridge(tip);
+ let pinned=false,hovered=false,activeSvg=null,activePoint=null;
  const setPin=v=>{pinned=v;tip.dataset.pinned=String(v);tip.querySelector('[data-pin]').textContent=v?'取消固定':'固定';tip.querySelector('[data-pin]').setAttribute('aria-pressed',String(v));};
  const insideTip=node=>node instanceof Node&&tip.contains(node),svgFor=node=>node?.closest?.('svg[data-line-hover]');
- const hide=()=>{if(!pinned&&!hovered)tip.hidden=true;},reset=()=>{setPin(false);hovered=false;activeSvg=null;tip.hidden=true;};
+ const hide=()=>{if(!pinned&&!hovered&&!hoverBridge.contains()){tip.hidden=true;hoverBridge.clear();}},reset=()=>{hoverBridge.clear();setPin(false);hovered=false;activeSvg=null;activePoint=null;tip.hidden=true;};
  tip.onmouseenter=()=>{hovered=true;};tip.onmouseleave=e=>{hovered=false;if(svgFor(e.relatedTarget)!==activeSvg)hide();};tip.querySelector('[data-pin]').onclick=()=>setPin(!pinned);tip.querySelector('[data-close]').onclick=reset;
  function move(e,force=false){
+  hoverBridge.remember(e);
   if(insideTip(e.target)){hovered=true;return;}
   const svg=svgFor(e.target);hovered=false;
+  if(!force&&hoverBridge.contains(e))return;
   if(!svg){hide();return;}if(pinned&&!force)return;
   const matrix=svg.getScreenCTM();if(!matrix){hide();return;}
   const xy=new DOMPoint(e.clientX,e.clientY).matrixTransform(matrix.inverse()),points=[...svg.querySelectorAll('circle[data-value]')],clicked=force?e.target.closest?.('circle[data-value]'):null,point=clicked||points.reduce((best,p)=>!best||Math.abs(+p.getAttribute('cx')-xy.x)<Math.abs(+best.getAttribute('cx')-xy.x)?p:best,null);
-  if(!point){hide();return;}activeSvg=svg;tip.querySelector('strong').textContent=point.dataset.date;tip.querySelector('span').textContent=point.dataset.series;tip.querySelector('b').textContent=Number(point.dataset.value).toLocaleString('zh-CN')+' 次';tip.hidden=false;tip.style.left=Math.max(12,Math.min(e.clientX+16,innerWidth-tip.offsetWidth-12))+'px';tip.style.top=Math.max(12,Math.min(e.clientY+15,innerHeight-tip.offsetHeight-12))+'px';
+  if(!point){hide();return;}if(!force&&!tip.hidden&&activeSvg===svg&&activePoint===point){hoverBridge.anchor(e.clientX,e.clientY);return;}activeSvg=svg;activePoint=point;tip.querySelector('strong').textContent=point.dataset.date;tip.querySelector('span').textContent=point.dataset.series;tip.querySelector('b').textContent=Number(point.dataset.value).toLocaleString('zh-CN')+' 次';tip.hidden=false;tip.style.left=Math.max(12,Math.min(e.clientX+16,innerWidth-tip.offsetWidth-12))+'px';tip.style.top=Math.max(12,Math.min(e.clientY+15,innerHeight-tip.offsetHeight-12))+'px';hoverBridge.anchor(e.clientX,e.clientY);
  }
  document.addEventListener('pointermove',move);
- document.addEventListener('pointerout',e=>{const svg=svgFor(e.target);if(!svg&&!insideTip(e.target))return;if(insideTip(e.relatedTarget)||svg&&svgFor(e.relatedTarget)===svg)return;hovered=false;hide();},true);
- document.addEventListener('click',e=>{if(e.target.closest?.('circle[data-value]')&&svgFor(e.target)){setPin(false);hovered=false;move(e,true);setPin(true);}});
- document.addEventListener('keydown',e=>{if(e.key==='Escape')reset();});document.addEventListener('scroll',hide,true);window.addEventListener('hashchange',reset);window.addEventListener('blur',()=>{if(!pinned){hovered=false;hide();}});
+ document.addEventListener('pointerout',e=>{hoverBridge.remember(e);if(!e.relatedTarget){hoverBridge.clear();hovered=false;hide();return;}const svg=svgFor(e.target);if(!svg&&!insideTip(e.target))return;if(insideTip(e.relatedTarget)||svg&&svgFor(e.relatedTarget)===svg)return;hovered=false;hide();},true);
+ document.addEventListener('click',e=>{if(svgFor(e.target)){hoverBridge.clear();setPin(false);hovered=false;move(e,true);setPin(true);}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')reset();});document.addEventListener('scroll',()=>{hoverBridge.clear();hide();},true);window.addEventListener('hashchange',reset);window.addEventListener('blur',()=>{if(!pinned){hoverBridge.clear();hovered=false;hide();}});
 })();
 </script><script id="mock-prototype-entry">'use strict';
 (()=>{

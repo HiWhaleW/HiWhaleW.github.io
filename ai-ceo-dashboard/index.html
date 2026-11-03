@@ -90,15 +90,15 @@ dialog{width:min(640px,90vw);border:1px solid var(--line);border-radius:13px;pad
 #prototype-quick-enter{margin:18px 0 0;padding-top:16px;border-top:1px solid #e7e9ef}#prototype-quick-enter>span{display:block;margin-bottom:8px;font-size:11px;color:#98a2b3}#prototype-quick-enter>div{display:flex;gap:10px}#prototype-quick-enter button{flex:1;border:1px solid #e5e9ef;border-radius:6px;background:white;color:#344054;font:inherit;font-size:12px;padding:9px;cursor:pointer}#prototype-quick-enter button:hover{color:#bd1533;background:#fdf0f3}
 .mock-only-label{background:#fff!important;color:#8a94a5!important;border-color:#e2e6ed!important;box-shadow:none!important}
 </style><!-- github-course-data:start -->
-<script src="./data/course-01.js?v=9816f9bf4ef2"></script>
-<script src="./data/course-02.js?v=73784472c62e"></script>
-<script src="./data/course-03.js?v=ce27e676cd34"></script>
-<script src="./data/course-04.js?v=a10205392a04"></script>
-<script src="./data/course-05.js?v=3c2086a5ad55"></script>
-<script src="./data/course-06.js?v=00167bd5b7ab"></script>
-<script src="./data/course-07.js?v=238ae6f44784"></script>
-<script src="./data/course-08.js?v=0a4562f06d07"></script>
-<script src="./data/course-09.js?v=41d7301bfe8b"></script>
+<script src="./data/course-01.js?v=d5cf09cc341b"></script>
+<script src="./data/course-02.js?v=c42d9e92695b"></script>
+<script src="./data/course-03.js?v=2c4b000eed98"></script>
+<script src="./data/course-04.js?v=57c536c00969"></script>
+<script src="./data/course-05.js?v=702efa6b5cfa"></script>
+<script src="./data/course-06.js?v=cd39440c592f"></script>
+<script src="./data/course-07.js?v=5d1d0c84614d"></script>
+<script src="./data/course-08.js?v=1e57781706f7"></script>
+<script src="./data/course-09.js?v=c291330327e3"></script>
 <!-- github-course-data:end -->
 </head>
 <body><div class="mock-only-label" title="用于讨论指标、页面和交互，展示数值不作为业务统计结果。">交互原型</div>
@@ -292,14 +292,14 @@ function parseCourseHash(hash){
   const [kind,key='']=path.split('/');let decoded=key;try{decoded=decodeURIComponent(key);}catch{}
   return {kind,key:decoded,params};
 }
-function isCourseList(hash){return ['course','home','classes','roster','schedules'].includes(parseCourseHash(hash).kind);}
+function isCourseList(hash){return ['course','home','classes','schedules'].includes(parseCourseHash(hash).kind);}
 function renderCourseNavigation(hash,links){
   if(!courseNavState)return;
   const route=parseCourseHash(hash),detail=['session','results','class'].includes(route.kind),previous=parseCourseHash(courseNavState.hash);
-  if(detail&&!['session','results','class'].includes(previous.kind)&&isCourseList(courseNavState.hash)&&!(previous.kind==='roster'&&previous.params.get('from')===hash))courseNavState.origin=courseNavState.hash;
+  if(detail&&!['session','results','class'].includes(previous.kind)&&isCourseList(courseNavState.hash))courseNavState.origin=courseNavState.hash;
   courseNavState.hash=hash;
-  const base=[{label:'课程总览',kind:'course',hash:'#course/'+encodeURIComponent(courseNavState.course)},{label:'班级与课次',kind:'classes',hash:'#classes'},{label:'学员使用',kind:'roster',hash:'#roster'},{label:'指标说明',kind:'sources',hash:'#sources'}];
-  const activeKind=detail?parseCourseHash(courseNavState.origin).kind:route.kind==='home'?'course':route.kind;
+  const base=[{label:'课程总览',kind:'course',hash:'#course/'+encodeURIComponent(courseNavState.course)},{label:'班级与课次',kind:'classes',hash:'#classes'},{label:'指标说明',kind:'sources',hash:'#sources'}];
+  const activeKind=detail?(route.params.get('tab')==='learners'?'classes':parseCourseHash(courseNavState.origin).kind):route.kind==='home'?'course':route.kind;
   frameNavigation=base;
   $('#course-tabs').innerHTML=base.map((item,i)=>`<button data-frame-nav="${i}" class="${item.kind===activeKind?'active':''}" ${item.kind===activeKind?'aria-current="page"':''}>${item.label}</button>`).join('');
   const section=$('#session-navigation');section.hidden=!detail;

@@ -90,15 +90,15 @@ dialog{width:min(640px,90vw);border:1px solid var(--line);border-radius:13px;pad
 #prototype-quick-enter{margin:18px 0 0;padding-top:16px;border-top:1px solid #e7e9ef}#prototype-quick-enter>span{display:block;margin-bottom:8px;font-size:11px;color:#98a2b3}#prototype-quick-enter>div{display:flex;gap:10px}#prototype-quick-enter button{flex:1;border:1px solid #e5e9ef;border-radius:6px;background:white;color:#344054;font:inherit;font-size:12px;padding:9px;cursor:pointer}#prototype-quick-enter button:hover{color:#bd1533;background:#fdf0f3}
 .mock-only-label{background:#fff!important;color:#8a94a5!important;border-color:#e2e6ed!important;box-shadow:none!important}
 </style><!-- github-course-data:start -->
-<script src="./data/course-01.js?v=76c013a2d65e"></script>
-<script src="./data/course-02.js?v=57ec783445bb"></script>
-<script src="./data/course-03.js?v=f47d52e6dcbf"></script>
-<script src="./data/course-04.js?v=ab7c96d82b72"></script>
-<script src="./data/course-05.js?v=3fd32a1d24a7"></script>
-<script src="./data/course-06.js?v=01a599feb6b2"></script>
-<script src="./data/course-07.js?v=bf815a28bb8a"></script>
-<script src="./data/course-08.js?v=565297a6ac2a"></script>
-<script src="./data/course-09.js?v=7812d42e98d9"></script>
+<script src="./data/course-01.js?v=c6903c0be4dd"></script>
+<script src="./data/course-02.js?v=0854ff24358e"></script>
+<script src="./data/course-03.js?v=804e43312199"></script>
+<script src="./data/course-04.js?v=a75599bb1335"></script>
+<script src="./data/course-05.js?v=a06373963d63"></script>
+<script src="./data/course-06.js?v=f41e0f7e8c1c"></script>
+<script src="./data/course-07.js?v=d2d83ea04a88"></script>
+<script src="./data/course-08.js?v=9943b25c37fd"></script>
+<script src="./data/course-09.js?v=d86b0361e03e"></script>
 <!-- github-course-data:end -->
 </head>
 <body><div class="mock-only-label" title="用于讨论指标、页面和交互，展示数值不作为业务统计结果。">交互原型</div>
@@ -120,7 +120,11 @@ lucide.createIcons({icons});\``);if(typeof document>"u")throw new Error("`create
 </script><script>'use strict';
 (()=>{
  const bundle=Object.assign(JSON.parse(document.getElementById('offline-bundle').textContent),{documents:window.PrototypeCourseDocuments}),cache=new Map();
- let signedIn=JSON.parse(JSON.stringify(bundle.accounts.find(a=>a.role==='leader')));
+ const identityKey='aimind-prototype-identity';
+ let savedIdentity;try{savedIdentity=sessionStorage.getItem(identityKey);}catch{}
+ const initialAccount=savedIdentity==null?bundle.accounts.find(a=>a.role==='leader'):bundle.accounts.find(a=>a.username===savedIdentity);
+ let signedIn=initialAccount?JSON.parse(JSON.stringify(initialAccount)):null;
+ const rememberIdentity=()=>{try{sessionStorage.setItem(identityKey,signedIn?.username||'');}catch{}};
  const clone=x=>JSON.parse(JSON.stringify(x));
  window.OfflinePrototype={
   async api(path,options={}){
@@ -128,9 +132,9 @@ lucide.createIcons({icons});\``);if(typeof document>"u")throw new Error("`create
     const credentials=JSON.parse(options.body||'{}'),name=String(credentials.username||'').trim().toLowerCase();
     const account=bundle.accounts.find(a=>a.username===name||a.name===name);
     if(!account||credentials.password!=='AiMind2026!')throw new Error('账号或密码不正确，请重新输入');
-    signedIn=clone(account);return {user:clone(signedIn)};
+    signedIn=clone(account);rememberIdentity();return {user:clone(signedIn)};
    }
-   if(path==='/api/logout'){signedIn=null;return {ok:true};}
+   if(path==='/api/logout'){signedIn=null;rememberIdentity();return {ok:true};}
    if(path==='/api/me')return {user:signedIn&&clone(signedIn)};
    if(path==='/api/catalog'){
     if(!signedIn)throw new Error('请先登录');
@@ -267,7 +271,7 @@ function courseCards(rows){
 function classTable(){
   const rows=courses.flatMap(c=>c.sessions.map(s=>({...s,course:c.name}))).filter(s=>(s.class_id+s.course).toLowerCase().includes(search.toLowerCase())).sort((a,b)=>(b.start_date||'').localeCompare(a.start_date||''));
   if(!rows.length)return emptySearch();
-  return `<div class="table-wrap"><table class="class-table"><thead><tr><th>班级</th><th>课程</th><th>上课时间</th><th>授课老师</th><th>ERP人数</th><th>签到人数</th><th>查看使用</th></tr></thead><tbody>${rows.map(s=>`<tr><td><strong>${esc(s.class_id)}</strong></td><td>${esc(s.course)}</td><td>${displayDate(s.start_date)}<small>至 ${displayDate(s.end_date)}</small></td><td>${esc(s.teacher||'待补充')}</td><td>${s.erp_people??'—'}</td><td>${s.signed_people??'—'}</td><td><a class="text-link" href="${url('dashboard/course/'+encodeURIComponent(s.course))+'?view='+encodeURIComponent('#session/'+s.session_id+'?phase=classroom')}">课堂使用 ${icon('arrow-up-right')}</a></td></tr>`).join('')}</tbody></table></div><div class="table-note">仅展示 ${esc(user.name)} 负责课程的班级和课次。签到人数缺失时显示“—”。</div>`;
+  return `<div class="table-wrap"><table class="class-table"><thead><tr><th>班级</th><th>课程</th><th>上课时间</th><th>授课老师</th><th>ERP人数</th><th>签到人数</th><th>查看使用</th></tr></thead><tbody>${rows.map(s=>`<tr><td><strong>${esc(s.class_id)}</strong></td><td>${esc(s.course)}</td><td>${displayDate(s.start_date)}<small>至 ${displayDate(s.end_date)}</small></td><td>${esc(s.teacher||'待补充')}</td><td>${s.erp_people??'—'}</td><td>${s.signed_people??'—'}</td><td><a class="text-link" href="${url('dashboard/course/'+encodeURIComponent(s.course))+'?view='+encodeURIComponent('#session/'+s.session_id+'?phase=classroom&tab=skill')+'&origin='+encodeURIComponent('#/dashboard/classes')}">课堂使用 ${icon('arrow-up-right')}</a></td></tr>`).join('')}</tbody></table></div><div class="table-note">仅展示 ${esc(user.name)} 负责课程的班级和课次。签到人数缺失时显示“—”。</div>`;
 }
 function emptySearch(){return `<div class="empty">${icon('search')}<h2>没有找到匹配的结果</h2><p>请尝试其他课程名称或班级编号。</p><button class="btn" data-action="clear-search">清空搜索</button></div>`;}
 function dashboardPage(classes=false){
@@ -281,8 +285,8 @@ function coursePage(route){
   if(!course){deniedPage(route.course);return;}
   document.title=course.name+' · AI总裁班数据看板';frameNavigation=[];
   const hash=route.view.startsWith('#')?route.view:'#course/'+encodeURIComponent(course.name);
-  courseNavState={course:course.name,hash,origin:isCourseList(route.origin)?route.origin:'#classes'};
-  shell(`<div class="course-frame-shell"><div class="course-toolbar"><nav class="course-tabs" id="course-tabs" aria-label="课程数据导航"></nav><a class="btn course-return" href="${user.role==='leader'?LeaderDashboard.returnHash():'#/dashboard'}">${icon('arrow-left')}${user.role==='leader'?'返回数据看板':'返回我的课程'}</a></div><section class="session-navigation" id="session-navigation" aria-label="课次详情导航" hidden></section><iframe id="course-frame" title="${esc(course.name)}数据看板" ${window.OfflinePrototype?'':`src="/courses/${encodeURIComponent(course.name)}.html${esc(hash)}"`}></iframe></div>`,'dashboard');
+  courseNavState={course:course.name,hash,origin:(route.origin==='#/dashboard/classes'||isCourseList(route.origin))?route.origin:'#classes'};
+  shell(`<div class="course-frame-shell"><div class="course-toolbar"><nav class="course-tabs" id="course-tabs" aria-label="课程数据导航"></nav><a class="btn course-return" href="${courseNavState.origin==='#/dashboard/classes'?'#/dashboard/classes':user.role==='leader'?LeaderDashboard.returnHash():'#/dashboard'}">${icon('arrow-left')}${courseNavState.origin==='#/dashboard/classes'?'返回班级与课次':user.role==='leader'?'返回数据看板':'返回我的课程'}</a></div><section class="session-navigation" id="session-navigation" aria-label="课次详情导航" hidden></section><iframe id="course-frame" title="${esc(course.name)}数据看板" ${window.OfflinePrototype?'':`src="/courses/${encodeURIComponent(course.name)}.html${esc(hash)}"`}></iframe></div>`,'dashboard');
   renderCourseNavigation(hash,[]);
   if(window.OfflinePrototype)window.OfflinePrototype.openCourse($('#course-frame'),course.name,hash);
 }
@@ -298,7 +302,7 @@ function renderCourseNavigation(hash,links){
   const route=parseCourseHash(hash),detail=['session','results','class'].includes(route.kind),previous=parseCourseHash(courseNavState.hash);
   if(detail&&!['session','results','class'].includes(previous.kind)&&isCourseList(courseNavState.hash))courseNavState.origin=courseNavState.hash;
   courseNavState.hash=hash;
-  const base=[{label:'课程总览',kind:'course',hash:'#course/'+encodeURIComponent(courseNavState.course)},{label:'班级与课次',kind:'classes',hash:'#classes'},{label:'指标说明',kind:'sources',hash:'#sources'}];
+  const base=[{label:'课程总览',kind:'course',hash:'#course/'+encodeURIComponent(courseNavState.course)},{label:'班级与课次',kind:'classes',hash:'#classes'},{label:'指标说明',kind:'sources',hash:route.kind==='sources'?hash:'#sources?from='+encodeURIComponent(hash)}];
   const activeKind=detail?(route.params.get('tab')==='learners'?'classes':parseCourseHash(courseNavState.origin).kind):route.kind==='home'?'course':route.kind;
   frameNavigation=base;
   $('#course-tabs').innerHTML=base.map((item,i)=>`<button data-frame-nav="${i}" class="${item.kind===activeKind?'active':''}" ${item.kind===activeKind?'aria-current="page"':''}>${item.label}</button>`).join('');
@@ -312,7 +316,7 @@ function renderCourseNavigation(hash,links){
   courseNavState.session=session;courseNavState.phase=phase;
   const originLabel=base.find(b=>b.kind===parseCourseHash(courseNavState.origin).kind)?.label||'班级与课次';
   const automationEnabled=['增长战略','战略运营'].includes(courseNavState.course);
-  const detailLinks=links.filter(item=>['session','results','class'].includes(parseCourseHash(item.hash).kind)&&(automationEnabled||parseCourseHash(item.hash).params.get('tab')!=='automation')).map(item=>{const target=parseCourseHash(item.hash);if(session)target.params.set('session',session.session_id);return {...item,label:item.label==='战略自动化'?'自动化应用':item.label,hash:'#'+target.kind+'/'+encodeURIComponent(target.key)+'?'+target.params};});
+  const detailLinks=links.filter(item=>['session','results','class'].includes(parseCourseHash(item.hash).kind)&&(automationEnabled||parseCourseHash(item.hash).params.get('tab')!=='automation')).map(item=>{const target=parseCourseHash(item.hash),currentTab=route.params.get('tab')||'skill',targetTab=target.params.get('tab');if(targetTab!==currentTab&&[currentTab,targetTab].includes('tags')){target.params.delete('q');target.params.set('page','1');}if(session)target.params.set('session',session.session_id);return {...item,label:item.label==='战略自动化'?'自动化应用':item.label,hash:'#'+target.kind+'/'+encodeURIComponent(target.key)+'?'+target.params};});
   frameNavigation=base.concat(detailLinks);
   section.innerHTML=`<div class="session-context"><button class="session-back" data-action="back-course-list">${icon('arrow-left')}返回${originLabel}</button><nav class="session-tabs" aria-label="课次分析入口">${detailLinks.map((item,i)=>`<button data-frame-nav="${i+base.length}" class="${item.active?'active':''}" ${item.active?'aria-current="page"':''}>${esc(item.label)}</button>`).join('')}</nav></div>`;
   refreshIcons();
@@ -351,7 +355,7 @@ window.addEventListener('message',e=>{
     }
   }
   renderCourseNavigation(e.data.hash,(e.data.links||[]).filter(x=>x.hash));
-  const route=currentRoute();if(route.kind==='dashboard'&&route.course && e.data.hash){const params=new URLSearchParams({view:e.data.hash});if(['session','results','class'].includes(parseCourseHash(e.data.hash).kind))params.set('origin',courseNavState.origin);history.replaceState(null,'',url('dashboard/course/'+encodeURIComponent(route.course))+'?'+params);}
+  const route=currentRoute();if(route.kind==='dashboard'&&route.course && e.data.hash){const params=new URLSearchParams({view:e.data.hash});if(['session','results','class','sources'].includes(parseCourseHash(e.data.hash).kind))params.set('origin',courseNavState.origin);history.replaceState(null,'',url('dashboard/course/'+encodeURIComponent(route.course))+'?'+params);}
 });
 async function logout(){
   const old=$('#course-frame');if(old){old.src='about:blank';old.remove();}
@@ -364,7 +368,7 @@ app.addEventListener('click',async e=>{
   const prompt=e.target.closest('[data-prompt]');if(prompt){conversation=[];addConversation(prompt.dataset.prompt);go('class');return;}
   const button=e.target.closest('[data-action]');if(!button)return;
   const action=button.dataset.action;
-  if(action==='back-course-list'){if(courseNavState&&$('#course-frame'))$('#course-frame').contentWindow.location.hash=courseNavState.origin;return;}
+  if(action==='back-course-list'){if(courseNavState?.origin==='#/dashboard/classes')location.hash=courseNavState.origin;else if(courseNavState&&$('#course-frame'))$('#course-frame').contentWindow.location.hash=courseNavState.origin;return;}
   if(action==='toggle-sidebar'){
     sidebarCollapsed=!sidebarCollapsed;$('.module-body').classList.toggle('is-collapsed',sidebarCollapsed);button.setAttribute('aria-expanded',String(!sidebarCollapsed));button.setAttribute('aria-label',sidebarCollapsed?'展开目录':'收起目录');button.title=sidebarCollapsed?'展开目录':'收起目录';return;
   }
@@ -413,6 +417,7 @@ const LeaderDashboard=window.LeaderDashboard=(()=>{
  const names=unique(data.rows.map(r=>r.course)),knownClasses=new Set(U.knownClasses),dayIndex=new Map(U.days.map((d,i)=>[d,i])),cache=new Map();
  const defaults={start:data.rows.filter(r=>r.dateKnown&&!r.future).map(r=>r.start).sort()[0],end:data.asOf,course:'all',sort:'course',window:'7'};
  let current={...defaults},lastHash='#/leader';
+ try{const saved=sessionStorage.getItem('aimind-prototype-leader-view');if(/^#\/leader(?:\?|$)/.test(saved||''))lastHash=saved;}catch{}
  const nf=n=>Number.isFinite(n)?n.toLocaleString('zh-CN'):'—';
  const add=(d,n)=>new Date(Date.parse(d+'T00:00:00Z')+n*86400000).toISOString().slice(0,10);
  const period=s=>({start:add(U.asOf,1-Number(s.window)),end:U.asOf});
@@ -440,7 +445,7 @@ const LeaderDashboard=window.LeaderDashboard=(()=>{
  };
  function showHelp(key){const keys=Object.hasOwn(definitions,key)?[key]:Object.keys(definitions),s=summary(scoped(current));const examples={coverage:`当前覆盖 ${s.covered}/${s.classes} 个班级。`,skillUsers:`当前周期已使用Skill：${nf(s.skillUsers)}人。`,skillCalls:`当前周期课程Skill调用合计：${nf(s.skillCalls)}次。`,sessions:`当前范围：${s.sessions}个课次。`,signed:`${s.signedKnown}个有签到记录课次合计 ${nf(s.signed)}人次；${s.signedMissing}个课次缺失。`,active:`${s.start}—${s.end}，覆盖${s.covered}/${s.classes}个班级；${s.instances}个去重龙虾中，${nf(s.active)}个达到100万Token。`,requests:`${s.start}—${s.end}，每日去重请求次数相加 = ${nf(s.requests)}次。`};modal(key==='all'?'指标说明':definitions[key]?.name||'指标说明',`<div class="leader-dialog">${keys.map(k=>{const d=definitions[k];return `<h3>${d.name}</h3><dl><dt>计算公式</dt><dd>${esc(d.formula)}</dd><dt>所需字段</dt><dd>${esc(d.fields)}</dd><dt>模拟数据来源</dt><dd>${esc(d.source)}</dd><dt>统计范围与边界</dt><dd>${esc(d.scope)}</dd><dt>当前筛选复算</dt><dd>${esc(examples[k])}</dd></dl>`;}).join('')}<p>课次日期用于选择课次和班级；Skill统计周期独立选择7天或30天，以${U.asOf}为截止日，不能当成今天的实时数据。班级、学员、企业、用量与会话内容均为合成模拟记录。“${s.covered}/${s.classes}班”表示有可用名册的班级数 / 当前课次覆盖班级数。缺失班级未计入AI用量小计。</p></div>`);}
  function exportCSV(){const rows=scoped(current),p=period(current),table=[['课程','产品经理','已收录课次','已记录签到人次（小计）','签到记录范围','使用Skill学员（按关联龙虾）','课程Skill调用次数','AI使用开始','AI使用结束','用量班级覆盖范围'],...groups(rows).map(g=>[g.name,g.owner,g.sessions,g.signed??'—',`${g.signedKnown}/${g.sessions}`,g.skillUsers??'—',g.skillCalls??'—',p.start,p.end,`${g.covered}/${g.classes}`])];const cell=v=>'"'+String(window.MeetingPrototypeText?.(v)??v).replace(/^[=+@\-\t\r]/,"'$&").replace(/"/g,'""')+'"',blob=new Blob(['\ufeff'+table.map(r=>r.map(cell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),link=document.createElement('a'),objectURL=URL.createObjectURL(blob);link.href=objectURL;link.download='AI总裁班_会议原型_统计截至'+p.end+'_近'+current.window+'天.csv';link.click();setTimeout(()=>URL.revokeObjectURL(objectURL),1000);}
- function render(){if(user?.role!=='leader')return;current=read();lastHash=hp(current);const rows=scoped(current),s=summary(rows);document.title='数据看板 · AI总裁班';shell(`<div class="leader-page" data-leader-version="20261102-usage"><header class="leader-heading"><div><h1>数据看板</h1></div><div class="leader-heading-actions"><button class="btn" data-leader-help="all">${icon('circle-help')}指标说明</button><button class="btn" data-leader-export>${icon('download')}导出</button></div></header>${filters()}<div class="leader-context"><span>Skill周期 <strong>${displayDate(s.start)}—${displayDate(s.end)}</strong></span><span>用量覆盖 <strong>${s.covered}/${s.classes} 个班级</strong>${help('coverage','覆盖班级')}</span></div><div class="leader-kpis">${kpi('已收录课次',s.sessions,'次','','sessions')}${kpi('已记录签到',s.signed,'人次',rows.length?`${s.signedKnown}/${rows.length} 课次有记录`:'暂无签到记录','signed')}${kpi('已使用 Skill',s.skillUsers,'人','跨课程按关联龙虾去重','skillUsers')}${kpi('Skill 调用次数',s.skillCalls,'次','课程 Skill 调用合计','skillCalls')}</div>${trend(s)}${comparison(rows)}<footer class="leader-footer">课次数据：${displayDate(data.asOfMin)}—${displayDate(data.asOf)} · AI用量截至 ${displayDate(U.asOf)}</footer></div>`,'dashboard');const form=$('#leader-filter-form');form.onsubmit=e=>{e.preventDefault();const next={...current,...Object.fromEntries(new FormData(form))};if(next.start>next.end){toast('开始日期不能晚于结束日期');return;}const hash=hp(next);if(hash===location.hash)render();else location.hash=hash;};for(const select of form.querySelectorAll('select'))select.onchange=()=>form.requestSubmit();$('#leader-sort').onchange=e=>location.hash=hp({...current,sort:e.target.value});refreshIcons();window.__leaderReady=true;}
+ function render(){if(user?.role!=='leader')return;current=read();lastHash=hp(current);try{sessionStorage.setItem('aimind-prototype-leader-view',lastHash);}catch{}const rows=scoped(current),s=summary(rows);document.title='数据看板 · AI总裁班';shell(`<div class="leader-page" data-leader-version="20261102-usage"><header class="leader-heading"><div><h1>数据看板</h1></div><div class="leader-heading-actions"><button class="btn" data-leader-help="all">${icon('circle-help')}指标说明</button><button class="btn" data-leader-export>${icon('download')}导出</button></div></header>${filters()}<div class="leader-context"><span>Skill周期 <strong>${displayDate(s.start)}—${displayDate(s.end)}</strong></span><span>用量覆盖 <strong>${s.covered}/${s.classes} 个班级</strong>${help('coverage','覆盖班级')}</span></div><div class="leader-kpis">${kpi('已收录课次',s.sessions,'次','','sessions')}${kpi('已记录签到',s.signed,'人次',rows.length?`${s.signedKnown}/${rows.length} 课次有记录`:'暂无签到记录','signed')}${kpi('已使用 Skill',s.skillUsers,'人','跨课程按关联龙虾去重','skillUsers')}${kpi('Skill 调用次数',s.skillCalls,'次','课程 Skill 调用合计','skillCalls')}</div>${trend(s)}${comparison(rows)}<footer class="leader-footer">课次数据：${displayDate(data.asOfMin)}—${displayDate(data.asOf)} · AI用量截至 ${displayDate(U.asOf)}</footer></div>`,'dashboard');const form=$('#leader-filter-form');form.onsubmit=e=>{e.preventDefault();const next={...current,...Object.fromEntries(new FormData(form))};if(next.start>next.end){toast('开始日期不能晚于结束日期');return;}const hash=hp(next);if(hash===location.hash)render();else location.hash=hash;};for(const select of form.querySelectorAll('select'))select.onchange=()=>form.requestSubmit();$('#leader-sort').onchange=e=>location.hash=hp({...current,sort:e.target.value});refreshIcons();window.__leaderReady=true;}
  document.addEventListener('click',e=>{if(user?.role!=='leader')return;const target=e.target.closest('[data-leader-help],[data-leader-reset],[data-leader-export],[data-leader-course]');if(!target)return;if(target.hasAttribute('data-leader-help')){showHelp(target.dataset.leaderHelp);return;}if(target.hasAttribute('data-leader-reset')){if(location.hash==='#/leader')render();else location.hash='#/leader';return;}if(target.hasAttribute('data-leader-export')){exportCSV();return;}lastHash=hp(current);});
  return {render,returnHash:()=>lastHash};
 })();
